@@ -4,7 +4,7 @@ use tokio::sync::Mutex;
 
 use crate::{
     api::server,
-    application::{config, state::AppState},
+    application::{config, service::snowflake_service::SnowflakeGenerator, state::AppState},
     infrastructure::{database::Database, redis},
 };
 
@@ -25,11 +25,16 @@ pub async fn run() {
         .await
         .expect("Failed to run database migrations.");
 
+    // Initialize snowflake generator.
+    let snowflake_generator = SnowflakeGenerator::new(config.server_worker_id)
+        .expect("Failed to create snowflake generator.");
+
     // Build the application state.
     let shared_state = Arc::new(AppState {
         config,
         db_pool,
         redis: Mutex::new(redis),
+        snowflake_generator,
     });
 
     server::start(shared_state).await;

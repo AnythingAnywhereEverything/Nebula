@@ -29,6 +29,8 @@ pub struct Config {
     pub jwt_expire_refresh_token_seconds: i64,
     pub jwt_validation_leeway_seconds: i64,
     pub jwt_enable_revoked_tokens: bool,
+    // Server Worker ID.
+    pub server_worker_id: u64,
 }
 #[derive(Clone)]
 pub struct JwtKeys {
@@ -113,6 +115,7 @@ pub fn load() -> Config {
         jwt_expire_refresh_token_seconds: env_parse("JWT_EXPIRE_REFRESH_TOKEN_SECONDS"),
         jwt_validation_leeway_seconds: env_parse("JWT_VALIDATION_LEEWAY_SECONDS"),
         jwt_enable_revoked_tokens: env_parse("JWT_ENABLE_REVOKED_TOKENS"),
+        server_worker_id: env_parse("WORKER_ID"),
     };
 
     tracing::trace!("configuration: {:#?}", config);

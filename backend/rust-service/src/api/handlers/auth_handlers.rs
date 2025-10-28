@@ -11,22 +11,24 @@ use crate::{
             auth::{self, AuthError, JwtTokens},
             jwt::{AccessClaims, ClaimsMethods, RefreshClaims},
         },
-        service::token_service,
         state::SharedState,
     },
 };
 
+#[derive(Debug, Serialize, Deserialize)]
 pub struct RegisterUser {
+    email: String,
     username: String,
-    display_name: String,
     password: String,
+    display_name: String,
     confirm_password: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct LoginUser {
+    email: String,
     username: String,
-    password_hash: String,
+    password: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -42,7 +44,7 @@ pub async fn login_handler(
 ) -> Result<impl IntoResponse, APIError> {
     tracing::trace!("api version: {}", api_version);
     if let Ok(user) = user_repo::get_by_username(&login.username, &state).await {
-        if user.active && user.password_hash == login.password_hash {
+        if user.active && user.password_hash == login.password {
             tracing::trace!("access granted, user: {}", user.id);
             let tokens = auth::generate_tokens(user, &state.config);
             let response = tokens_to_response(tokens);
@@ -54,18 +56,26 @@ pub async fn login_handler(
     Err(AuthError::WrongCredentials)?
 }
 
-#[tracing::instrument(level = tracing::Level::TRACE, name = "login", skip_all, fields(username=register.username))]
+#[tracing::instrument(level = tracing::Level::TRACE, name = "register", skip_all, fields(username=register.username))]
 pub async fn register_handler(
     api_version: APIVersion,
     State(state): State<SharedState>,
-    Json(register): Json<LoginUser>,
+    Json(register): Json<RegisterUser>,
 ) -> Result<impl IntoResponse, APIError> {
     tracing::trace!("api version: {}", api_version);
 
-    
+    if register.confirm_password == register.password {
+        auth::register(
+            register.display_name,
+            register.username,
+            register.password,
+            register.email,
+            state,
+        )
+        .await?;
+    }
 
-    tracing::error!("access denied: {:#?}", register);
-    Err(AuthError::WrongCredentials)?
+    Ok(())
 }
 
 pub async fn logout_handler(
@@ -97,7 +107,6 @@ pub async fn revoke_all_handler(
 ) -> Result<impl IntoResponse, APIError> {
     tracing::trace!("api version: {}", api_version);
     access_claims.validate_role_admin()?;
-    token_service::revoke_global(&state).await?;
     Ok(())
 }
 
@@ -114,7 +123,6 @@ pub async fn revoke_user_handler(
         access_claims.validate_role_admin()?;
     }
     tracing::trace!("revoke_user: {:?}", revoke_user);
-    token_service::revoke_user_tokens(&revoke_user.user_id.to_string(), &state).await?;
     Ok(())
 }
 
@@ -175,6 +183,13 @@ impl From<AuthError> for APIError {
                 StatusCode::INTERNAL_SERVER_ERROR,
                 APIErrorCode::DatabaseError,
             ),
+            AuthError::SnowflakeError(_) => (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                APIErrorCode::SnowflakeError,
+            ),
+            AuthError::Argon2Error(_) => {
+                (StatusCode::INTERNAL_SERVER_ERROR, APIErrorCode::Argon2Error)
+            }
         };
 
         let error = APIErrorEntry::new(&auth_error.to_string())

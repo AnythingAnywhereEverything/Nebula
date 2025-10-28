@@ -129,6 +129,8 @@ pub enum APIErrorCode {
     ApiVersionError,
     DatabaseError,
     RedisError,
+    SnowflakeError,
+    Argon2Error,
 }
 
 impl Display for APIErrorCode {

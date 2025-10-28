@@ -23,7 +23,7 @@ use tower_http::cors::{Any, CorsLayer};
 use crate::{
     api::{
         error::APIError,
-        routes::{account_routes, auth_routes, transaction_routes, user_routes},
+        routes::{auth_routes, user_routes},
     },
     application::{security::jwt::AccessClaims, state::SharedState},
 };
@@ -57,10 +57,6 @@ pub async fn start(state: SharedState) {
         .nest("/{version}/auth", auth_routes::routes())
         // Nesting user routes.
         .nest("/{version}/users", user_routes::routes())
-        // Nesting account routes.
-        .nest("/{version}/accounts", account_routes::routes())
-        // Nesting transaction routes.
-        .nest("/{version}/transactions", transaction_routes::routes())
         // Add a fallback service for handling routes to unknown paths.
         .fallback(error_404_handler)
         .with_state(Arc::clone(&state))
