@@ -18,6 +18,8 @@ const Home: React.FC = () => {
     fetchPing();
   }, []);
 
+  
+
   return (
     <div className={style.homeContainer}>
       <header>

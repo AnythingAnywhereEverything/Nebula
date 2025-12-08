@@ -16,13 +16,13 @@
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-router-dom": "^7.9.3",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^0.0.0",
     "sass": "^1.93.2",
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "dev": "PORT=5173 next dev",
+    "dev": "cross-env PORT=5173 next dev",
     "build": "PORT=5173 next build",
     "start": "PORT=5173 next start"
   },
@@ -45,6 +45,7 @@
     ]
   },
   "devDependencies": {
-    "@types/phoenix": "^1.6.6"
+    "@types/phoenix": "^1.6.6",
+    "cross-env": "^10.1.0"
   }
 }
