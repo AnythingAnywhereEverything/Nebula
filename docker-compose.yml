@@ -1,14 +1,23 @@
 version: "3.9"
 
 services:
-  rust-service:
-    build: ./backend/rust-service
-    ports:
-      - "3000:3000"
+  # rust-service:
+  #   build: ./backend/rust-service
+  #   ports:
+  #     - "3000:3000"
 
-  frontend:
-    build: ./frontend
+  nextjs:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.nextjs
+    ports:
+      - "5175:5175"
+
+  nginx:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.nginx
     ports:
       - "80:80"
     depends_on:
-      - rust-service
+      - nextjs
