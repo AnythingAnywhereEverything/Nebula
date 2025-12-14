@@ -95,6 +95,8 @@ pub fn load() -> Config {
         tracing::info!("{} file not found, using existing environment", env_file);
     }
 
+    println!("Loading configuration from environment variables...");
+
     let jwt_secret = env_get("JWT_SECRET");
 
     // Parse configuration.

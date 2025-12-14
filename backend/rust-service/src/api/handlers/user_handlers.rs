@@ -1,11 +1,10 @@
-use argon2::password_hash::rand_core::impls;
 use axum::{
     Json,
     extract::{Path, State},
     http::StatusCode,
-    response::IntoResponse,
+    // response::IntoResponse,
 };
-use hyper::HeaderMap;
+// use hyper::HeaderMap;
 use thiserror::Error;
 
 use crate::{
@@ -45,13 +44,13 @@ pub async fn get_user_handler(
     Ok(Json(user))
 }
 
-pub async fn deactive_user_handler(
-    State(state): State<SharedState>,
-    Path((version, id)): Path<(String, i64)>,
-    headers: HeaderMap,
-) -> Result<impl IntoResponse, APIError> {
-    Ok("Ok")
-}
+// pub async fn deactive_user_handler(
+//     State(state): State<SharedState>,
+//     Path((version, id)): Path<(String, i64)>,
+//     headers: HeaderMap,
+// ) -> Result<impl IntoResponse, APIError> {
+//     Ok("Ok")
+// }
 
 #[derive(Debug, Error)]
 enum UserError {

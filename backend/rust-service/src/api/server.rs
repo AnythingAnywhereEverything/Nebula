@@ -23,7 +23,7 @@ use tower_http::cors::{Any, CorsLayer};
 use crate::{
     api::{
         error::APIError,
-        routes::{auth_routes, user_routes},
+        routes::{auth_routes, dev_routes, user_routes},
     },
     application::{security::jwt::AccessClaims, state::SharedState},
 };
@@ -57,6 +57,7 @@ pub async fn start(state: SharedState) {
         .nest("/{version}/auth", auth_routes::routes())
         // Nesting user routes.
         .nest("/{version}/users", user_routes::routes())
+        .nest("/{version}/dev", dev_routes::routes())
         // Add a fallback service for handling routes to unknown paths.
         .fallback(error_404_handler)
         .with_state(Arc::clone(&state))
@@ -67,7 +68,7 @@ pub async fn start(state: SharedState) {
     let addr = state.config.service_socket_addr();
     let listener = TcpListener::bind(&addr).await.unwrap();
     tracing::info!("listening on {}", addr);
-
+    println!("Listening on {}", addr);
     // Start the API service.
     axum::serve(listener, router)
         .with_graceful_shutdown(shutdown_signal())

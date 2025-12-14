@@ -1,3 +1,5 @@
+use base64::{Engine, prelude::BASE64_STANDARD_NO_PAD};
+use std::time::{SystemTime, SystemTimeError, UNIX_EPOCH};
 use thiserror::Error;
 use uuid::Uuid;
 
@@ -6,11 +8,18 @@ use crate::{
         config::Config,
         repository::user_repo,
         security::{argon, jwt::*},
-        service::snowflake_service,
+        service::{jwt_service, snowflake_service},
         state::SharedState,
     },
     domain::models::user::User,
 };
+
+pub struct AuthToken {
+    pub user_id: i64,
+    pub created_time: i64,
+    pub rand_string: String,
+    pub package: String,
+}
 
 pub struct JwtTokens {
     pub access_token: String,
@@ -41,7 +50,12 @@ pub async fn register(
     // Check if user exist or not
     match user_repo::is_exist(&username, &state).await? {
         true => {
-            let password_hash = argon::hash(password.as_bytes())?;
+            // User already exists
+            return Err(AuthError::InvalidToken.into());
+        }
+        false => {
+            let password_hash = argon::hash(password.as_bytes())
+                .map_err(|e| AuthError::Argon2Error(e.to_string()))?;
 
             let user_id = state.snowflake_generator.generate_id()?;
 
@@ -56,12 +70,37 @@ pub async fn register(
                 created_at: None,
                 updated_at: None,
             };
-            user_repo::add(user, &state)
+            // Await the future so it is executed and propagate any error
+            user_repo::add(user, &state).await?;
         }
-        false => return Err(AuthError::InvalidToken.into()),
     };
 
     Ok(())
+}
+
+pub async fn generate_tokens(user_id: i64) -> Result<AuthToken, AuthError> {
+    // Get current time
+    let current_timestamp = SystemTime::now()
+        .duration_since(UNIX_EPOCH)? // This will automatically convert SystemTimeError due to #[from]
+        .as_millis() as i64;
+    let random_string = uuid::Uuid::new_v4().to_string();
+
+    let id_bytes = user_id.to_be_bytes();
+    let time_bytes = current_timestamp.to_be_bytes();
+
+    let token = format!(
+        "{}.{}.{}",
+        BASE64_STANDARD_NO_PAD.encode(id_bytes),
+        BASE64_STANDARD_NO_PAD.encode(time_bytes),
+        BASE64_STANDARD_NO_PAD.encode(random_string.as_bytes())
+    );
+
+    Ok(AuthToken {
+        user_id,
+        created_time: current_timestamp,
+        rand_string: random_string,
+        package: token,
+    })
 }
 
 pub async fn refresh(
@@ -80,7 +119,7 @@ pub async fn refresh(
 
     let user_id = refresh_claims.sub.parse().unwrap();
     let user = user_repo::get_by_id(user_id, &state).await?;
-    let tokens = generate_tokens(user, &state.config);
+    let tokens = generate_jwt(user, &state.config);
     Ok(tokens)
 }
 
@@ -104,11 +143,11 @@ async fn revoke_refresh_token(
     // Check the validity of refresh token.
     validate_revoked(refresh_claims, state).await?;
 
-    token_service::revoke_refresh_token(refresh_claims, state).await?;
+    jwt_service::revoke_refresh_token(refresh_claims, state).await?;
     Ok(())
 }
 
-pub fn generate_tokens(user: User, config: &Config) -> JwtTokens {
+pub fn generate_jwt(user: User, config: &Config) -> JwtTokens {
     let time_now = chrono::Utc::now();
     let iat = time_now.timestamp() as usize;
     let sub = user.id.to_string();
@@ -176,7 +215,7 @@ pub async fn validate_revoked<T: std::fmt::Debug + ClaimsMethods + Sync + Send>(
     claims: &T,
     state: &SharedState,
 ) -> Result<(), AuthError> {
-    let revoked = token_service::is_revoked(claims, state).await?;
+    let revoked = jwt_service::is_revoked(claims, state).await?;
     if revoked {
         Err(AuthError::WrongCredentials)?;
     }
@@ -198,11 +237,13 @@ pub enum AuthError {
     #[error("forbidden")]
     Forbidden,
     #[error(transparent)]
+    SystemTimeError(#[from] SystemTimeError),
+    #[error(transparent)]
     SnowflakeError(#[from] snowflake_service::SnowflakeError),
     #[error(transparent)]
     RedisError(#[from] redis::RedisError),
-    #[error(transparent)]
-    Argon2Error(#[from] argon2::password_hash::Error),
+    #[error("Argon2Error : {0}")]
+    Argon2Error(String),
     #[error(transparent)]
     SQLxError(#[from] sqlx::Error),
 }

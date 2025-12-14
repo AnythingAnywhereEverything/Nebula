@@ -3,7 +3,7 @@ use std::time::{SystemTime, SystemTimeError, UNIX_EPOCH};
 use thiserror::Error;
 
 // Constants for bit allocation (adjust as needed)
-const TIMESTAMP_BITS: u64 = 41;
+// const TIMESTAMP_BITS: u64 = 41;
 const WORKER_ID_BITS: u64 = 10;
 const SEQUENCE_BITS: u64 = 12;
 
