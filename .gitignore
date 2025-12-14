@@ -1,1 +1,4 @@
 /backend/rust-service-example
+
+# docker
+.env_docker
