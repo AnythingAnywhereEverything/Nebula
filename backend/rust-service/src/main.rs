@@ -4,8 +4,6 @@ use catalize::application::app;
 
 #[tokio::main]
 async fn main() {
-    println!("Starting the application...");
-
     // Tracing configuration.
     let filter_layer = tracing_subscriber::EnvFilter::try_from_default_env()
         .unwrap_or_else(|_| "axum_web=trace".into());
@@ -19,11 +17,7 @@ async fn main() {
         .with(fmt_layer)
         .init();
 
-    println!("Application started successfully.");
-
     tracing::info!("{} v{}", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"));
-    println!("{} v{}", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"));
 
     app::run().await;
-    println!("Application stopped.");
 }
