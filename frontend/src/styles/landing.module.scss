@@ -1,19 +1,28 @@
-$primary-sign-in-color: #28232c;
+$primary-sign-in-color: #28262c;
 $input-color: #3c404e;
 $input-hover-color: #515668;
-$submit-light-button: #b06fb7;
+$submit-button: #b06fb7;
+$submit-hover-button: #e875a9;
+
+.light{
+    position: relative;
+    height: 100%;
+    background-image: radial-gradient(farthest-corner at right 10px,
+                    rgba(158, 158, 158, 0.126) 1%,
+                    $primary-sign-in-color 40%);
+}
 
 .registerContainer {
+    height: 100%; 
+    overflow: hidden;
+    font-family: 'Arial', sans-serif;
     * {
         color: white;
         input{
             background-color: $input-color;
-        }
+        } 
     }
 
-    font-family: 'Arial', sans-serif;
-    height: 100%;
-    overflow: hidden;
 
     @media screen and (max-width: 991px) {
         background-color: #131b3d;
@@ -28,7 +37,10 @@ $submit-light-button: #b06fb7;
         background-color: $primary-sign-in-color;
         display: block;
         padding: 1rem;
+
+        
     }
+        
 
     .signInHeader{
         text-align: center;
@@ -46,46 +58,16 @@ $submit-light-button: #b06fb7;
             margin-bottom: .25rem;
 
         }
+        input:focus{
+            outline-color: $input-hover-color;
+        }
+
         input{
             width: 100%;
             height: 32px;
+            border-radius: 8px;
             box-sizing: border-box;
-        }
-    }
-
-    .dateBox{
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: .25rem;
-
-        .selectContainer{
-            min-width: 100px;
-            
-            .dateButton {
-                width: 100%;
-                padding: 1rem 0;
-                background-color: $input-color;
-                border-radius: 8px;
-                text-align: center;
-            }
-
-            .content{
-                background-color: $input-color;
-                border-radius: 8px;
-                width: 100px;
-                height: 300px;
-                position: absolute;
-                option:hover{
-                    background-color: $input-hover-color;
-                }
-                option{
-                    padding: 1rem .5rem;
-                }
-            }
-        }
-
-        p{
-            font-size: 8px;
+            border: none;
         }
     }
 
@@ -93,8 +75,7 @@ $submit-light-button: #b06fb7;
         .box{
             display: flex;
             align-items: center;
-            padding-bottom: .25rem;
-            background-color: $primary-sign-in-color;
+            padding-bottom: .5rem;
             color: white;
         }
 
@@ -106,18 +87,21 @@ $submit-light-button: #b06fb7;
         }
 
         .policyMessage{
-            padding: 0 .25rem .5rem .25rem;
+            padding: 0 .25rem 1rem .25rem;
             p{
                 font-size: 14px;
             }
         }
+    }
+    .submitButton:hover{
+        background-color: $submit-hover-button;
     }
 
     .submitButton{
         padding: .5rem;
         display: flex;
         justify-content: center;
-        background-color: $submit-light-button;
+        background-color: $submit-button;
         border-radius: 8px;
     }
 }
