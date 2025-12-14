@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import style from '../../styles/landing.module.scss';
-import { log } from "console";
 
 export default function register() {
 
@@ -51,7 +50,7 @@ export default function register() {
                     <div className={style.inputBox}>
                         <p>Display name</p>
                         <input  id="username" type="text" value={displayName}
-                        onChange={(e) => setName(e.target.value)}
+                        onChange={(e) => setDisplayName(e.target.value)}
                         />
                     </div>
 
@@ -64,16 +63,20 @@ export default function register() {
 
                     
 
+                    <p>Date of Birth</p>
                     <div style={{ display: "flex"}} className={style.dateBox}>
+                        <div className={style.selectContainer}>
+                            <div className={style.selectContainer}>
+                                <div id="date-day" className={style.dateButton}>Day</div>
 
-                        <select name="Day" id="date-day">
-                            <option value="">day</option>
-                            
-                            {days.map((day) => (
-                                <option key={day} value={day}>{day}
-                                </option>
-                            ))}
-                        </select>
+                                <div className={style.content}>
+                                    {days.map((day) => (
+                                        <option key={day} value={day}>{day}
+                                        </option>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
 
                         <select name="Month" id="date-month">
                             <option value="">Month</option>
@@ -90,12 +93,21 @@ export default function register() {
                             ))};
                         </select>
                     </div>
-
-                    <input type="checkbox" />Policy
+                    
+                    <div className={style.policyBox}>
+                        <div className={style.box}>
+                            <input type="checkbox" />
+                            <label htmlFor="checkbox">Policy</label>
+                        </div>
+                        <div className={style.policyMessage}>
+                            <p>Please read the policy before you agree to Catalize policy</p>
+                        </div>
+                    </div>
                 </form>
                 {/* END */}
 
-                <button type="button">Sign in </button>
+                {/* ADD ONLICK LATER*/}
+                <div className={style.submitButton}>Sign-up</div>
             </div>
     );
 

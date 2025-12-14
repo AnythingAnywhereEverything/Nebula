@@ -1,11 +1,21 @@
-$primary-light-color: #F3E9F4;
-$secondary-light-color: #61dafb;
-
+$primary-sign-in-color: #28232c;
+$input-color: #3c404e;
+$input-hover-color: #515668;
+$submit-light-button: #b06fb7;
 
 .registerContainer {
-    font-family: 'Arial', sans-serif;
+    * {
+        color: white;
+        input{
+            background-color: $input-color;
+        }
+    }
 
-  @media screen and (max-width: 991px) {
+    font-family: 'Arial', sans-serif;
+    height: 100%;
+    overflow: hidden;
+
+    @media screen and (max-width: 991px) {
         background-color: #131b3d;
     }
 
@@ -15,9 +25,9 @@ $secondary-light-color: #61dafb;
 
     //PHONE
     @media screen and (max-width: 479px) {
-        background-color: $primary-light-color;
+        background-color: $primary-sign-in-color;
         display: block;
-
+        padding: 1rem;
     }
 
     .signInHeader{
@@ -26,17 +36,16 @@ $secondary-light-color: #61dafb;
 
     p{
         margin: 0;
-
     }
 
     .inputBox{
     
         padding: .5rem 0 1rem 0;
-
         p{
             font-size: 18px;
-        }
+            margin-bottom: .25rem;
 
+        }
         input{
             width: 100%;
             height: 32px;
@@ -45,7 +54,70 @@ $secondary-light-color: #61dafb;
     }
 
     .dateBox{
-        
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: .25rem;
+
+        .selectContainer{
+            min-width: 100px;
+            
+            .dateButton {
+                width: 100%;
+                padding: 1rem 0;
+                background-color: $input-color;
+                border-radius: 8px;
+                text-align: center;
+            }
+
+            .content{
+                background-color: $input-color;
+                border-radius: 8px;
+                width: 100px;
+                height: 300px;
+                position: absolute;
+                option:hover{
+                    background-color: $input-hover-color;
+                }
+                option{
+                    padding: 1rem .5rem;
+                }
+            }
+        }
+
+        p{
+            font-size: 8px;
+        }
     }
 
+    .policyBox{
+        .box{
+            display: flex;
+            align-items: center;
+            padding-bottom: .25rem;
+            background-color: $primary-sign-in-color;
+            color: white;
+        }
+
+
+        input{
+            width: 24px;
+            height: 24px;
+            align-items: center;
+        }
+
+        .policyMessage{
+            padding: 0 .25rem .5rem .25rem;
+            p{
+                font-size: 14px;
+            }
+        }
+    }
+
+    .submitButton{
+        padding: .5rem;
+        display: flex;
+        justify-content: center;
+        background-color: $submit-light-button;
+        border-radius: 8px;
+    }
 }
