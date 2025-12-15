@@ -2,3 +2,7 @@
 
 # docker
 .env_docker
+
+# media files
+media/*
+!media/.gitkeep
