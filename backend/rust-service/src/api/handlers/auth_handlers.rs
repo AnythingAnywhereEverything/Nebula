@@ -1,11 +1,14 @@
 use axum::{Json, extract::State, http::StatusCode, response::IntoResponse};
 use serde::{Deserialize, Serialize};
+use serde_json::json;
 use sqlx::types::Uuid;
 
 use crate::{
     api::{APIError, APIErrorCode, APIErrorEntry, APIErrorKind, version::APIVersion},
     application::{
+        repository::user_repo,
         security::{
+            argon,
             auth::{self, AuthError},
             jwt::RefreshClaims,
         },
@@ -15,10 +18,10 @@ use crate::{
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct RegisterUser {
+    firstname: String,
+    lastname: String,
     email: String,
-    username: String,
     password: String,
-    display_name: String,
     confirm_password: String,
 }
 
@@ -34,29 +37,33 @@ pub struct RevokeUser {
     user_id: Uuid,
 }
 
-// #[tracing::instrument(level = tracing::Level::TRACE, name = "login", skip_all, fields(username=login.username))]
-// pub async fn login_handler(
-//     api_version: APIVersion,
-//     State(state): State<SharedState>,
-//     Json(login): Json<LoginUser>,
-// ) -> Result<impl IntoResponse, APIError> {
-//     tracing::trace!("api version: {}", api_version);
-//     // if let Ok(user) = user_repo::get_by_username(&login.username, &state).await {
-//     //     if user.active && user.password_hash == login.password {
-//     //         tracing::trace!("access granted, user: {}", user.id);
-//     //         let tokens = auth::generate_tokens(user, &state.config);
-//     //         let response = tokens_to_response(tokens);
-//     //         return Ok(response);
-//     //     }
-//     // }
+#[tracing::instrument(level = tracing::Level::TRACE, name = "login", skip_all, fields(username=login.username))]
+pub async fn login_handler(
+    api_version: APIVersion,
+    State(state): State<SharedState>,
+    Json(login): Json<LoginUser>,
+) -> Result<impl IntoResponse, APIError> {
+    tracing::trace!("api version: {}", api_version);
+    if let Ok(user) = user_repo::get_by_username(&login.username, &state).await {
+        let password_valid = argon::verify(login.password.as_bytes(), &user.password_hash)
+            .expect("Password verification failed");
 
-//     Ok(());
+        if user.active && password_valid {
+            tracing::trace!("access granted, user: {}", user.id);
+            let tokens: auth::AuthToken = auth::generate_tokens(user.id).await?;
+            let response = Json(json!(
+                {
+                    "token" : tokens.package,
+                }
+            ));
+            return Ok(response);
+        }
+    }
+    tracing::error!("access denied: {:#?}", login);
+    Err(AuthError::WrongCredentials)?
+}
 
-//     // tracing::error!("access denied: {:#?}", login);
-//     // Err(AuthError::WrongCredentials)?
-// }
-
-#[tracing::instrument(level = tracing::Level::TRACE, name = "register", skip_all, fields(username=register.username))]
+#[tracing::instrument(level = tracing::Level::TRACE, name = "register", skip_all)]
 pub async fn register_handler(
     api_version: APIVersion,
     State(state): State<SharedState>,
@@ -66,8 +73,8 @@ pub async fn register_handler(
 
     if register.confirm_password == register.password {
         auth::register(
-            register.display_name,
-            register.username,
+            register.firstname,
+            register.lastname,
             register.password,
             register.email,
             state,

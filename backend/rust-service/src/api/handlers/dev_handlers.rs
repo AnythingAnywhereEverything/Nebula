@@ -1,15 +1,8 @@
-use axum::{
-    Json,
-    extract::{Path, State},
-    response::IntoResponse,
-};
+use axum::{Json, extract::State, response::IntoResponse};
 use serde_json::json;
 
 use crate::{
-    api::{
-        APIError,
-        version::{self, APIVersion},
-    },
+    api::{APIError, version::APIVersion},
     application::state::SharedState,
 };
 
