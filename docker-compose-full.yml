@@ -30,6 +30,8 @@ services:
       - .env_docker
     ports:
       - "3000:3000"
+    volumes:
+      - ./media:/app/media
 
   nextjs:
     build:
@@ -47,6 +49,8 @@ services:
     depends_on:
       - nextjs
       - rust
+    volumes:
+      - ./media:/etc/nginx/media
 
 volumes:
   redis:

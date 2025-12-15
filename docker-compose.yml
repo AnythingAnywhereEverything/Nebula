@@ -29,7 +29,8 @@ services:
       - "3000:3000"
     extra_hosts:
       - "host.docker.internal:host-gateway"
-
+    volumes:
+      - ./media:/app/media
   nextjs:
     build:
       context: ./frontend
@@ -46,3 +47,5 @@ services:
     depends_on:
       - nextjs
       - rust
+    volumes:
+      - ./media:/etc/nginx/media
