@@ -1,0 +1,33 @@
+@use '../_variables.scss';
+
+.hamburgerButton {
+    font-size: 1.5rem;
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+.hamburgerMenu {
+    position: absolute;
+    top: 3.5rem;
+    left: 1rem;
+    background-color: variables.$primary-color;
+    border: 1px solid variables.$secondary-color;
+    border-radius: 0.5rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    min-width: 150px;
+
+    a {
+        color: variables.$light-color;
+        padding: 0.75rem 1rem;
+        text-decoration: none;
+
+        &:hover {
+            background-color: variables.$secondary-color;
+        }
+    }
+}

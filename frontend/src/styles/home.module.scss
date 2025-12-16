@@ -1,6 +1,4 @@
-$primary-color: #282c34;
-$secondary-color: #61dafb;
-
+@use '_variables.scss';
 .homeContainer {
   display: flex;
   flex-direction: column;
@@ -8,13 +6,13 @@ $secondary-color: #61dafb;
   font-family: 'Arial', sans-serif;
 
   header {
-    background-color: $primary-color;
+    background-color: variables.$primary-color;
     color: white;
     padding: 2rem;
     text-align: center;
 
     h1 {
-      color: $secondary-color;
+      color: variables.$secondary-color;
     }
   }
 

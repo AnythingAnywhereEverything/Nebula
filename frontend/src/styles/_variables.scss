@@ -1,0 +1,6 @@
+@use "sass:color";
+$primary-color: #141f45;
+$secondary-color: color.adjust($primary-color, $lightness: 20%);
+
+$brand-color: #869aff;
+$light-color: #e9e9e9;

@@ -2,9 +2,9 @@ import React from 'react';
 import { ping } from '../api/ping';
 import style from '../styles/home.module.scss';
 import { NextPageWithLayout } from '../types/global.d';
-import { Metadata } from 'next';
 import Head from 'next/head';
-// Home Page
+
+
 const Home: NextPageWithLayout = () => {
   const [message, setMessage] = React.useState('Pinging...');
 
@@ -28,6 +28,7 @@ const Home: NextPageWithLayout = () => {
         <meta name="description" content="Welcome to Nebula, the marketing platform for merchants." />
       </Head>
       <h1>Welcome to Nebula</h1>
+      <p>{message}</p>
     </div>
   );
 };
