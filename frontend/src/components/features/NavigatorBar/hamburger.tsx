@@ -2,7 +2,7 @@
 
 import React, { FC } from 'react';
 import { NerdFonts } from '../../utilities/NerdFonts';
-import style from '../../styles/features/hamburger.module.scss';
+import style from '../../../styles/features/hamburger.module.scss';
 
 // the menu after click here
 const HamburgerMenu: FC = () => {
