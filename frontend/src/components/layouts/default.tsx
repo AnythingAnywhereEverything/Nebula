@@ -1,0 +1,17 @@
+// components/layouts/DefaultLayout.tsx
+import React, { FC } from 'react';
+import { LayoutProps } from '../../types/global.d'; // Import the type
+
+import { Navbar } from '../ui/navbar';
+
+const DefaultLayout: FC<LayoutProps> = ({ children }) => {
+  return (
+    <>
+        <Navbar />
+        <main>{children}</main>
+        <footer className="footer">Standard Footer</footer>
+    </>
+  );
+};
+
+export default DefaultLayout;

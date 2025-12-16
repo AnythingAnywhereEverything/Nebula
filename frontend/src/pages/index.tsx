@@ -1,8 +1,11 @@
 import React from 'react';
 import { ping } from '../api/ping';
 import style from '../styles/home.module.scss';
-
-const Home: React.FC = () => {
+import { NextPageWithLayout } from '../types/global.d';
+import { Metadata } from 'next';
+import Head from 'next/head';
+// Home Page
+const Home: NextPageWithLayout = () => {
   const [message, setMessage] = React.useState('Pinging...');
 
   React.useEffect(() => {
@@ -18,24 +21,13 @@ const Home: React.FC = () => {
     fetchPing();
   }, []);
 
-  
-
   return (
     <div className={style.homeContainer}>
-      <header>
-        <h1>Welcome to Next.js Absolute Cinema Testing!</h1>
-        <p>Ping response: {message}</p>
-      </header>
-
-      <main>
-        <p>
-          This is a template homepage example
-        </p>
-      </main>
-
-      <footer>
-        <small>Footer!</small>
-      </footer>
+      <Head>
+        <title>Nebula</title>
+        <meta name="description" content="Welcome to Nebula, the marketing platform for merchants." />
+      </Head>
+      <h1>Welcome to Nebula</h1>
     </div>
   );
 };
