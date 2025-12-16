@@ -1,6 +1,6 @@
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
-use catalize::application::app;
+use nebula::application::app;
 
 #[tokio::main]
 async fn main() {
