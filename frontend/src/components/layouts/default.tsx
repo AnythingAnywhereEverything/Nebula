@@ -2,7 +2,7 @@
 import React, { FC } from 'react';
 import { LayoutProps } from '../../types/global.d'; // Import the type
 
-import { Navbar } from './navbar';
+import { Navbar } from './navbarWraper';
 
 const DefaultLayout: FC<LayoutProps> = ({ children }) => {
   return (

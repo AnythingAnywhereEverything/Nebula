@@ -1,5 +1,10 @@
 @use "sass:color";
-@use '../_variables.scss';
+
+// Global
+
+.navLogo {
+    font-size: clamp(1.5rem, 3vw + 1rem, 2rem);
+}
 
 @media (max-width: 768px) {
     .navbar {
@@ -31,12 +36,28 @@
                 grid-template-areas:
                     "searchBox"
                     "location";
-                gap: 1rem;
+                gap: 0.5rem;
                 .navSearchBox{
                     grid-area: searchBox;
                 }
-                .navLocation {
-                    grid-area: location;
+                .navLocation{
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    width: 100%;
+                    background: variables.$secondary-color;
+                    position: absolute;
+                    div{
+                        
+                        gap: 0.25rem;
+                        span{
+                            font-size: 0.75rem;
+                        }
+                        strong{
+                            font-size: 0.75rem;
+                            font-weight: normal;
+                        }
+                    }
                 }
             }
         }
@@ -53,6 +74,12 @@
     
         .navActions {
             gap: 1rem;
+        }
+    }
+
+    .navBottom {
+        ul{
+            display: none;
         }
     }
 }
@@ -77,10 +104,31 @@
             gap: 1rem;
             display: flex;
             flex: 1;
+            .navLocation{
+                align-items: center;
+                gap: 0.5rem;
+    
+                div{
+                    flex-direction: column;
+
+                    span{
+                        font-size: 0.75rem;
+                    }
+                    strong{
+                        font-size: 1rem;
+                    }
+                }
+            }
             .navSearchBox {
                 display: flex;
                 flex: 1;
             }
+        }
+    }
+
+    .navBottom {
+        ul {
+            display: flex;
         }
     }
 }
@@ -95,7 +143,6 @@
         padding: 0.75rem 0;
 
         .navLogo{
-            font-size: 2rem;
             font-weight: bold;
             text-decoration: none;
             a{
@@ -110,16 +157,8 @@
                 display: flex;
                 align-items: center;
                 gap: 0.5rem;
-    
                 div{
                     display: flex;
-                    flex-direction: column;
-                    span{
-                        font-size: 0.75rem;
-                    }
-                    strong{
-                        font-size: 1rem;
-                    }
                 }
             }
     
@@ -167,7 +206,6 @@
 
         ul{
             list-style: none;
-            display: flex;
             justify-content: center;
             gap: 2rem;
             margin: 0;

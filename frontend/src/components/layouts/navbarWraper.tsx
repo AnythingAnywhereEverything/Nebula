@@ -1,10 +1,10 @@
 // navbar component
 import React from 'react';
 import Link from 'next/link';
-import style from '../../styles/layouts/navbar.module.scss';
+import style from '@styles/layouts/navbarDesktop.module.scss';
 import { NerdFonts } from '../utilities/NerdFonts';
-import { HoverPopButton } from '../ui/HoverPopButton';
 import { Hamburger } from '../features/NavigatorBar/hamburger';
+import { NebulaButton } from '@components/ui/NebulaBtn';
 
 interface UserLocation {
   city: string;
@@ -40,7 +40,9 @@ const Navbar: React.FC = () => {
         fetchLocation();
     }, []);
 
-  return (
+
+
+    return (
     <nav className={style.navbar}>
         <div className={style.navTop}>
             <div className={style.navLogo}>
@@ -69,10 +71,27 @@ const Navbar: React.FC = () => {
             </div>
             {/* Shopping Interaction */}
             <div className={style.navActions}>
-                <HoverPopButton href="/auth/signin">Sign in</HoverPopButton>
-                <HoverPopButton isIcon href="/wishlist">&#xf004;</HoverPopButton>
-                <HoverPopButton isIcon href="/gifts">󰹄</HoverPopButton>
-                <HoverPopButton isIcon notificationCount={5} href="/cart"></HoverPopButton>
+                <NebulaButton 
+                    href="/auth/signin"
+                    btnValues={"Sign in"}
+                    btnComponent = {(
+                        <ul style={{position:"absolute"}}>
+                            <li>Test1</li>
+                            <li>Test1</li>
+                            <li>Test1</li>
+                            <li>Test1</li>
+                        </ul>
+                    )}
+                />
+                <NebulaButton isIcon href="/wishlist" btnValues={""}/>
+                <NebulaButton isIcon href="/gifts" btnValues={"󰹄"}/>
+                <NebulaButton isIcon notificationCount={5} href="/cart" btnValues={""}/>
+                <NebulaButton 
+                    btnValues={"Totally a normal button"} 
+                    onClick={() => {
+                        console.log("Hello World!")
+                    }}
+                />
             </div>
         </div>
         <div className={style.navBottom}>

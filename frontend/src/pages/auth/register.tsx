@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Link from "next/link";
-import style from '../../styles/landing.module.scss';
+import style from '@styles/landing.module.scss';
 
 export default function register() {
     const [firstName, setFirstName] = useState("");
