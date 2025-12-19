@@ -1,0 +1,65 @@
+
+// Desktop 165px width and height
+
+
+.bottomRecommendBox{
+    display: block;
+    width: 100%;
+    @media screen and (max-width: 991px) {
+        
+    }
+
+    @media screen and (max-width: 479px) {
+
+    }
+    .container{
+        display: flex;
+        width: 100%;
+        overflow: auto;
+        ul{
+            list-style-type: none;
+            display: flex;
+            padding: 0 16px;
+            gap: 16px;
+            height: 100%;
+
+            
+
+            h5,p,h3,span{
+                margin: 0;
+            }
+
+            span{
+                font-size: 12px;
+                opacity: 60%;
+            }
+
+            li {
+                height: 100%;
+                .itemInfo{
+                    height: 100%;
+                    max-height: 40.5px;
+                }
+                .priceDisplay{
+                    padding-top: 4px;
+                    padding-bottom: 12px;
+                    p{
+                        font-size: 20px;
+                    }
+                }
+            }
+            button {
+                border-style: none;
+                border-radius: 8px;
+                padding: 8px;
+                background-color: #edc139;
+            }
+        }
+        .fakeImg{
+            width: 165px;
+            height: 165px;
+            background-color: darkgreen;
+        }
+
+    } 
+}
