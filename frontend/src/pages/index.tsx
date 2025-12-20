@@ -24,8 +24,7 @@ const Home: NextPageWithLayout = () => {
   return (
     <div className={style.homeContainer}>
       <Head>
-        <title>Nebula</title>
-        <meta name="description" content="Welcome to Nebula, the marketing platform for merchants." />
+        <title>Nebula - Shop However You Like</title>
       </Head>
       <h1>Welcome to Nebula</h1>
       <p>{message}</p>

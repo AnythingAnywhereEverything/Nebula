@@ -50,12 +50,8 @@
         padding: 0.75rem 0;
 
         .navLogo{
-            font-weight: bold;
-            text-decoration: none;
-            a{
-                text-decoration: none;
-                color: variables.$brand-color;
-            }
+            height: 50px;
+            margin-top: -10px;
         }
 
         .navActions{

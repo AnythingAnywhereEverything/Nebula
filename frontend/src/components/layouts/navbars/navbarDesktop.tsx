@@ -10,10 +10,9 @@ const NavDesktop: React.FC = () => {
     return (
     <nav className={style.navbar}>
         <div className={style.navTop}>
-            <div className={style.navLogo}>
-                {/* Logo here later */}
-                <Link href="/">Nebula</Link>
-            </div>
+            <Link href="/">
+                <img src="/icons/logo.png" className={style.navLogo}/>
+            </Link>
 
             <SearchBar/>
             <ActionWraper/>
