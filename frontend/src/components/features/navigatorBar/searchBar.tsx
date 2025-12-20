@@ -9,7 +9,7 @@ const SearchBar: React.FC = () => {
             <input type="text" placeholder="What you are looking for?" />
             <button type="submit">
                 <NerdFonts> </NerdFonts>
-                Search
+                <p>Search</p>
             </button>
         </form>
     )

@@ -11,7 +11,6 @@ const NavDesktop: React.FC = () => {
     <nav className={style.navbar}>
         <div className={style.navTop}>
             <div className={style.navLogo}>
-                <Hamburger></Hamburger>
                 {/* Logo here later */}
                 <Link href="/">Nebula</Link>
             </div>
