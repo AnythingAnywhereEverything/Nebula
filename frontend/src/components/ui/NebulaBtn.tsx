@@ -1,6 +1,7 @@
 import React, { FC, ReactNode, useRef, useState } from 'react';
 import { useOutsideClick } from '@components/utilities/OutsideClick';
 import { NerdFonts } from '@components/utilities/NerdFonts';
+import nb from '@styles/ui/nebulaButton.module.scss'
 
 type BaseProps = {
     btnValues: ReactNode;
@@ -8,6 +9,7 @@ type BaseProps = {
     componentClassName?: string;
     className?: string;
     isIcon?: boolean;
+    relative?: boolean;
     notificationCount?: number;
 };
 
@@ -41,13 +43,25 @@ export const NebulaButton: FC<NebulaBtnProps> = (props) => {
         if (open) setOpen(false);
     });
 
+    const closeTimeout = useRef<number | undefined>(undefined);
+
     if ('href' in props) {
         return (
             <div
             ref={wrapperRef}
-            className="relative inline-block"
-            onMouseEnter={() => !isCoarse && hasDropdown && setOpen(true)}
-            onMouseLeave={() => !isCoarse && hasDropdown && setOpen(false)}
+            className={props.relative ? nb.containRelativeComponent : ""}
+            onMouseLeave={() => {
+            if (!isCoarse && hasDropdown) {
+                closeTimeout.current = window.setTimeout(() => setOpen(false), 150);
+            }
+            }}
+
+            onMouseEnter={() => {
+            if (!isCoarse && hasDropdown) {
+                clearTimeout(closeTimeout.current);
+                setOpen(true);
+            }
+            }}
             >
             <a
                 href={props.href}
@@ -66,12 +80,12 @@ export const NebulaButton: FC<NebulaBtnProps> = (props) => {
                 ) : (
                 props.btnValues
                 )}
-                {nCount > 1 && <span>{nCount}</span>}
+                {nCount > 1 && <span id={nb.notificationBadge}>{nCount}</span>}
             </a>
 
             {hasDropdown && open && (
                 <div className={props.componentClassName}>
-                {props.btnComponent}
+                    {props.btnComponent}
                 </div>
             )}
             </div>
@@ -80,7 +94,7 @@ export const NebulaButton: FC<NebulaBtnProps> = (props) => {
 
 
     return (
-    <div ref={wrapperRef} className="relative inline-block">
+    <div ref={wrapperRef} className={props.relative ? nb.containRelativeComponent : ""}>
         <button
         className={props.className}
         onClick={(e) => {

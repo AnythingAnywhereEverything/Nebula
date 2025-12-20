@@ -1,0 +1,83 @@
+.buttonDark {
+    text-decoration: none;
+    color: variables.$light-color;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 0.5rem;
+    position: relative;
+    z-index: 1;
+    
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+        transform: scaleX(0.7) scaleY(0.7);
+        background-color: variables.$secondary-color;
+        border-radius: inherit;
+        transition: transform 0.2s cubic-bezier(0.91, 0.24, 0, 1.58), opacity 0.2s ease-out;
+        z-index: -1;
+    }
+
+    &:hover::before {
+        transform: scaleX(1.5) scaleY(1.8);
+        opacity: 1;
+    }
+
+    &.icon:hover::before {
+        transform: scaleX(2) scaleY(2);
+    }
+
+
+    & p, & span{
+        color: variables.$text-light;
+        transition: color 0.2s;
+    }
+    
+    & :hover, &:hover {
+        color: variables.$text-light-hover;
+    }
+}
+
+.containRelativeComponent {
+    position: relative;
+}
+
+.icon {
+    font-size: 1.25rem;
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+#notificationBadge {
+    position: absolute;
+    background-color: variables.$brand-color;
+    color: variables.$primary-color;
+    border-radius: 5px;
+    padding: 0.125rem 0.25rem;
+    font-size: 0.7rem;
+    top: 0;
+    right: 0;
+    transform: translate(75%,-50%);
+    z-index: 2;
+}
+
+.isDropdown {
+    top: calc(100% + 0.5rem);
+    position: absolute;
+    border-radius: 10px;
+    background: red;
+    ul {
+        color: white;
+    }
+
+    &.center{
+        left: 50%;
+        transform: translate(-50%);
+    }
+}
