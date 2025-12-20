@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import style from '../styles/cart.module.scss';
 import Link from "next/link";
 import ItemCompo, { PriceDisplay } from '../components/layouts/bottomItemCompo';
-import LoadingItemInCart from "@components/ui/ItemsInCart";
+import LoadingItemInCart from "@components/layouts/ItemsInCart";
+import { NebulaButton } from "@components/ui/NebulaBtn";
 
 // Fetch all item in cart user
 const itemInCart = 1;
@@ -44,9 +45,19 @@ export default function Cart() {
             </div>
 
             <div className={style.cartGrid}>
-                {/* No item in cart COMPO */}
-                <UsrCart item = {itemInCart} />
-
+                {/* any name?? */}
+                <section className={style.products}>
+                        <section className={style.itemFromShop}>
+                            <input type="checkbox" />
+                            <p>Products</p>
+                            <p>Unit Price</p>
+                            <p>Quantity</p>
+                            <p>Sub total</p>
+                            <p>Actions</p>
+                        </section>
+                    <UsrCart item = {itemInCart} />
+                </section>
+                {/* COMPONENT */}
                 <div className={style.cartOverall}>
                     <h2>Order Summary</h2>
 
@@ -58,13 +69,11 @@ export default function Cart() {
 
                         <div className={style.summaryDetails}>
                             <p>Discount</p>
-                            {/* Need a function ? */}
                             <p>- ฿70</p>
                         </div>
 
                         <div className={style.summaryDetails}>
                             <p>Delivery</p>
-                            {/* Need a function ? */}
                             <p>฿0</p>
                         </div>
 
@@ -76,9 +85,12 @@ export default function Cart() {
                     </div>
 
                     <div className={style.checkout}>
-                        <button>Checkout</button>
+                        <NebulaButton isIcon 
+                        btnValues = "Checkout"
+                        onClick={() => console.log("Buy item") }/>
                     </div>
                 </div>
+                {/* END */}
 
             </div>
 
