@@ -1,0 +1,121 @@
+
+.cartPage{
+    padding: 12px;
+
+    .cartHeader{
+        display: flex;
+        padding: 48px 12px  24px 12px;
+        justify-content: space-between;
+    }
+
+    .cartGrid{
+        display: grid;
+        grid-template-areas: "cartContainer cartContainer cartContainer cartOverall";
+        grid-template-columns: 1.5fr 0.5fr;
+        grid-template-rows: auto auto;
+    }
+
+    .cartOverall{
+        margin: 0 16px;
+        padding: 12px 16px;
+        border-radius: 8px;
+        box-shadow: 4px 4px 8px gray;
+
+        h2{
+            margin: 0;
+            padding: 4px 0 20px 0;
+        }
+        .cartTotal{
+            padding-top: 24px;
+            display: flex;
+            justify-content: space-between;
+            p{
+                margin: 0;
+            }
+        }
+        .checkout{
+            padding-top: 12px;
+            button{
+                width: 100%;
+                padding: 12px;
+                border-radius: 8px;
+                border-style: none;
+            }
+        }
+        .cartSummary{
+            .summaryDetails{
+                display: flex;
+                justify-content: space-between;
+                p {
+                    font-size: 16px;
+                    margin: 0;
+                    padding: 8px 0;
+                }
+                .priceDisplay{
+                    padding-top: 4px;
+                    padding-bottom: 12px;
+                    
+                    p{
+                        font-size: 20px;
+                    }
+                }
+                
+            }        
+        }
+    }
+    // PC
+    @media screen and (max-rwidth: 991px) {
+            .cartHeader{
+                display: flex;
+            }
+    }
+
+    // IPAD / TABLET
+    @media screen and (max-width: 767px) {
+        
+    }
+
+    //PHONE
+    @media screen and (max-width: 479px) {
+        display: block;
+        .cartContainer{
+            display: block;
+            .fakeImg{
+                width: 100%;
+                padding-bottom: 12px;
+            }
+            .cartText{
+                padding-left: 0px;
+            }
+        }
+
+    }
+    .cartContainer{
+    box-shadow: 4px 4px 8px gray;       
+    }
+
+    .cartContainer, .cartItem{
+    display: flex;
+    padding: 16px;
+    border-radius: 8px;
+
+    .fakeImg{
+        width: 277px;
+        height: 159px;
+        background-color: forestgreen;
+        
+    }
+
+    .cartText {
+        margin-top: auto;
+        margin-bottom: auto;
+        text-align: center;
+    }
+
+    .itemDetail{
+
+    }
+}
+    
+}
+
