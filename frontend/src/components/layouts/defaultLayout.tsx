@@ -1,6 +1,6 @@
 // components/layouts/DefaultLayout.tsx
 import React, { FC } from 'react';
-import { LayoutProps } from '../../types/global.d'; // Import the type
+import { LayoutProps } from '../../types/global'; // Import the type
 
 import { Navbar } from './navbarWraper';
 

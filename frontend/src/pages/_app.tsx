@@ -1,6 +1,6 @@
 import { NextPageWithLayout } from '../types/global.d';
 import '@styles/global.scss';
-import DefaultLayout from '../components/layouts/default';
+import DefaultLayout from '../components/layouts/defaultLayout';
 import { AppProps } from 'next/app';
 
 import { UAParser } from 'ua-parser-js';
