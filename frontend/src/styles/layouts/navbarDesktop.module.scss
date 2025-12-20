@@ -6,82 +6,14 @@
     font-size: clamp(1.5rem, 3vw + 1rem, 2rem);
 }
 
-@media (max-width: 768px) {
-    .navbar {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-        .navTop {
-            display: grid;
-            grid-template-areas:
-                "logo action"
-                "search search";
-            grid-template-columns: 1fr auto;
-            gap: 0.25rem;
-            padding: 0.75rem 0;
-            width: 90%;
-    
-            .navLogo {
-                grid-area: logo;
-                justify-content: left;
-                align-items: left;
-            }
-            .navActions {
-                grid-area: action;
-            }
-            .navSearch {
-                grid-area: search;
-                display: grid;
-                grid-template-areas:
-                    "searchBox"
-                    "location";
-                gap: 0.5rem;
-                .navSearchBox{
-                    grid-area: searchBox;
-                }
-                .navLocation{
-                    display: flex;
-                    align-items: center;
-                    gap: 0.5rem;
-                    width: 100%;
-                    background: variables.$secondary-color;
-                    position: absolute;
-                    div{
-                        
-                        gap: 0.25rem;
-                        span{
-                            font-size: 0.75rem;
-                        }
-                        strong{
-                            font-size: 0.75rem;
-                            font-weight: normal;
-                        }
-                    }
-                }
-            }
-        }
-    
-        .navSearch {
-            flex-direction: column;
-            width: 100%;
-    
-            .navSearchBox {
-                flex: none;
-                width: 100%;
-            }
-        }
-    
-        .navActions {
-            gap: 1rem;
-        }
-    }
+.navActions{
+    display: flex;
+    align-items: center;
+    gap: 1.75rem;
+}
 
-    .navBottom {
-        ul{
-            display: none;
-        }
-    }
+.nav {
+    position: fixed;
 }
 
 @media (min-width: 769px) {
@@ -98,31 +30,6 @@
             width: 90%;
             gap: 3rem;
             padding: 0.75rem 0;
-        }
-
-        .navSearch {
-            gap: 1rem;
-            display: flex;
-            flex: 1;
-            .navLocation{
-                align-items: center;
-                gap: 0.5rem;
-    
-                div{
-                    flex-direction: column;
-
-                    span{
-                        font-size: 0.75rem;
-                    }
-                    strong{
-                        font-size: 1rem;
-                    }
-                }
-            }
-            .navSearchBox {
-                display: flex;
-                flex: 1;
-            }
         }
     }
 
@@ -149,48 +56,6 @@
                 text-decoration: none;
                 color: variables.$brand-color;
             }
-        }
-
-        .navSearch{
-
-            .navLocation{
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
-                div{
-                    display: flex;
-                }
-            }
-    
-            .navSearchBox{
-    
-                display: flex;
-                border-radius: 20px;
-                overflow: hidden;
-                // fill the remaining space
-                flex: 1;
-    
-                input{
-                    width: 100%;
-                    height: 2.5rem;
-                    box-sizing: border-box;
-                    border: none;
-                    padding: 0.5rem 1rem;
-                }
-    
-                input:focus{
-                    outline-color: variables.$secondary-color;
-                }
-    
-                button{
-                    color: white;
-                    border: none;
-                    padding: 0 1rem;
-                    cursor: pointer;
-                    background-color: variables.$secondary-color;
-                }
-            }
-
         }
 
         .navActions{

@@ -1,0 +1,38 @@
+@use "sass:color";
+
+.navSearchBox{
+    display: flex;
+    border-radius: 0.50rem;
+    overflow: hidden;
+    background-color: white;
+    flex: 0.8;
+
+    input{
+        flex: 1;
+        height: 2.5rem;
+        box-sizing: border-box;
+        border: none;
+        padding: 0.5rem 1rem;
+    }
+
+    input:focus{
+        outline: none;
+    }
+
+    button{
+        color: white;
+        width: fit-content;
+        border: none;
+        padding: 0 1rem;
+        margin: 0.25rem;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        background-color: variables.$secondary-color;
+        transition: background-color 0.2s;
+
+        &:active {
+            background-color: color.adjust($color: variables.$secondary-color, $lightness: 10%);
+        }
+    }
+
+}
