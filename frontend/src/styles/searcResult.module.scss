@@ -1,0 +1,131 @@
+
+$area-color: #666666;
+.gridResult{
+    margin: 0 48px;
+    margin-top: 16px;
+    display: grid;
+    grid-template-areas: "filter items";
+    grid-template-columns: 20% 80%;
+    ul{
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+    h2, p, h3{
+        margin: 0;
+    }
+}
+.filter{
+    margin-right: 20px;
+    .filterHead{
+        display: flex;
+        gap: 12px;
+        background-color: $area-color;    
+    }
+
+}
+
+.searchResult{
+    display: flex;
+    gap: 12px;
+    h3{
+        font-weight: normal;
+    }
+    margin-top: 8px;
+}
+
+.resultContainer{
+    margin-top: 24px;
+    .sortBar{
+        display: flex;
+        justify-content: space-between;
+        .selectPriceSort{
+            padding: 12px 16px;
+            text-align: left;
+
+        }
+        .sortBarLeft{
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .sortBarRight{
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+    }
+    .priceSort{
+        position: absolute;
+    }
+    
+    .sortBtnOption,.sortBtnPrice,.changePage{
+        padding: 12px;
+        border-radius: 4px;
+        border-style: none;
+    }
+    .sortBtnOption,.sortBtnPrice{
+        width: 120px;
+    }
+
+    .sortBtnPrice{
+        width: 150px;
+    }
+    .sortBtnOption,.sortBtnPrice,.changePage{
+        cursor: pointer;
+    }
+}
+
+.resultDisplay{
+    box-sizing: border-box;
+    flex-direction: row;
+    flex-wrap: wrap;
+    .resultDisplay,ul{
+        display: flex;
+    }
+    .productDisplay{
+        background-color: $area-color;
+        .productHolder{
+            width: 20%;
+            flex-basis: 20%;
+            margin: 4px 0;
+            padding: 0 4px;
+            box-sizing: border-box;
+            flex: 0 0 auto;
+            
+            .product{
+                height: 100%;
+                box-sizing: content-box;
+                position: relative;
+                .productLink{
+                    display: contents;
+                }
+                .productContainer{
+                    display: flex;
+                    flex-direction: column;
+                    cursor: pointer;
+                    height: 100%;
+                    .productImage{
+                        padding-top: 100%;
+                        width: 100%;
+                        z-index: 0;
+                        position: relative;
+                        .image,.sitcker{
+                            object-fit: contain;
+                            width: 100%;
+                            height: 100%;
+                            bottom: 0;
+                            top: 0;
+                            position: absolute;
+                            pointer-events: none;
+                        }
+                        .sitcker{
+                            z-index: 10;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
