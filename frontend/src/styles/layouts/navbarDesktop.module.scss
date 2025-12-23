@@ -1,52 +1,22 @@
 @use "sass:color";
 
-// TODO : REFACTOR THIS LATER
-
-.navLogo {
-    font-size: clamp(1.5rem, 3vw + 1rem, 2rem);
-}
-
-.navActions{
-    display: flex;
-    align-items: center;
-    gap: 1.75rem;
-}
-
-.nav {
-    position: fixed;
-}
-
-@media (min-width: 769px) {
-    .navbar {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-
-        .navTop {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 90%;
-            gap: 3rem;
-            padding: 0.75rem 0;
-        }
-    }
-
-    .navBottom {
-        ul {
-            display: flex;
-        }
-    }
-}
-
 .navbar {
-    background-color: variables.$primary-color;
+    top: 0;
+    background: linear-gradient(75deg, variables.$primary-color, color.adjust(variables.$primary-color, $lightness: 5%));
     color: white;
     width: 100%;
     font-family: system-ui;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 
     .navTop{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 90%;
+        gap: 3rem;
         padding: 0.75rem 0;
 
         .navLogo{
@@ -56,6 +26,7 @@
 
         .navActions{
             display: flex;
+            align-items: center;
             gap: 1.75rem;
         }
     }
@@ -71,6 +42,7 @@
             gap: 2rem;
             margin: 0;
             padding: 0;
+            display: flex;
 
             li{
                 a{

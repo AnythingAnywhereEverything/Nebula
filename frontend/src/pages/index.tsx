@@ -3,6 +3,9 @@ import { ping } from '../api/ping';
 import style from '../styles/home.module.scss';
 import { NextPageWithLayout } from '../types/global.d';
 import Head from 'next/head';
+import PromotionPanel from '@components/features/home/promotionPanel';
+import OptionPanel from '@components/features/home/optionDeals';
+import CategoryPanel from '@components/features/home/categoryPanel';
 
 
 const Home: NextPageWithLayout = () => {
@@ -26,8 +29,9 @@ const Home: NextPageWithLayout = () => {
       <Head>
         <title>Nebula - Shop However You Like</title>
       </Head>
-      <h1>Welcome to Nebula</h1>
-      <p>{message}</p>
+      <PromotionPanel/>
+      <OptionPanel/>
+      <CategoryPanel/>
     </div>
   );
 };

@@ -2,26 +2,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-family: 'Arial', sans-serif;
-
-  header {
-    background-color: variables.$primary-color;
-    color: white;
-    padding: 2rem;
-    text-align: center;
-
-    h1 {
-      color: variables.$secondary-color;
-    }
-  }
-
-  main {
-    margin: 2rem;
-  }
-
-  footer {
-    margin-top: auto;
-    padding: 1rem;
-    color: gray;
-  }
+  max-width: 1500px;
+  margin: 0 auto;
 }
