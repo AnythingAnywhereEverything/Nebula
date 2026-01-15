@@ -6,7 +6,10 @@ import Head from 'next/head';
 import PromotionPanel from '@components/features/home/promotionPanel';
 import OptionPanel from '@components/features/home/optionDeals';
 import CategoryPanel from '@components/features/home/categoryPanel';
-
+import PopularProduct from '@components/features/home/popular';
+import DiscoveryProduct from '@components/features/home/discovery';
+import AboutThisWeb from '@components/features/home/aboutThisWeb';
+import RecentlyReviewed from '@components/features/home/recenltyReview';
 
 const Home: NextPageWithLayout = () => {
   const [message, setMessage] = React.useState('Pinging...');
@@ -30,8 +33,12 @@ const Home: NextPageWithLayout = () => {
         <title>Nebula - Shop However You Like</title>
       </Head>
       <PromotionPanel/>
-      <OptionPanel/>
       <CategoryPanel/>
+      <OptionPanel/>
+      <PopularProduct/>
+      <DiscoveryProduct/>
+      <RecentlyReviewed/>
+      <AboutThisWeb/>
     </div>
   );
 };
