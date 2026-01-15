@@ -11,7 +11,7 @@ const CategoryPanel: React.FC = () => {
             <ul>
                 <li>
                     <a href="#">
-                        <img src="/icon"/>
+                        <img src="https://placehold.co/32"/>
                         <p>Cat1</p>
                     </a>
                 </li>
