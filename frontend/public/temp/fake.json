@@ -1,0 +1,197 @@
+[
+  {
+    "itemid": "1",
+    "itemtag": "bestseller",
+    "itemtagcolor": "#FF6B00",
+    "itemtitle": "Travel Essentials,4 in 1 for Apple Watch Charger/iPhone Charger/Multi Charging Cable,Vacation RV Camping Essentials,USB C/L/Micro Portable Charger for iWatch 11-1/iPhone 17-12,Car&Gift-4FT",
+    "itemimageurl": "/images/chocolate.png",
+    "itemprice_usd": 25,
+    "itemrating": 4.5,
+    "productLocation": "USA",
+    "itemSold": "120 sold"
+  },
+  {
+    "itemid": "2",
+    "itemtag": "sale",
+    "itemtagcolor": "#E53935",
+    "itemtitle": "2 Pack Napkin Holder for Table, Gold Ginkgo Leaf Flat Iron Napkin Holder with Weighted Arm, Cocktail Paper Holder for Kitchen Dining Room Decor 7.09 L X 7.09 W X 2.76 H",
+    "itemimageurl": "/images/green-tea.png",
+    "itemprice_usd": 40,
+    "productLocation": "USA",
+    "itemSold": "89 sold"
+  },
+  {
+    "itemid": "3",
+    "itemtag": "feature",
+    "itemtagcolor": "#1E88E5",
+    "itemtitle": "Gaming Laptop, 16.0inch Laptop Computer with AMD Ryzen 7 7730U(8C/16T, Up to 4.5GHz), 16GB RAM 512GB NVMe SSD Windows 11 Laptop, Radeon RX Vega 8 Graphics,WiFi 6, Backlit KB",
+    "itemimageurl": "/images/green-tea.png",
+    "itemprice_usd": 899,
+    "itemrating": 4.3,
+    "productLocation": "USA",
+    "itemSold": "89 sold"
+  },
+  {
+    "itemid": "4",
+    "itemtag": "new",
+    "itemtagcolor": "#43A047",
+    "itemtitle": "Wireless Bluetooth Headphones Over Ear,Active Noise Cancelling Headphones with Microphone,40H Playtime,HiFi Stereo Sound,Comfortable Protein Earpads for Travel Office Home",
+    "itemimageurl": "/images/headphones.png",
+    "itemprice_usd": 79,
+    "itemrating": 4.7,
+    "productLocation": "USA",
+    "itemSold": "340 sold"
+  },
+  {
+    "itemid": "5",
+    "itemtag": "sale",
+    "itemtagcolor": "#D32F2F",
+    "itemtitle": "Smart LED Light Bulbs,16 Million Colors RGB Color Changing Light Bulb,WiFi App Control Compatible with Alexa Google Home,Music Sync Dimmable Smart Bulb E26 2 Pack",
+    "itemimageurl": "/images/light.png",
+    "itemprice_usd": 29,
+    "itemrating": 4.2,
+    "productLocation": "USA",
+    "itemSold": "210 sold"
+  },
+  {
+    "itemid": "6",
+    "itemtag": "bestseller",
+    "itemtagcolor": "#FB8C00",
+    "itemtitle": "Portable Blender for Shakes and Smoothies,Personal Size USB Rechargeable Blender Cup with 6 Stainless Steel Blades,BPA Free Sports Bottle for Travel Gym Office",
+    "itemimageurl": "/images/blender.png",
+    "itemprice_usd": 35,
+    "productLocation": "USA",
+    "itemSold": "156 sold"
+  },
+  {
+    "itemid": "7",
+    "itemtag": "feature",
+    "itemtagcolor": "#3949AB",
+    "itemtitle": "Ergonomic Office Chair with Adjustable Lumbar Support,High Back Mesh Computer Desk Chair with Flip-up Arms,Rolling Swivel Task Chair for Home Office Study",
+    "itemimageurl": "/images/chair.png",
+    "itemprice_usd": 149,
+    "itemrating": 4.4,
+    "productLocation": "USA",
+    "itemSold": "98 sold"
+  },
+  {
+    "itemid": "8",
+    "itemtag": "new",
+    "itemtagcolor": "#2E7D32",
+    "itemtitle": "Mechanical Gaming Keyboard,RGB Backlit Wired Keyboard with Blue Switches,Anti-Ghosting 104 Keys Full Size Keyboard for PC Laptop Gamer Typist",
+    "itemimageurl": "/images/keyboard.png",
+    "itemprice_usd": 59,
+    "itemrating": 4.6,
+    "productLocation": "USA",
+    "itemSold": "275 sold"
+  },
+  {
+    "itemid": "9",
+    "itemtag": "bestseller",
+    "itemtagcolor": "#FF9800",
+    "itemtitle": "Stainless Steel Insulated Water Bottle,32oz Double Wall Vacuum Sports Water Bottle,Leak Proof Thermal Flask for Hiking Camping Gym Hot & Cold Drinks",
+    "itemimageurl": "/images/bottle.png",
+    "itemprice_usd": 22,
+    "productLocation": "USA",
+    "itemSold": "410 sold"
+  },
+  {
+    "itemid": "10",
+    "itemtag": "sale",
+    "itemtagcolor": "#C62828",
+    "itemtitle": "1080P Full HD Webcam with Microphone,USB Plug and Play Web Camera with Privacy Cover,Auto Light Correction for Online Meeting Streaming Teaching",
+    "itemimageurl": "/images/webcam.png",
+    "itemprice_usd": 48,
+    "itemrating": 4.0,
+    "productLocation": "USA",
+    "itemSold": "132 sold"
+  },
+  {
+    "itemid": "11",
+    "itemtag": "feature",
+    "itemtagcolor": "#5E35B1",
+    "itemtitle": "Robot Vacuum Cleaner with Smart Navigation,Strong Suction Automatic Robotic Vacuum,Self-Charging Slim Design for Hardwood Floor Pet Hair Carpet",
+    "itemimageurl": "/images/vacuum.png",
+    "itemprice_usd": 199,
+    "itemrating": 4.5,
+    "productLocation": "USA",
+    "itemSold": "87 sold"
+  },
+  {
+    "itemid": "12",
+    "itemtag": "bestseller",
+    "itemtagcolor": "#F57C00",
+    "itemtitle": "Adjustable Laptop Stand Aluminum Ergonomic Notebook Riser,Height Angle Adjustable Laptop Holder for Desk Compatible with MacBook Pro Air 10-17 Inch",
+    "itemimageurl": "/images/stand.png",
+    "itemprice_usd": 39,
+    "itemrating": 4.6,
+    "productLocation": "USA",
+    "itemSold": "260 sold"
+  },
+  {
+    "itemid": "13",
+    "itemtag": "new",
+    "itemtagcolor": "#388E3C",
+    "itemtitle": "Digital Alarm Clock with Wireless Charging,LED Display Bedside Clock with Snooze,Dual Alarm,USB Charging Port for Bedroom Office Dorm",
+    "itemimageurl": "/images/clock.png",
+    "itemprice_usd": 45,
+    "itemrating": 4.1,
+    "productLocation": "USA",
+    "itemSold": "144 sold"
+  },
+  {
+    "itemid": "14",
+    "itemtag": "bestseller",
+    "itemtagcolor": "#FF8F00",
+    "itemtitle": "Electric Toothbrush Rechargeable Sonic Toothbrush with 5 Cleaning Modes,2 Minute Smart Timer,8 Brush Heads for Adults Travel Home",
+    "itemimageurl": "/images/toothbrush.png",
+    "itemprice_usd": 55,
+    "itemrating": 4.8,
+    "productLocation": "USA",
+    "itemSold": "390 sold"
+  },
+  {
+    "itemid": "15",
+    "itemtag": "feature",
+    "itemtagcolor": "#1976D2",
+    "itemtitle": "Foldable Bluetooth Keyboard with Touchpad,Portable Wireless Keyboard for iPad iPhone Android Windows Tablet Smartphone Travel Office",
+    "itemimageurl": "/images/fold-keyboard.png",
+    "itemprice_usd": 49,
+    "itemrating": 4.4,
+    "productLocation": "USA",
+    "itemSold": "173 sold"
+  },
+  {
+    "itemid": "16",
+    "itemtag": "bestseller",
+    "itemtagcolor": "#FB8C00",
+    "itemtitle": "Portable Power Bank 20000mAh High Capacity External Battery Charger,Fast Charging USB C Power Bank with LED Display,Compatible with iPhone Samsung Android Tablet Travel Essentials",
+    "itemimageurl": "/images/powerbank.png",
+    "itemprice_usd": 45,
+    "itemrating": 4.6,
+    "productLocation": "USA",
+    "itemSold": "520 sold"
+  },
+  {
+    "itemid": "17",
+    "itemtag": "new",
+    "itemtagcolor": "#2E7D32",
+    "itemtitle": "Smart Digital Body Weight Scale,Bluetooth Bathroom Scale with BMI Body Fat Muscle Mass Analyzer,High Precision Health Scale Compatible with iOS Android App",
+    "itemimageurl": "/images/scale.png",
+    "itemprice_usd": 33,
+    "itemrating": 4.3,
+    "productLocation": "USA",
+    "itemSold": "287 sold"
+  },
+  {
+    "itemid": "18",
+    "itemtag": "feature",
+    "itemtagcolor": "#1565C0",
+    "itemtitle": "USB C Hub Multiport Adapter,7 in 1 USB C Dongle with HDMI 4K,USB 3.0,SD TF Card Reader,100W PD Charging for MacBook Pro Air Laptop Tablet",
+    "itemimageurl": "/images/usbhub.png",
+    "itemprice_usd": 52,
+    "itemrating": 4.5,
+    "productLocation": "USA",
+    "itemSold": "198 sold"
+  }
+]
