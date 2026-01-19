@@ -193,5 +193,69 @@
     "itemrating": 4.5,
     "productLocation": "USA",
     "itemSold": "198 sold"
+  },
+  {
+    "itemid": "1",
+    "itemtag": "bestseller",
+    "itemtagcolor": "#FF6B00",
+    "itemtitle": "Travel Essentials,4 in 1 for Apple Watch Charger/iPhone Charger/Multi Charging Cable,Vacation RV Camping Essentials,USB C/L/Micro Portable Charger for iWatch 11-1/iPhone 17-12,Car&Gift-4FT",
+    "itemimageurl": "/images/chocolate.png",
+    "itemprice_usd": 25,
+    "itemrating": 4.5,
+    "productLocation": "USA",
+    "itemSold": "120 sold"
+  },
+  {
+    "itemid": "2",
+    "itemtag": "sale",
+    "itemtagcolor": "#E53935",
+    "itemtitle": "2 Pack Napkin Holder for Table, Gold Ginkgo Leaf Flat Iron Napkin Holder with Weighted Arm, Cocktail Paper Holder for Kitchen Dining Room Decor 7.09 L X 7.09 W X 2.76 H",
+    "itemimageurl": "/images/green-tea.png",
+    "itemprice_usd": 40,
+    "productLocation": "USA",
+    "itemSold": "89 sold"
+  },
+  {
+    "itemid": "3",
+    "itemtag": "feature",
+    "itemtagcolor": "#1E88E5",
+    "itemtitle": "Gaming Laptop, 16.0inch Laptop Computer with AMD Ryzen 7 7730U(8C/16T, Up to 4.5GHz), 16GB RAM 512GB NVMe SSD Windows 11 Laptop, Radeon RX Vega 8 Graphics,WiFi 6, Backlit KB",
+    "itemimageurl": "/images/green-tea.png",
+    "itemprice_usd": 899,
+    "itemrating": 4.3,
+    "productLocation": "USA",
+    "itemSold": "89 sold"
+  },
+  {
+    "itemid": "4",
+    "itemtag": "new",
+    "itemtagcolor": "#43A047",
+    "itemtitle": "Wireless Bluetooth Headphones Over Ear,Active Noise Cancelling Headphones with Microphone,40H Playtime,HiFi Stereo Sound,Comfortable Protein Earpads for Travel Office Home",
+    "itemimageurl": "/images/headphones.png",
+    "itemprice_usd": 79,
+    "itemrating": 4.7,
+    "productLocation": "USA",
+    "itemSold": "340 sold"
+  },
+  {
+    "itemid": "5",
+    "itemtag": "sale",
+    "itemtagcolor": "#D32F2F",
+    "itemtitle": "Smart LED Light Bulbs,16 Million Colors RGB Color Changing Light Bulb,WiFi App Control Compatible with Alexa Google Home,Music Sync Dimmable Smart Bulb E26 2 Pack",
+    "itemimageurl": "/images/light.png",
+    "itemprice_usd": 29,
+    "itemrating": 4.2,
+    "productLocation": "USA",
+    "itemSold": "210 sold"
+  },
+  {
+    "itemid": "6",
+    "itemtag": "bestseller",
+    "itemtagcolor": "#FB8C00",
+    "itemtitle": "Portable Blender for Shakes and Smoothies,Personal Size USB Rechargeable Blender Cup with 6 Stainless Steel Blades,BPA Free Sports Bottle for Travel Gym Office",
+    "itemimageurl": "/images/blender.png",
+    "itemprice_usd": 35,
+    "productLocation": "USA",
+    "itemSold": "156 sold"
   }
 ]
