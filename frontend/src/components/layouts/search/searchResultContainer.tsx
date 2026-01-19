@@ -1,7 +1,7 @@
 
 import React from 'react';
 import style from '@styles/features/searchresult.module.scss';
-import SearchResultItem from '@components/features/search/searchResultItem';
+import SearchResultItem from '@components/ui/NebulaProductItem';
 import SearchResultLoading from '@components/features/search/searchResultLoading';
 
 const SearchResultContainer: React.FC = () => {
