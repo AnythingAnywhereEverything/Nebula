@@ -1,0 +1,65 @@
+.moreDiscoverContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 1500px;
+  margin: 0 auto;
+    .pageNumber{
+        display: flex;
+        justify-content: center;
+        .displayContainer{
+            display: flex;
+            gap: 1.5rem;
+            width: 100%;
+            margin: 12px;
+            justify-content: center;
+        }
+        .numberDisplay{
+            display: flex;
+            padding: 0;
+            margin: 0 12px;
+            justify-content: center;
+            list-style-type: none;
+            gap: 1rem;
+
+        }
+        .previousPage ,.pageSelector ,.continuePage{
+            padding: 16px 20px;
+            border-radius: 8px;
+            border: none;
+            background-color: transparent;
+            font-size: 16px;
+        }
+        .previousPage:hover,
+        .pageSelector:hover,
+        .continuePage:hover {
+            background-color: #f0f0f0;
+            cursor: pointer;
+        }
+    }
+}
+
+.moreDiscoverHeader{
+    text-align: center;
+    padding: 24px 0;
+    margin-top: 24px;
+    border-bottom: variables.$primary-color 2px solid ;
+    width: 75%;
+}
+.moreDiscoverMain{
+    margin: 0 10%;
+    padding: 24px 0;
+
+}
+.productList {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(
+        auto-fill,
+        minmax(clamp(130px, 22vw, 180px), 1fr)
+    );
+    padding: 0;
+    justify-content: center;
+    list-style-type: none;
+    gap: 1rem;
+}

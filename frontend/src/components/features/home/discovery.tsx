@@ -50,7 +50,7 @@ const DiscoveryProduct: React.FC = () => {
             </div>
 
             <div className={style.moreDiscovery}>
-                <Link href={"#"} className={style.discoveryBtn} >More Discovery</Link>
+                <Link href={"/moreDiscovery"} className={style.discoveryBtn} >More Discovery</Link>
             </div>
         </section>
     )
