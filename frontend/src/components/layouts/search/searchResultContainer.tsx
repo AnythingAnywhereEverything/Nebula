@@ -1,11 +1,10 @@
 
-import React, { FC } from 'react';
-import { NerdFonts } from '../../utilities/NerdFonts';
+import React from 'react';
 import style from '@styles/features/searchresult.module.scss';
 import SearchResultItem from '@components/features/search/searchResultItem';
 import SearchResultLoading from '@components/features/search/searchResultLoading';
 
-const searchResultContainer: React.FC = () => {
+const SearchResultContainer: React.FC = () => {
     
     return (
         <div className={style.searchResultContainer}>
@@ -66,4 +65,4 @@ const searchResultContainer: React.FC = () => {
     )
 }
 
-export default searchResultContainer;
+export default SearchResultContainer;

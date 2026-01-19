@@ -2,6 +2,7 @@
 import React, { FC } from 'react';
 import { NerdFonts } from '../../utilities/NerdFonts';
 import style from '@styles/features/searchresult.module.scss';
+import { ratingStars } from '@components/utilities/StarRating';
 
 type SearchResultItemProps = {
     itemid: string;
@@ -15,20 +16,6 @@ type SearchResultItemProps = {
 }
 
 const SearchResultItem: React.FC<SearchResultItemProps> = ({ itemid, itemtag, itemtagcolor, itemtitle, itemimageurl, itemprice_usd, itemrating, productLocation }) => {
-
-    const ratingStars = () => {
-        const stars = [];
-        for (let i = 0; i < Math.floor(itemrating); i++) {
-            stars.push("");
-        }
-        if (itemrating % 1 >= 0) {
-            stars.push("");
-        }
-        for (let i = stars.length; i < 5; i++) {
-            stars.push("");
-        }
-        return stars.join("");
-    }
     // encode base 64 no pad the itemid for URL
     const itemid_encoded = btoa(itemid).replace(/=+$/, '');
     return (
@@ -41,7 +28,7 @@ const SearchResultItem: React.FC<SearchResultItemProps> = ({ itemid, itemtag, it
                 <a className={style.itemTitle} title={itemtitle} href={`/product/${encodeURIComponent(itemtitle)}/q/${itemid_encoded}`}>{itemtitle}</a>
                 <p className={style.itemPrice}>${itemprice_usd}</p>
                 <div className={style.itemRating}>
-                    <NerdFonts>{ratingStars()}</NerdFonts> {itemrating}
+                    <NerdFonts>{ratingStars(itemrating)}</NerdFonts> {itemrating}
                 </div>
             </div>
         </div>
