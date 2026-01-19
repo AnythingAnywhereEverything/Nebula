@@ -54,7 +54,7 @@ export default function MoreDiscovery(){
 
             <div className={style.pageNumber}>
                 <NebulaButton
-                    className={style.pageSelector}
+                    className={style.previousPage}
                     btnValues=" < "
                     onClick={() => {
                         // if (currentPage > 1 ){
@@ -64,15 +64,14 @@ export default function MoreDiscovery(){
                     relative
                 />
                     <ul className={style.numberDisplay}>
-
                         <NebulaButton 
                         btnValues = "1"
-                        className = {style.}
+                        className = {style.pageSelector}
                         onClick={() => {}}
                         />
                     </ul>
                     <NebulaButton
-                    className={style.pageSelector}
+                    className={style.continuePage}
                     btnValues = " > "
                     onClick={() => {
                         // if (currentPage < totalPages){

@@ -21,6 +21,20 @@
             justify-content: center;
             list-style-type: none;
             gap: 1rem;
+
+        }
+        .previousPage ,.pageSelector ,.continuePage{
+            padding: 16px 20px;
+            border-radius: 8px;
+            border: none;
+            background-color: transparent;
+            font-size: 16px;
+        }
+        .previousPage:hover,
+        .pageSelector:hover,
+        .continuePage:hover {
+            background-color: #f0f0f0;
+            cursor: pointer;
         }
     }
 }
