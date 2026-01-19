@@ -17,11 +17,8 @@ export default function searchResult(){
                 <title>{`Nebula : ${param.toString()}`}</title>
             </Head>
             
-            {/* Component filter */}
             <AdvanceFilter/>
            
-            
-            {/* Result */}
             <section className={style.searchResultContainer}>
                 <div className={style.searchResult}>
                     <h3>Result of "<span>{param.toString()}</span>"</h3>
