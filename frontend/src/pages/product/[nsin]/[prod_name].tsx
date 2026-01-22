@@ -9,9 +9,6 @@ export default function ProductPage() {
     const router = useRouter();
     
     const nsin = Array.isArray(router.query.nsin) ? router.query.nsin[0] : router.query.nsin;
-    
-    console.log(nsin)
-
     return (
         <div className={style.productContainer}>
             <ProductPageLayout nsin={nsin}/>

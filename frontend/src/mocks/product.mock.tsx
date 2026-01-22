@@ -102,8 +102,8 @@ export const productExample = {
     ],
     productDetail: {
         specification: [
-            { name: "Brand", info: "Amazing brand" },
-            { name: "Quantity per pack", info: "1" }
+            { id: 1, name: "Brand", info: "Amazing brand" },
+            { id: 2, name: "Quantity per pack", info: "1" }
         ],
         about: "# this is about of the *AMAZING **PRODUCT***\nand here come the new line??????\n### h3 testing!\nanddd maybe an image?\n\n![someimage](https://placehold.co/600x400)\n##### H5?\n maybe some [hyperlink to google?](https://google.com)\n # WHAT ABOUT A VERY VERY LONG ASS STRINGNGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG\n perhaps unsafe tag will do? <script>alert('XSS!');</script>"
     },

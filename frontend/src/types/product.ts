@@ -41,7 +41,7 @@ export type Product = {
     variants: ProductVariant[];
 
     productDetail: {
-        specification?: { name: string; info: string }[];
+        specification?: { id:number, name: string; info: string }[];
         about: string;
     };
 };
