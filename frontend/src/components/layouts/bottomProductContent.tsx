@@ -1,17 +1,7 @@
 import React from "react";
-import style from '@styles/layouts/itemCompo.module.scss';
+import style from '@styles/layouts/bottomProductContent.module.scss';
 import SearchResultItem from "@components/ui/NebulaProductItem";
 import { NerdFonts } from "@components/utilities/NerdFonts";
-
-function PriceDisplay({ price }: { price: number }) {
-    const [whole, fraction] = price.toFixed(2).split(".");
-
-    return (
-        <div className={style.priceDisplay}>
-            <p>฿{whole}<span>.{fraction}</span></p>
-        </div>
-    );
-}
 
 const BottomProductContent: React.FC = () => {
     return (
