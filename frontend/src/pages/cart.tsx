@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import style from '../styles/cart.module.scss';
 import Link from "next/link";
-import ItemCompo, { PriceDisplay } from '../components/layouts/bottomItemCompo';
+import BottomProductContent from '../components/layouts/bottomProductContent';
 import LoadingItemInCart from "@components/layouts/ItemsInCart";
 import { NebulaButton } from "@components/ui/NebulaBtn";
 
@@ -64,7 +64,7 @@ export default function Cart() {
                     <div className={style.cartSummary}>
                         <div className={style.summaryDetails}>
                             <p>Subtotal</p>
-                            <PriceDisplay price={399.99} />
+                            <p>399.99</p>
                         </div>
 
                         <div className={style.summaryDetails}>
@@ -94,8 +94,7 @@ export default function Cart() {
 
             </div>
 
-            {/* Components go here */}
-            <ItemCompo />
+            <BottomProductContent />
         </div>
     )
 }
