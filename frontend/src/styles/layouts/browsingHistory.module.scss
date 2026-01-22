@@ -1,0 +1,22 @@
+.historyContainer{
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(
+        auto-fill,
+        minmax(clamp(120px, 22vw, 190px), 1fr)
+    );
+    gap: 1rem;
+    justify-content: center;
+}
+
+.historySection{
+    max-width: 1300px;
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    margin-top: 24px;
+    .historyHeader{
+        padding: 24px 0;
+    }
+
+}

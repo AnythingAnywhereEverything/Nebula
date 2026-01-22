@@ -1,0 +1,12 @@
+.deleteHistory{
+    width: 100%;
+    margin-top: 12px;
+
+    .removeButton{
+        width: 100%;
+        padding: 8px 4px;
+        background-color: variables.$product-delete-history-button;
+        border-color: transparent;
+        border-radius: 4px;
+    }
+}
