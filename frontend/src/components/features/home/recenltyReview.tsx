@@ -42,11 +42,11 @@ const RecentlyReviewed: React.FC = () => {
         <section style={{width: "100%"}}>
             <div className={style.recentHeader}>
                 <h2>
-                    <NerdFonts>Recently Reviewed</NerdFonts>
+                    <NerdFonts>Your Broswing History</NerdFonts>
                 </h2>
 
                 <span>
-                    <Link href={"#"}>View or edit browsing history</Link>
+                    <Link href={"/browsingHistory"}>View or edit browsing history</Link>
                 </span>
             </div>
 
@@ -70,14 +70,14 @@ const RecentlyProduct: React.FC<ProductWindowProps> = (props) => {
         {props.items.map((item) => (
             <li key={item.itemid}>
                 <div className={PL.product}>
-                    <a href="#" className={PL.productLink}>
+                    <Link href="#" className={PL.productLink}>
                       <section className={PL.productContainer}>
                         <div className={PL.productImage}>
                           <img src="https://placehold.co/300" alt=""/>
                         </div>
                           
                       </section>
-                    </a>
+                    </Link>
                   </div>
             </li>
         ))}
