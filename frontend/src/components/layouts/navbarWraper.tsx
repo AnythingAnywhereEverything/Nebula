@@ -1,17 +1,20 @@
 // navbar component
 import React from 'react';
 import NavDesktop from './navbars/navbarDesktop';
+import NavAuth from './navbars/navbarLogin';
 
-interface UserLocation {
-  city: string;
-  country_name: string;
+interface NavProps {
+  type?: string;
 }
 
-const Navbar: React.FC = () => {
+const Navbar: React.FC<NavProps> = ({type}) => {
+    if (type === "auth"){
+        return (
+            <NavAuth/>
+        )
+    }
     return (
-        <nav>
-            <NavDesktop/>
-        </nav>
+        <NavDesktop/>
     );
 }
 
