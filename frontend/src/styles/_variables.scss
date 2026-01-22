@@ -10,6 +10,7 @@ $opposite-brand-color: #e48c18;
 $light-color: #e9e9e9;
 
 $text-light: #c6c6c6;
+$text-lighter: #efefef;
 $text-light-hover: color.adjust($text-light, $lightness: 20%);
 $text-gray: #4d4d4d;
 $text-dark: #313131;
@@ -32,3 +33,7 @@ $product-add-card-border-text: #911a1a;
 $product-buy-bg: #ffd390;
 $product-buy-bg-hover: color.adjust($product-buy-bg, $lightness: 10%);
 $product-buy-border-text: #7a441a;
+
+$submit-button-bg: #3153cd;
+$submit-button-bg-hover: color.adjust($submit-button-bg, $lightness: 10%);
+$submit-button-bg-border-text: #d4d6ff;
