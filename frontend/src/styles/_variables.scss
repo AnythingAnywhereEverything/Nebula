@@ -14,6 +14,21 @@ $text-light-hover: color.adjust($text-light, $lightness: 20%);
 $text-gray: #4d4d4d;
 $text-dark: #313131;
 
+$sale-color: #d75555;
 
+$saturated-hyper-link: #3c56ff;
+$saturated-hyper-link-hover: #162fcf;
+$image-select-border-color: #6b69ff;
 $star-color: #f5a018;
-$alert-color: #ff7272;
+$alert-color: #c73636;
+$notification-color: #ff8e8e;
+
+$product-active-border: #3880d2;
+$product-active-bg: #b5d8ff;
+$product-add-card-bg: #ffc5c5;
+$product-add-card-bg-hover: color.adjust($product-add-card-bg, $lightness: 5%);
+$product-add-card-border-text: #911a1a;
+
+$product-buy-bg: #ffd390;
+$product-buy-bg-hover: color.adjust($product-buy-bg, $lightness: 10%);
+$product-buy-border-text: #7a441a;
