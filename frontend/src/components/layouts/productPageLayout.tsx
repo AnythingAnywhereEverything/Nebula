@@ -1,82 +1,88 @@
 import React from 'react';
 import style from '@styles/layouts/productlayout.module.scss';
+import Head from 'next/head';
 
 import ProductImageViewer from '@components/features/product/productImageViewer';
-import ProductOverall from '@components/features/product/productOverallDetail';
 import ReactMarkdown from 'react-markdown';
-import { useRouter } from 'next/router';
 
-const ProductPageLayout: React.FC = () => {
+import { productExample } from 'src/mocks/product.mock';
+import ProductTitle from '@components/features/product/productTitle';
+import ProductMinorDetail from '@components/features/product/productMinorDetails';
+import ProductPrice from '@components/features/product/productPrice';
+import ProductEssential from '@components/features/product/productEssential';
+import ProductVariantSelector from '@components/features/product/productVariantSelector';
+import ProductAmountSelector from '@components/features/product/productAmountSelector';
+import ProductAction from '@components/features/product/productAction';
+import ProductFullDetail from '@components/features/product/productFullDetail';
 
-    const router = useRouter();
-    
+interface ProductPageLayoutProps {
+    nsin?: string;
+}
 
-    const productExample = {
-        id: "123456", //query as string
-        productStoreName: "Nebula",
-        productStoreID: "4566897541",
-        name: "This is the name of the item",
-        price: 49.99,
-        currency: "USD",
-        availability: "In Stock",
-        rating: 4.5,
-        reviewsCount: 120,
-        soldAmount: 1254,
-        section: "Electronic",
-        category: "Household & Accessories",
-        productTag: "Verified",
-        isFreeShipping: true,
-        varients: [
-            {
-                varientTitle: "color",
-                varients: ["Red", "Green", "Blue"]
-            },
-            {
-                varientTitle: "size",
-                varients: ["small", "large", "big"]
-            }
-        ],
-        productDetail: {
-            specification: [
-                {
-                    name: "brand",
-                    info: "Amazing brand"
-                },
-                {
-                    name: "Quantity per pack",
-                    info: "1"
-                }
-            ],
-            about: "# this is about of the *AMAZING **PRODUCT***\n and here come the new line??????"
-        },
-        productMedias: [
-            "https://placehold.co/600x400/000000/FFF",
-            "https://placehold.co/400x400/lightblue/FFF",
-            "https://placehold.co/500x500/FF5733/FFF",
-            "https://placehold.co/450x300/33FF57/FFF",
-            "https://placehold.co/300x450/3357FF/FFF",
-            "https://placehold.co/400x400/aqua/FFF",
-        ],
-        warranty: 24,
-    }
+const ProductPageLayout: React.FC<ProductPageLayoutProps> = ({nsin}) => {
+    const product = productExample;
+
+    if (!nsin || typeof nsin !== 'string') return;
+    const variant = product.variants.find(v => v.nsin === nsin);
+
+    if (!variant) return;
+
 
     return (
         <>
+            <Head>
+                <title>{product.name}</title>
+            </Head>
+
             <div className={style.topSideContainer}>
-                <ProductImageViewer
-                    mediaLists={productExample.productMedias}
-                />
-                <ProductOverall
-                    productTitle={productExample.name}
-                    productVarient={productExample.varients}
-                    storeName={productExample.productStoreName}
-                    rating={productExample.rating}
-                    soldAmount={productExample.soldAmount}
-                    storeId={productExample.productStoreID}
-                />
+                <ProductImageViewer mediaLists={variant.media}/>
+                <div className={style.overallDetailContainer}>
+                    <div className={style.topDetail}>
+                        <ProductTitle 
+                            name={product.name} 
+                            tag={product.productTag} 
+                            tag_color={product.productTagColor}/>
+
+                        <a className={style.storeName} href={`/store/${product.productStoreID}`}>
+                            Visit the {product.productStoreName} store
+                        </a>
+
+                        <ProductMinorDetail
+                            rating={product.rating}
+                            review={product.reviewsCount}
+                            sold={product.soldAmount}/>
+
+                        <ProductPrice
+                            price={variant.price}
+                            discount={variant.discount}/>
+                    </div>
+
+                    <div className={style.bottomDetail}>
+
+                        {/* Product essential details e.g. Shipping/Coupons goes here */}
+                        <ProductEssential
+                            shippingCost={product.shippingCost}/>
+                        
+                        <ProductVariantSelector
+                            variants={product.variants}
+                            options={product.options}
+                            prodName={product.name}
+                            nsin={nsin}/>
+
+                        <ProductAmountSelector
+                            stock={variant.stock}
+                            availability={variant.availability}
+                            />
+                        
+                        <ProductAction nsin={nsin}/>
+                    </div>
+                </div>  
             </div>
+
             <div className={style.fullDetailContainer}>
-                <ReactMarkdown>{productExample.productDetail.about}</ReactMarkdown>
+                <ProductFullDetail
+                    specs={product.productDetail.specification}
+                    about={product.productDetail.about}/>
             </div>
         </>
     )

@@ -8,16 +8,13 @@ import ProductPageLayout from '@components/layouts/productPageLayout';
 export default function ProductPage() {
     const router = useRouter();
     
-    const prodName = router.query.prod_name;
-    const prodId = router.query.prod_id;
+    const nsin = Array.isArray(router.query.nsin) ? router.query.nsin[0] : router.query.nsin;
     
+    console.log(nsin)
+
     return (
         <div className={style.productContainer}>
-            <Head>
-                <title>{prodName}</title>
-            </Head>
-
-            <ProductPageLayout/>
+            <ProductPageLayout nsin={nsin}/>
         </div>
     );
 }
