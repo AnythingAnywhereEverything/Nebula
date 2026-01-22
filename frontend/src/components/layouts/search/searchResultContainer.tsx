@@ -10,7 +10,7 @@ const SearchResultContainer: React.FC = () => {
         <div className={style.searchResultContainer}>
             {/* Example items */}
             <SearchResultItem 
-                itemid="1"
+                nsin="NB00000001"
                 itemtag="New"
                 itemtagcolor='#28A745'
                 itemtitle="JOYTOY 1/18 Warhammer 40,000 Action Figure Space Wolves Intercessors, Warhammer 40K, Collection Model 4.2inch"
@@ -20,7 +20,7 @@ const SearchResultContainer: React.FC = () => {
                 productLocation="Bangkok"
             />
             <SearchResultItem 
-                itemid="2"
+                nsin="NB00000001"
                 itemtag="Sale"
                 itemtagcolor='#FF5733'
                 itemtitle="Wireless Bluetooth Headphones with Noise Cancellation"
@@ -30,7 +30,7 @@ const SearchResultContainer: React.FC = () => {
                 productLocation="New York"
             />
             <SearchResultItem 
-                itemid="3"
+                nsin="NB00000001"
                 itemtag="Bestseller"
                 itemtagcolor='#4270c5ff'
                 itemtitle="Smartwatch with Heart Rate Monitor and GPS"
@@ -40,7 +40,7 @@ const SearchResultContainer: React.FC = () => {
                 productLocation="San Francisco"
             />
             <SearchResultItem 
-                itemid="4"
+                nsin="NB00000001"
                 itemtag="Limited"
                 itemtagcolor='#FF5733'
                 itemtitle="4K Ultra HD Action Camera with Waterproof Case"
@@ -50,7 +50,7 @@ const SearchResultContainer: React.FC = () => {
                 productLocation="Los Angeles"
             />
             <SearchResultItem 
-                itemid="5"
+                nsin="NB00000001"
                 itemtag="Featured"
                 itemtagcolor='#4270c5ff'
                 itemtitle="Portable Bluetooth Speaker with Deep Bass"

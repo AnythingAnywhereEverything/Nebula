@@ -5,7 +5,7 @@ import { ratingStars } from '@components/utilities/StarRating';
 import style from '@styles/features/searchresult.module.scss';
 
 type SearchResultItemProps = {
-    itemid: string;
+    nsin: string;
 
     itemtag?: string;
     itemtagcolor?: string;
@@ -17,9 +17,8 @@ type SearchResultItemProps = {
     productLocation: string;
 }
 
-const SearchResultItem: React.FC<SearchResultItemProps> = ({ itemid, itemtag, itemtagcolor, itemtitle, itemimageurl, itemprice_usd, itemrating, productLocation }) => {
+const SearchResultItem: React.FC<SearchResultItemProps> = ({ nsin, itemtag, itemtagcolor, itemtitle, itemimageurl, itemprice_usd, itemrating, productLocation }) => {
     // encode base 64 no pad the itemid for URL
-    const itemid_encoded = btoa(itemid).replace(/=+$/, '');
     return (
         <div className={style.searchResultItem}>
             <div className={style.imageContainer}>
@@ -30,7 +29,7 @@ const SearchResultItem: React.FC<SearchResultItemProps> = ({ itemid, itemtag, it
                 <div className={style.topContent}>
                     <a className={style.itemTitle} 
                         title={itemtitle}
-                        href={`/product/${encodeURIComponent(itemtitle)}/q/${itemid_encoded}`}>{itemtitle}</a>
+                        href={`/product/${nsin}/${encodeURIComponent(itemtitle)}`}>{itemtitle}</a>
                 </div>
                 <div className={style.bottomContent}>
                     <p className={style.itemPrice}>${itemprice_usd}</p>

@@ -1,0 +1,283 @@
+@use "sass:color";
+
+.productContainer {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding: 2rem;
+    box-sizing: border-box;
+    gap: 2rem;
+    .topSideContainer, .fullDetailContainer {
+        width: 100%;
+        max-width: 1500px;
+        display: flex;
+        gap: 2rem;
+        background-color: #fcfcfc;
+        border: 2px #eee solid;
+        padding: 1.5rem;
+        box-sizing: border-box;
+    }
+    .fullDetailContainer{
+        flex-direction: column;
+        .header {
+            padding: 1rem 1rem;
+            background: #eee;
+        }
+        .specContainer {
+            thead {
+                display: none;
+            } 
+            display: flex;
+            .specName {
+                padding: 1rem 2rem;
+                font-size: 0.9rem;
+                color: variables.$text-gray;
+            }
+        }
+        .markdownContainer{
+            padding: 1rem 2rem;
+            overflow: hidden;
+        }
+    }
+}
+.overallDetailContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    .topDetail {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    .bottomDetail{
+        padding: 1rem;
+        display: flex;
+        gap: 1.5rem;
+        flex-direction: column;
+    }
+    flex: 1;
+    .productTitle{
+        font-weight: 500;
+        .productTag{
+            color: variables.$light-color;
+            padding: 0.25rem 0.25rem;
+            font-size: 1rem;
+            display: inline-flex;
+            vertical-align: middle;
+            align-items: center;
+            border-radius: 5px;
+            margin-right: 0.25rem;
+        }
+    }
+    .storeName{
+        color: variables.$saturated-hyper-link;
+        text-decoration: none;
+        &:hover {
+            color: variables.$saturated-hyper-link-hover;
+        }
+    }
+    .productMinorDetail{
+        display: flex;
+        justify-content: space-between;
+        .detailLeft{
+            display: flex;
+            gap: 0.5rem;
+            p {
+                span{
+                    color: variables.$star-color;
+                }
+                border-right: 1px #ccc solid;
+                padding-right: 0.5rem;
+                &:last-child {
+                    border: none;
+                }
+            }
+        }
+        .detailRight{
+            button{
+                border: none;
+                background-color: transparent;
+                font-size: 1rem;
+                color: variables.$alert-color;
+            }
+        }
+        padding-bottom: 0.25rem;
+        border-bottom: 1px #ccc solid;
+    }
+}
+
+.productPrice{
+    background: #eee;
+    padding: 1rem;
+    box-sizing: border-box;
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+    p{
+        font-size: 1.5rem;
+    }
+    &.discounted{
+        .percent {
+            color: variables.$sale-color;
+            font-size: 1.25rem;
+        }
+        s {
+            color: variables.$text-gray;
+        }
+    }
+}
+.variantsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    h3 {
+        font-weight: normal;
+        font-size: 0.9rem;
+        color: variables.$text-gray;
+    }
+    .variantSection{
+        .variantOptions{
+            padding: 0.5rem;
+            padding-bottom: 0;
+            box-sizing: border-box;
+            display: flex;
+            gap: 0.5rem;
+        }
+        .option {
+            border: 1px solid #ccc;
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+
+        .active {
+            border-color: variables.$product-active-border;
+            background: variables.$product-active-bg;
+        }
+
+        .available {
+            border-color: variables.$brand-color;  
+        }
+
+        .alternative {
+            border-style: dashed;
+            border-color: #999;
+            opacity: 0.85;
+        }
+
+        .option:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+    }
+}
+
+.essentialContainer {
+    display: grid;
+    grid-template-columns: 1fr 9fr;
+    gap: 1.5rem;
+    .essentialName {
+        color: variables.$text-gray;
+        font-size: 0.9rem;
+    }
+    .detail{
+        display: flex;
+        gap: 0.5rem;
+
+        .shipIcon {
+            color: variables.$accent-color;
+        }
+    }
+}
+
+.amountContainer {
+    h3 {
+        font-weight: normal;
+        font-size: 0.9rem;
+        color: variables.$text-gray;
+    }
+    .amountSelector {
+        padding: 0.5rem;
+        button {
+            border: 1px #ccc solid;
+            border-radius: 0;
+            text-align: center;
+            padding: 0;
+            width: 2rem;
+            height: 2rem;
+        }
+        input {
+            width: 4rem;
+            height: 2rem;
+            border: 1px #ccc solid;
+            border-radius: 0;
+            padding: 0;
+            box-sizing: border-box;
+            text-align: center;
+            color: variables.$primary-color;
+            font-weight: 700;
+        }
+    }
+    .stockStatus {
+        font-size: 0.9rem;
+        margin-left: 0.5rem;
+    }
+
+    .inStock {
+        color: #16a34a;
+    }
+
+    .lowStock {
+        color: #ea580c;
+        font-weight: 600;
+    }
+
+    .outOfStock {
+        color: #dc2626;
+    }
+
+}
+
+.productAction {
+    display: flex;
+    gap: 0.5rem;
+    button {
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1rem;
+        min-width: 150px;
+        border-radius: 0;
+        font-size: 0.9rem;
+        font-weight: 700;
+        span {
+            font-size: 1.25rem;
+        }
+
+        &.wishList{
+            border: none;
+            background: transparent;
+            color: #f24a4a;
+        }
+
+        &.addToCart{
+            background-color: variables.$product-add-card-bg;
+            color: variables.$product-add-card-border-text;
+            border: 2px variables.$product-add-card-border-text solid;
+            &:hover{
+                background-color: variables.$product-add-card-bg-hover;
+            }
+        }
+
+        &.buyNow{
+            background-color: variables.$product-buy-bg;
+            color: variables.$product-buy-border-text;
+            border: 2px variables.$product-buy-border-text solid;
+            &:hover{
+                background-color: variables.$product-buy-bg-hover;
+            }
+        }
+    }
+}

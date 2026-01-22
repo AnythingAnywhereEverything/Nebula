@@ -12,11 +12,12 @@ const ProductImageViewer: React.FC<ProductImageViewerProps> = ({mediaLists}) => 
     const [previewImage, setPreviewImage] = React.useState("")
     
     React.useEffect(() => {
-        setPreviewImage(mediaLists[0]);
+        if (mediaLists.length === 0) {
+            setPreviewImage("");
+        } else {
+            setPreviewImage(mediaLists[0]);
+        }
     }, [mediaLists])
-    if (mediaLists.length === 0) {
-        setPreviewImage("");
-    }
 
     return (
         <div className={style.mediaViewerContainer}>
@@ -51,7 +52,7 @@ const ProductImageViewer: React.FC<ProductImageViewerProps> = ({mediaLists}) => 
                 })}
             </div>
             <div className={style.currentPreviewMedia}>
-                <img src={previewImage} alt="Product Media Preview" />
+                {previewImage && <img src={previewImage} alt="Product Media Preview" />}
             </div>
         </div>
     )

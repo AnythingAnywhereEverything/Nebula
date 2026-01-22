@@ -1,9 +1,10 @@
 .searchPageContainer {
     display: flex;
-    gap: 20px;
-    padding: 20px;
+    gap: 2rem;
+    padding: 2rem 4rem;
+    box-sizing: border-box;
     margin: auto;
-    width: 90%;
+    width: 100%;
 
     .searchResultContainer {
         flex: 1;
