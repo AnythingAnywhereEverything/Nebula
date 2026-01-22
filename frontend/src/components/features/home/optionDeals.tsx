@@ -34,6 +34,16 @@ const products: ProductItem[] = [
     productLocation: "USA",
     itemSold: "89 sold",
   },
+  {
+    itemid: "3",
+    // itemtitle: "Gaming Laptop, 16.0inch Laptop Computer with AMD Ryzen 7 7730U(8C/16T, Up to 4.5GHz), 16GB RAM 512GB NVMe SSD Windows 11 Laptop, Radeon RX Vega 8 Graphics,WiFi 6, Backlit KB",
+    itemtitle:"Ice",
+    itemprice_usd: 40,
+    itemimageurl: "/images/green-tea.png",
+    itemrating: 3,
+    productLocation: "USA",
+    itemSold: "89 sold",
+  },
 
 ]
 
