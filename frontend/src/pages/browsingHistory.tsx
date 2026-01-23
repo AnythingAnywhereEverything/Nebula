@@ -12,7 +12,7 @@ export default function BrowsingHistory() {
             </h2>
 
             <div>
-                <HistoryContainer/>                
+                <HistoryContainer/>
             </div>
 
             <BottomProductContent/>

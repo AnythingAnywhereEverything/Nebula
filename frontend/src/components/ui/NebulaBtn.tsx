@@ -2,6 +2,7 @@ import React, { FC, ReactNode, useRef, useState } from 'react';
 import { useOutsideClick } from '@components/utilities/OutsideClick';
 import { NerdFonts } from '@components/utilities/NerdFonts';
 import nb from '@styles/ui/nebulaButton.module.scss'
+import Link from 'next/link';
 
 type BaseProps = {
     btnValues: ReactNode;
@@ -63,8 +64,8 @@ export const NebulaButton: FC<NebulaBtnProps> = (props) => {
             }
             }}
             >
-            <a
-                href={props.href}
+            <Link
+                href={props.href || "#"}
                 className={props.className}
                 onClick={(e) => {
                 if (!isCoarse || !hasDropdown) return;
@@ -81,7 +82,7 @@ export const NebulaButton: FC<NebulaBtnProps> = (props) => {
                 props.btnValues
                 )}
                 {nCount > 1 && <span id={nb.notificationBadge}>{nCount}</span>}
-            </a>
+            </Link>
 
             {hasDropdown && open && (
                 <div className={props.componentClassName}>

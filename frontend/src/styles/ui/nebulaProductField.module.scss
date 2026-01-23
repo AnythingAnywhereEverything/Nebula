@@ -10,15 +10,16 @@
     .selectorHeader {
         display: flex;
         justify-content: space-between;
+        align-items: center;
     }
 
-    .productList{
-        width: 100%;
-        display: grid;
-        gap: 0.5rem;
-        grid-template-rows: 1fr;
-        grid-template-columns: repeat(
-            auto-fill,
-            minmax(clamp(150px, 22vw, 200px), 1fr));
-    }
+}
+.productList{
+    width: 100%;
+    display: grid;
+    gap: 0.5rem;
+    grid-template-rows: 1fr;
+    grid-template-columns: repeat(
+        auto-fill,
+        minmax(clamp(150px, 22vw, 200px), 1fr));
 }

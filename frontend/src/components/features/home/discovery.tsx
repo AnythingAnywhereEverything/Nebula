@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import style from "@styles/features/discoverypanel.module.scss"
-import { NerdFonts } from "@components/utilities/NerdFonts";
 import { ProductItemExamples } from "src/mocks/productItem.mock";
 import { ProductItem } from "src/types/productItem";
 import NebulaProductItem from "@components/ui/NebulaProductItem";
 import { useGridColumnCount } from "@components/utilities/UseGridColumnCount";
+import Link from "next/link";
 
 // Test fetch
 const DiscoveryProduct: React.FC = () => {
@@ -34,7 +34,7 @@ const DiscoveryProduct: React.FC = () => {
             </div>
 
             <div className={style.moreDiscovery}>
-                <a href={"/moreDiscovery"} className={style.discoveryBtn} >More Discovery</a>
+                <Link href={"/discovery"} className={style.discoveryBtn} >More Discovery</Link>
             </div>
         </section>
     )

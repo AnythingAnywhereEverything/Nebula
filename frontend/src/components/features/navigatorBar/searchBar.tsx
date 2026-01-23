@@ -1,37 +1,40 @@
 import React from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { NerdFonts } from '../../utilities/NerdFonts';
 import style from '@styles/features/searchbar.module.scss';
+import Form from 'next/form';
 
 const SearchBar: React.FC = () => {
-  const router = useRouter();
-  const searchParams = useSearchParams();
+    const searchParams = useSearchParams();
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
-    const searchQuery = formData.get('search') as string;
-    if (searchQuery.trim() === ''){
-      router.push('/')
-      return;
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        const form = e.currentTarget;
+        const input = form.elements.namedItem('q') as HTMLInputElement;
+
+        if (!input.value.trim()) {
+            e.preventDefault();
+            input.focus();
+        }
     };
-    router.push(`/search?q=${encodeURIComponent(searchQuery)}&sort=relevance`);
-  };
 
-  return (
-    <form className={style.navSearchBox} onSubmit={handleSearch}>
-      <input
-        type="text"
-        name="search"
-        placeholder="What you are looking for?"
-        defaultValue={searchParams.get('q') || ''}
-      />
-      <button type="submit">
-        <NerdFonts> </NerdFonts>
-        <p>Search</p>
-      </button>
-    </form>
-  );
+    return (
+        <Form
+            className={style.navSearchBox}
+            action="/search"
+            onSubmit={handleSubmit}
+        >
+            <input
+                type="text"
+                name="q"
+                placeholder="What you are looking for?"
+                defaultValue={searchParams.get('q') || ''}
+            />
+            <button type="submit">
+                <NerdFonts></NerdFonts>
+                <p>Search</p>
+            </button>
+        </Form>
+    );
 };
 
 export default SearchBar;

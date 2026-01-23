@@ -8,7 +8,7 @@ import OptionPanel from '@components/features/home/optionDeals';
 import CategoryPanel from '@components/features/home/categoryPanel';
 import DiscoveryProduct from '@components/features/home/discovery';
 import AboutThisWeb from '@components/features/home/aboutThisWeb';
-import RecentlyReviewed from '@components/features/home/recenltyReview';
+import NebulaProductDisplay from '@components/ui/NebulaProductDisplay';
 
 const Home: NextPageWithLayout = () => {
   const [message, setMessage] = React.useState('Pinging...');
@@ -35,7 +35,14 @@ const Home: NextPageWithLayout = () => {
       <CategoryPanel/>
       <OptionPanel/>
       <DiscoveryProduct/>
-      <RecentlyReviewed/>
+      <div className={style.bottomContainer}>
+        <NebulaProductDisplay 
+              title="Your Broswing History" 
+              max_rows={1} 
+              type={"customLink"} 
+              link="/browsingHistory"
+              text="View or edit browsing history"/>
+      </div>
       <AboutThisWeb/>
     </div>
   );
