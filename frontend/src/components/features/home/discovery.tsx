@@ -1,56 +1,40 @@
-import { NebulaButton } from "@components/ui/NebulaBtn"
 import React, { useEffect, useState } from "react";
-import { ProductWindow } from "@components/ui/ProductWindow";
-import style from "@styles/features/promotionpanel.module.scss"
+import style from "@styles/features/discoverypanel.module.scss"
 import { NerdFonts } from "@components/utilities/NerdFonts";
-import { ProductItem } from "@components/ui/ProductWindow";
-import { data } from "react-router-dom";
-import Link from "next/link";
+import { ProductItemExamples } from "src/mocks/productItem.mock";
+import { ProductItem } from "src/types/productItem";
+import NebulaProductItem from "@components/ui/NebulaProductItem";
+import { useGridColumnCount } from "@components/utilities/UseGridColumnCount";
 
 // Test fetch
 const DiscoveryProduct: React.FC = () => {
+    const { containerRef, columnCount } = useGridColumnCount();
     const [products, setProducts] = useState<ProductItem[]>([]);
-    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch("/temp/fake.json")
-        .then((res) => res.json())
-        .then((data: ProductItem[]) => {
-            setProducts(data);
-        })
-        .catch((err) => {
-            console.error("Failed to fetch products: ", err)
-        })
-        .finally(() => {
-            setLoading(false);
-        });
-    }, []);
-    if (loading) {
-        return <p>Loading product...</p>
-    }
+        if (columnCount === 0) return;
 
+        const visibleCount = columnCount * 3;
+
+        setProducts(
+            Array.from(ProductItemExamples).slice(0, visibleCount)
+        );
+    }, [columnCount]);
+    
     return(
         <section className={style.discoverySection}>
-            <div className={style.discoveryHeader}>
-                <h2>
-                    <NerdFonts>Discovery</NerdFonts>
-                </h2>
-            </div>
+            <h2 className={style.discoveryHeader}>
+                Discovery
+            </h2>
 
-            <div  className={style.discoveryContainer}>
-                <ul className={style.productList}>
-                    {products.map((item) => (
-                        <ProductWindow
-                        key={item.itemid}
-                        items={[item]}
-                        showInfo
-                        />
-                    ))}
-                </ul>
+            <div className={style.productList} ref={containerRef}>
+                {products.map((item) => (
+                    <NebulaProductItem key={item.item_id} {...item}/>
+                ))}
             </div>
 
             <div className={style.moreDiscovery}>
-                <Link href={"/moreDiscovery"} className={style.discoveryBtn} >More Discovery</Link>
+                <a href={"/moreDiscovery"} className={style.discoveryBtn} >More Discovery</a>
             </div>
         </section>
     )

@@ -1,0 +1,17 @@
+
+.optionsContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    width: 100%;
+    justify-content: center;
+    box-sizing: border-box;
+    padding: 1rem;
+    list-style-type: none;
+    gap: 1rem;
+
+    .giftsContainer{
+        display: flex;
+        gap: 1.5rem;
+    }
+}

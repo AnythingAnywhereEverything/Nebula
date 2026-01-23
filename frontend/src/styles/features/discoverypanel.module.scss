@@ -1,0 +1,46 @@
+.discoverySection{
+    width: 100%;
+    padding: 1rem;
+    box-sizing: border-box;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    .discoveryHeader{
+        padding: 1rem;
+        border-bottom: variables.$primary-color 2px solid ;
+        justify-content: center;
+    }
+
+    .moreDiscovery{
+        display: flex;
+        width: 100%;
+        justify-content: center;
+        text-align: center;
+        margin: 12px;
+        
+        .discoveryBtn{
+            display: block;
+            text-decoration: none;
+
+            background-color: variables.$brand-color;
+            width: 25%;
+            color: variables.$light-color;
+            padding: 16px;
+            border-radius: 8px;
+        }
+    }
+    .productList{
+        width: 100%;
+        display: grid;
+        gap: 0.5rem;
+        grid-template-rows: 1fr;
+        grid-template-columns: repeat(
+            auto-fill,
+            minmax(clamp(150px, 22vw, 200px), 1fr));
+    }
+
+}
+.discoverySection{
+    border-bottom: variables.$primary-color 2px solid;
+}

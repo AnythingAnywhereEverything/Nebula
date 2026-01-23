@@ -4,7 +4,7 @@ import { NerdFonts } from '../utilities/NerdFonts';
 import { ratingStars } from '@components/utilities/StarRating';
 import style from '@styles/features/searchresult.module.scss';
 
-type SearchResultItemProps = {
+type NebulaProductItemProps = {
     nsin: string;
 
     itemtag?: string;
@@ -17,12 +17,23 @@ type SearchResultItemProps = {
     productLocation: string;
 }
 
-const SearchResultItem: React.FC<SearchResultItemProps> = ({ nsin, itemtag, itemtagcolor, itemtitle, itemimageurl, itemprice_usd, itemrating, productLocation }) => {
-    // encode base 64 no pad the itemid for URL
+const NebulaProductItem: React.FC<NebulaProductItemProps> = (props) => {
+    const { 
+        nsin, 
+        itemtag, 
+        itemtagcolor, 
+        itemtitle, 
+        itemimageurl, 
+        itemprice_usd, 
+        itemrating, 
+        productLocation 
+    } = props;
     return (
         <div className={style.searchResultItem}>
             <div className={style.imageContainer}>
-                <p className={style.itemTag} style={{ backgroundColor: itemtagcolor }}>{itemtag}</p>
+                {itemtag &&
+                    <p className={style.itemTag} style={{ backgroundColor: itemtagcolor }}>{itemtag}</p>
+                }
                 <img src={itemimageurl} alt="Item" className={style.itemImage} />
             </div>
             <div className={style.itemDetails}>
@@ -45,4 +56,4 @@ const SearchResultItem: React.FC<SearchResultItemProps> = ({ nsin, itemtag, item
     )
 }
 
-export default SearchResultItem;
+export default NebulaProductItem;

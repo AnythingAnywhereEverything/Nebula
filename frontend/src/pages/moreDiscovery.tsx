@@ -1,33 +1,14 @@
-import React, { useEffect, useState } from "react";
 import style from "@styles/layouts/moreDiscovery.module.scss"
-import { NerdFonts } from "@components/utilities/NerdFonts";
-import { ProductItem, ProductWindow } from "@components/ui/ProductWindow";
-import { NebulaButton } from "@components/ui/NebulaBtn";
+import { NerdFonts } from "@components/utilities/NerdFonts";import { NebulaButton } from "@components/ui/NebulaBtn";
+import { ProductItemExamples } from "src/mocks/productItem.mock";
+import NebulaProductItem from "@components/ui/NebulaProductItem";
 
 // /page?=1
 
 
 export default function MoreDiscovery(){
-    const [products, setProducts] = useState<ProductItem[]>([]);
-    const [loading, setLoading] = useState(true);
-
-    const itemPerPage = 8;
-    useEffect(() => {
-            fetch("/temp/fake.json")
-            .then((res) => res.json())
-            .then((data: ProductItem[]) => {
-                setProducts(data);
-            })
-            .catch((err) => {
-                console.error("Failed to fetch products: ", err)
-            })
-            .finally(() => {
-                setLoading(false);
-            });
-        }, []);
-        if (loading) {
-            return <p>Loading product...</p>
-        }
+    const products = Array.from(ProductItemExamples).splice(0,7);
+    
 
     return (
         <section className={style.moreDiscoverContainer}>
@@ -42,11 +23,7 @@ export default function MoreDiscovery(){
                 <ul className={style.productList}>
                     
                     {products.map((item) => (
-                        <ProductWindow
-                        key={item.itemid}
-                        items={[item]}
-                        showInfo
-                        />
+                        <NebulaProductItem key={item.item_id} {...item}/>
                     ))}
 
                 </ul>

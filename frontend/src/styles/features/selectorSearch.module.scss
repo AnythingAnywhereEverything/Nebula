@@ -1,0 +1,24 @@
+.selectorContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    width: 100%;
+    justify-content: center;
+    list-style-type: none;
+    gap: 1rem;
+
+    .selectorHeader {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .productList{
+        width: 100%;
+        display: grid;
+        gap: 0.5rem;
+        grid-template-rows: 1fr;
+        grid-template-columns: repeat(
+            auto-fill,
+            minmax(clamp(150px, 22vw, 200px), 1fr));
+    }
+}
