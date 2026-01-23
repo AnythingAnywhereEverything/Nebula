@@ -1,0 +1,38 @@
+.profileSection{
+    max-width: 1000px;
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    margin-top: 24px;
+    .profileContainer{
+        display: grid;
+        grid-template-columns: 20% 80%;
+        padding: 4px;
+        .profile{
+            display: flex;
+            background-color: gray;
+            align-items: center;
+            padding: 8px;
+            gap: 1rem;
+        }
+        .profilePicture{
+            max-width: 75px;
+            overflow: hidden;
+            aspect-ratio: 1 / 1;
+            border-radius: 8px;
+            position: relative;
+            display: grid;
+            img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform 0.3s ease;
+                grid-column: 1 / -1;
+            }
+        }
+
+        .changeNameBtn{
+            padding: 12px;
+        }
+    }
+}
