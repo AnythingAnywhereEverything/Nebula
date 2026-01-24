@@ -1,100 +1,38 @@
 import React, { useState } from "react";
-import style from '../styles/cart.module.scss';
+import style from '@styles/layouts/cart.module.scss';
 import Link from "next/link";
-import BottomProductContent from '../components/layouts/bottomProductContent';
+import BottomProductContent from '@components/layouts/bottomProductContent';
 import LoadingItemInCart from "@components/layouts/ItemsInCart";
 import { NebulaButton } from "@components/ui/NebulaBtn";
-
-// Fetch all item in cart user
-const itemInCart = 1;
-
-function UsrCart ({item}: {item : number}) {
-    if (item === 0){
-        return (
-            <div className={style.cartContainer}>
-                <img src="" alt="" />
-                <div className={style.fakeImg}></div>
-
-                <div className={style.cartText}>
-                    <h2>Your space is Empty</h2>
-                    <Link href= "">Today's shop deal!</Link>
-                </div>
-                <div className={style.cartBottomShop}>
-                </div>
-            </div>
-        )
-    } else if (item >= 1){
-        return (
-            <div className={style.cartContainer}>
-                {/* Item goes in there */}
-                <LoadingItemInCart />
-            </div>
-        );
-    }
-}
+import NebulaProductDisplay from "@components/ui/NebulaProductDisplay";
+import CartShopContainer from "@components/features/cart/cartShopContainer";
+import CartAllStore from "@components/features/cart/cartAllStoreProduct";
 
 export default function Cart() {
     return (
-        <div className = {style.cartPage}>
-            <div className={style.cartHeader}>
-                <h2>Shopping Cart</h2>
-                <h3>Customer service</h3>
-            </div>
-            <div>
-                <p>{itemInCart} products in your class</p>
-            </div>
+        <section className = {style.cartPage}>
 
-            <div className={style.cartGrid}>
-                {/* any name?? */}
-                <section className={style.products}>
-                        <section className={style.itemFromShop}>
-                            <input type="checkbox" />
-                            <p>Products</p>
-                            <p>Unit Price</p>
-                            <p>Quantity</p>
-                            <p>Sub total</p>
-                            <p>Actions</p>
-                        </section>
-                    <UsrCart item = {itemInCart} />
-                </section>
-                {/* COMPONENT */}
-                <div className={style.cartOverall}>
-                    <h2>Order Summary</h2>
+            <section className={style.cartSection}>
+                <div className={style.productDisplay}>
+                    
+                    <CartAllStore />
 
-                    <div className={style.cartSummary}>
-                        <div className={style.summaryDetails}>
-                            <p>Subtotal</p>
-                            <p>399.99</p>
-                        </div>
+                    <CartShopContainer
+                    />
 
-                        <div className={style.summaryDetails}>
-                            <p>Discount</p>
-                            <p>- ฿70</p>
-                        </div>
-
-                        <div className={style.summaryDetails}>
-                            <p>Delivery</p>
-                            <p>฿0</p>
-                        </div>
-
-                    </div>
-
-                    <div className={style.cartTotal}>
-                        <p>Total</p>
-                        <summary>฿399</summary>
-                    </div>
-
-                    <div className={style.checkout}>
-                        <NebulaButton isIcon 
-                        btnValues = "Checkout"
-                        onClick={() => console.log("Buy item") }/>
-                    </div>
                 </div>
-                {/* END */}
+                <div className={style.cartSummary}>
+                    <section>
+                        Summary
+                    </section>
+                </div>
+            </section>
 
-            </div>
-
-            <BottomProductContent />
-        </div>
+            <NebulaProductDisplay
+            title="Recommended for you"
+            type="display"
+            max_rows={1}
+            />
+        </section>
     )
 }

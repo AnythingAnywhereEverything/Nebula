@@ -39,7 +39,6 @@ function ItemInShop(){
 }
 
 // PARAMETER later
-// Bad NAME
 function CurrentShop(){
     return (
         <div className={style.fromShop}>

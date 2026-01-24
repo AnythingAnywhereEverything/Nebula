@@ -1,0 +1,19 @@
+.cartPage{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 1500px;
+    margin: 0 auto;
+    .cartSection{
+        display: grid;
+        grid-template-columns: 80% 20%;
+        width: 100%;
+        .productDisplay{
+            .allProductHeader{
+                display: grid;
+                grid-template-columns: 60% 10% 10% 10% 10%;
+                width: 100%;
+            }
+        }
+    }
+}

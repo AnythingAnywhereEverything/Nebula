@@ -1,6 +1,6 @@
 import React from 'react';
 import { ping } from '../api/ping';
-import style from '../styles/home.module.scss';
+import style from '@styles/home.module.scss';
 import { NextPageWithLayout } from '../types/global.d';
 import Head from 'next/head';
 import PromotionPanel from '@components/features/home/promotionPanel';
