@@ -1,0 +1,33 @@
+.userSettingContainer{
+    flex: 1;
+    display: flex;
+    gap: 1rem;
+    flex-direction: column;
+    background-color: #f6f6f6;
+    padding: 1rem 2rem;
+    box-sizing: border-box;
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        .title {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            width: 100%;
+            h1 {
+                font-weight: 300;
+            }
+            p {
+                color: variables.$text-gray;
+            }
+            padding-bottom: 1rem;
+            border-bottom: #eee 2px solid;
+        }
+    }
+
+    .contentContainer {
+        width: 100%;
+        overflow: hidden;
+    }
+}
