@@ -8,7 +8,7 @@ type BaseProps = {
     id: string;
     require?: boolean;
     placeholder?: string;
-
+    name?: string;
     value?: string;
     onChange?: React.ChangeEventHandler<HTMLInputElement>;
 };
@@ -42,6 +42,7 @@ export const NebulaTextField: FC<NebulaTextFieldProps> = (props) => {
         className,
         placeholder,
         require,
+        name,
         btnValues,
     } = props;
 
@@ -64,6 +65,7 @@ export const NebulaTextField: FC<NebulaTextFieldProps> = (props) => {
                     id={id}
                     type={inputType}
                     placeholder={placeholder}
+                    name={name}
                     required={require}
                     min={"min" in props ? props.min : undefined}
                     max={"max" in props ? props.max : undefined}
