@@ -13,8 +13,8 @@
         max-width: 1500px;
         display: flex;
         gap: 2rem;
-        background-color: #fcfcfc;
-        border: 2px #eee solid;
+        background-color: variables.$container-bg;
+        border: variables.$container-border;
         padding: 1.5rem;
         box-sizing: border-box;
     }
