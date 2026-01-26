@@ -1,4 +1,8 @@
 import ProfilePage from "@components/features/settings/content/accountProfile";
+import Address from "@components/features/settings/content/address";
+import Payment from "@components/features/settings/content/payment";
+import ChangePassword from "@components/features/settings/content/changePassword";
+import Notification from "@components/features/settings/content/notification";
 
 export const userSettingsAllowList: Record<string, {
     component: React.ComponentType;
@@ -13,17 +17,17 @@ export const userSettingsAllowList: Record<string, {
         description: "Edit your personal info",
     },
     "/account/payment": {
-        component: () => <p>Payment Page</p>,
+        component:  Payment,
         title: "Banks & Cards",
         description: "Manage your payment methods",
     },
     "/account/address": {
-        component: () => <p>Address Page</p>,
+        component: Address,
         title: "Address",
         description: "Manage your delivery addresses",
     },
     "/account/password": {
-        component: () => <p>Change Password</p>,
+        component: ChangePassword,
         title: "Change Password",
         description: "Update your password",
     },
@@ -33,7 +37,7 @@ export const userSettingsAllowList: Record<string, {
         description: "Manage your privacy preferences",
     },
     "/account/notification": {
-        component: () => <p>Notification Settings</p>,
+        component: Notification,
         title: "Notifications",
         description: "Manage your notification preferences",
     },
