@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 
 export const useGridColumnCount = () => {
-    const containerRef = useRef<HTMLDivElement | null>(null);
+    const containerRef = useRef<HTMLUListElement | null>(null);
     const [columnCount, setColumnCount] = useState(0);
 
     useEffect(() => {

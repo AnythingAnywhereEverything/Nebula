@@ -8,3 +8,17 @@
         padding: 1rem;
     }
 }
+
+.discoveryHeader{
+    justify-content: center !important;
+    border-bottom: 1px solid var(--border);
+    padding-block: calc(var(--spacing) * 2);
+    background-color: color-mix(in oklab, var(--muted) 50%, transparent);
+}
+
+
+.giftsContainer {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}

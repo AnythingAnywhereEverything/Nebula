@@ -1,7 +1,7 @@
 import style from '@styles/layouts/cart.module.scss';
-import NebulaProductDisplay from "@components/ui/NebulaProductDisplay";
 import Head from "next/head";
 import CartShopProduct from "@components/features/cart/cartShopProduct";
+import { RecommendPanel } from '@components/features/recommendation';
 
 export default function Cart() {
     const hasItems = true; // later from backend
@@ -97,13 +97,7 @@ export default function Cart() {
 
                 </section>
 
-                <section className={style.recommendationSection}>
-                    <NebulaProductDisplay
-                        title="Recommended for you"
-                        type="display"
-                        max_rows={1}
-                    />
-                </section>
+                <RecommendPanel />
 
             </section>
         </>

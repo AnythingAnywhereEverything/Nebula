@@ -1,6 +1,10 @@
 @use "sass:color";
 
 .navbar {
+    --input: #fafafa;
+}
+
+.navbar {
     top: 0;
     background: linear-gradient(75deg, variables.$primary-color, color.adjust(variables.$primary-color, $lightness: 5%));
     color: white;
@@ -27,7 +31,7 @@
         .navActions{
             display: flex;
             align-items: center;
-            gap: 1.75rem;
+            gap: 1rem;
         }
     }
 

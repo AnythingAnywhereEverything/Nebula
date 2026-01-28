@@ -1,49 +1,33 @@
-import { NebulaButton } from "@components/ui/NebulaBtn"
-import convertStyle from "@components/utilities/ConvertStyles"
 import nb from '@styles/ui/nebulaButton.module.scss'
-import SigninButton from "./actions/signinButton"
 
 import navDesktop from '@styles/layouts/navbarDesktop.module.scss'
+import { Button } from "@components/ui/NebulaUI"
+import Link from "next/link"
+import { cn } from "src/lib/utils"
+import { Icon } from "@components/ui/Nebula/icon"
 
 const ActionWraper: React.FC = () => {
     return (
     <div className={navDesktop.navActions}>
-        <SigninButton/>
-        <NebulaButton 
-            isIcon 
-            href="/wishlist" 
-            btnValues={""}
-            className={
-                convertStyle(
-                    nb.icon,
-                    nb.buttonDark
-                )
-            }
-        />
-        <NebulaButton 
-            isIcon 
-            href="/gifts" 
-            btnValues={"󰹄"}
-            className={
-                convertStyle(
-                    nb.icon,
-                    nb.buttonDark
-                )
-            }
-        />
-        <NebulaButton 
-            isIcon
-            notificationCount={5} 
-            href="/cart" 
-            btnValues={""}
-            className={
-                convertStyle(
-                    nb.icon,
-                    nb.containRelativeComponent,
-                    nb.buttonDark
-                )
-            }
-        />
+        <Button variant={"oppose"} asChild>
+            <Link href={"/auth/signin"}>Sign in</Link>
+        </Button>
+        <Button asChild className={cn(nb.buttonDark)} size={"icon-lg"}>
+            <Link href={"/wishlist"}>
+                <Icon value=""/>
+            </Link>
+        </Button>
+        <Button asChild className={cn(nb.buttonDark)} size={"icon-lg"}>
+            <Link href={"/gifts"}>
+                <Icon value="󰹄"/>
+            </Link>
+        </Button>
+        <Button asChild className={cn(nb.buttonDark, nb.containBadge)} size={"icon-lg"}>
+            <Link href={"/cart"}>
+                <Icon value=""/>
+                <span className={nb.notificationBadge}>5</span>
+            </Link>
+        </Button>
     </div>
 
     )

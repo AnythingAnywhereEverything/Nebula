@@ -1,21 +1,30 @@
-import { NerdFonts } from "@components/utilities/NerdFonts";
-import React from "react";
 import style from "@styles/layouts/browsingHistory.module.scss";
-import HistoryContainer from "@components/layouts/historyContainer";
-import BottomProductContent from "@components/layouts/bottomProductContent";
+import { RecommendPanel } from "@components/features/recommendation";
+import { ProductContainer, ProductContainerDescription, ProductContainerHeader, ProductContainerHeaderAddon, ProductContainerHeaderGroup, ProductContainerTitle, ProductField } from "@components/ui/Nebula/product-field";
+import { Button } from "@components/ui/NebulaUI";
 
 export default function BrowsingHistory() {
     return(
         <section className={style.historySection}>
-            <h2 className={style.historyHeader}>
-                <NerdFonts>Your Browsing History</NerdFonts>
-            </h2>
 
-            <div>
-                <HistoryContainer/>
-            </div>
+            <ProductContainer>
+                <ProductContainerHeader>
+                    <ProductContainerHeaderGroup>
+                        <ProductContainerTitle>
+                            Your Browsing History
+                        </ProductContainerTitle>
+                        <ProductContainerDescription>
+                            Manage your browing history
+                        </ProductContainerDescription>
+                    </ProductContainerHeaderGroup>
+                    <ProductContainerHeaderAddon>
+                        <Button variant={"ghost"}>Show more</Button>
+                    </ProductContainerHeaderAddon>
+                </ProductContainerHeader>
+                <ProductField max_rows={2}/>
+            </ProductContainer>
 
-            <BottomProductContent/>
+            <RecommendPanel />
         </section>
     )
 }
