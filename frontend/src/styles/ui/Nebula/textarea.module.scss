@@ -1,0 +1,51 @@
+.inputField {
+    border: 1px solid var(--border);
+    background-color: var(--input);
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.625rem;
+    font-size: 1rem;
+    min-height: 4rem;
+    width: 100%;
+    display: flex;
+    transition: color 0.2s, background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+    box-sizing: border-box;
+
+    &::placeholder {
+        color: var(--placeholder);
+    }
+
+    @media (prefers-color-scheme: dark) {
+        background-color: rgba(var(--input-rgb), 0.3);
+    }
+
+    &:focus-visible {
+        border-color: var(--ring);
+        box-shadow: 0 0 0 3px color-mix(
+            in oklab, var(--ring) 50%, transparent);
+    }
+
+    &[aria-invalid="true"] {
+        border-color: var(--destructive);
+        box-shadow: 0 0 0 3px rgba(var(--color-destructive-rgb), 0.2);
+
+        @media (prefers-color-scheme: dark) {
+            border-color: rgba(var(--color-destructive-rgb), 0.5);
+            box-shadow: 0 0 0 3px rgba(var(--color-destructive-rgb), 0.4);
+        }
+    }
+
+    &:disabled {
+        background-color: var(--input);
+        opacity: 0.5;
+        cursor: not-allowed;
+
+        @media (prefers-color-scheme: dark) {
+            background-color: rgba(var(--input-rgb), 0.8);
+        }
+    }
+
+    @media (min-width: 768px) {
+        font-size: 0.875rem;
+    }
+}
