@@ -1,50 +1,31 @@
 {
-  "compilerOptions": {
-    "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "ignoreDeprecations": "6.0",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx",
-    "incremental": true,
-    "baseUrl": ".",
-    "paths": {
-      "@styles/*": [
-        "src/styles/*"
-      ],
-      "@components/*": [
-        "src/components/*"
-      ],
-      "@public/*": [
-        "public/*"
-      ],
-      "@interfaces/*": [
-        "src/interfaces/*"
-      ],
-      "@fonts/*": [
-        "public/fonts/*"
-      ]
-    }
-  },
-  "include": [
-    "src",
-    "next.config.js"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+    "compilerOptions": {
+        "target": "es2015",
+        "lib": ["dom", "dom.iterable", "esnext"],
+        "allowJs": true,
+        "skipLibCheck": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "strict": true,
+        "forceConsistentCasingInFileNames": true,
+        "noFallthroughCasesInSwitch": true,
+        "module": "esnext",
+        "moduleResolution": "node",
+        "ignoreDeprecations": "6.0",
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "noEmit": true,
+        "jsx": "react-jsx",
+        "incremental": true,
+        "baseUrl": ".",
+        "paths": {
+            "@styles/*": ["src/styles/*"],
+            "@components/*": ["src/components/*"],
+            "@public/*": ["public/*"],
+            "@interfaces/*": ["src/interfaces/*"],
+            "@fonts/*": ["public/fonts/*"]
+        }
+    },
+    "include": ["src", "next.config.js"],
+    "exclude": ["node_modules"]
 }
