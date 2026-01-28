@@ -44,13 +44,10 @@ export function Button({
     bg = "light",
     asChild,
     ...props
-}: {
-    className?: string;
-    variant?: VariantProps<typeof buttonVariants>["variant"];
-    size?: VariantProps<typeof buttonVariants>["size"];
-    bg?: VariantProps<typeof buttonVariants>["bg"];
-    [key: string]: any;
-}): React.ReactNode {
+}: React.ComponentProps<"button"> & VariantProps<typeof buttonVariants> &{
+    notification?: number,
+    asChild?: boolean 
+}) {
 
     const Comp = asChild ? Slot.Root : "button"
 
