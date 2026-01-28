@@ -174,13 +174,10 @@ const SignIn: NextPageWithLayout = () => {
                         </FieldGroup>
                         <Field>
                             <Button type="submit">Sign In</Button>
-                            <FieldDescription>
-                                <Link href={"#"}>Forgot password?</Link>
-                            </FieldDescription>
                         </Field>
 
                         <FieldDescription>
-                            Dont have an account yet? <Link href={"/auth/signup"}>Sign Up.</Link>
+                            Already have an account? <Link href={"/auth/signin"}>Sign In.</Link>
                         </FieldDescription>
                     </FieldSet>
                 </Form>
