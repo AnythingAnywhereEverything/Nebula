@@ -18,9 +18,14 @@ interface IconProps {
     children?: React.ReactNode;
 }
 
-const Icon: React.FC<IconProps> = ({className, value, children}) => {
+function Icon ({
+  value,
+  className, 
+  children,
+  ...props
+}: React.ComponentProps<"span"> & IconProps) {
   return (
-    <span className={`${NerdRegular.className} ${NerdMonoRegular.className} ${className}`}>
+    <span className={`${NerdRegular.className} ${NerdMonoRegular.className} ${className}`} {...props}>
       {value || children}
     </span>
   );
