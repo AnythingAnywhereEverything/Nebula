@@ -1,17 +1,21 @@
+@use "token";
 
-
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-
-  h1, h2, h3, h4, h5, h6, p {
+*, :after, :before, ::backdrop {
+    box-sizing: border-box;
+    border: 0 solid;
     margin: 0;
     padding: 0;
-  }
+}
 
-  #__next{
+html, body {
     height: 100%;
-  }
+    font-family:  "Geist Sans", 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    h1, h2, h3, h4, h5, h6, p {
+        margin: 0;
+        padding: 0;
+    }
+
+    #__next{
+        height: 100%;
+    }
 }
