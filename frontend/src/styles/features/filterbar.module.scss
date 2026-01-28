@@ -1,97 +1,30 @@
 @use "sass:color";
 
+.active, .active span {
+    background-color: var(--primary) !important;
+    color: var(--primary-foreground) !important;
+}
+
 .filterBar {
     display: flex;
     justify-content: space-between;
     padding: 0.75rem 1rem;
-    background-color: variables.$light-color; // Temp
+    background-color: color-mix(
+        in oklab, var(--muted-foreground) 10%, transparent);
+    border: 1px solid var(--border);
     box-sizing: border-box;
     border-radius: 0.5rem;
     width: 100%;
 
-    .filterItem, .filterPages, .pageButtons {
+    .filterPages, .pageButtons {
         align-items: center;
         display: flex;
         gap: 0.5rem;
     }
 
-    .filterItem{
-        .filterButton {
-            background-color: #f0f0f0;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 0.25rem;
-            cursor: pointer;
-            transition: background-color 0.2s ease, color 0.2s ease;
-
-            &.active {
-                background-color: variables.$secondary-color;
-                color: white;
-                &:hover {
-                    background-color: color.adjust(variables.$secondary-color, $lightness: -5%);
-                }
-            }
-            
-            &:hover {
-                background-color: #e0e0e0;
-            }
-        }
-
-        .priceFilterButton {
-            background-color: #f0f0f0;
-            border: none;
-            min-width: 160px;
-            display: flex;
-            justify-content: space-between;
-            padding: 0.5rem 1rem;
-            border-radius: 0.25rem;
-            cursor: pointer;
-            transition: background-color 0.2s ease, color 0.2s ease;
-
-            &.active {
-                background-color: variables.$secondary-color;
-                color: white;
-                &:hover {
-                    background-color: color.adjust(variables.$secondary-color, $lightness: -5%);
-                }
-            }
-            span {
-                display: flex;
-                gap: 0.25rem;
-            }
-            &:hover {
-                background-color: #e0e0e0;
-            }
-        }
-        
-        .dropdownContent {
-            position: absolute;
-            background-color: variables.$background-color;
-            min-width: 160px;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-            z-index: 99;
-            flex-direction: column;
-            border-radius: 0.25rem;
-
-            button {
-                color: variables.$text-dark;
-                padding: 0.5rem 1rem;
-                text-align: left;
-                border: none;
-                background-color: variables.$background-color;
-                cursor: pointer;
-                width: 100%;
-
-                &:hover {
-                    background-color: variables.$light-color;
-                }
-            }
-        }
-    }
-
     .filterPages {
         gap: 1rem;
-        .pageButtons { // < and > buttons
+        .pageButtons {
             .pageButton {
                 background-color: variables.$background-color;
                 border: none;

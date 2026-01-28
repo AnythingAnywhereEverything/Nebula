@@ -1,10 +1,11 @@
-import React, { FC } from 'react';
 import { NerdFonts } from '../../utilities/NerdFonts';
 import style from '@styles/features/filterbar.module.scss';
 import { NebulaButton } from '@components/ui/NebulaBtn';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { Button, ButtonGroup, Label } from '@components/ui/NebulaUI';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@components/ui/Nebula/selector';
 
-const FilterBar: FC = () => {
+const FilterBar: React.FC = () => {
     const router = useRouter();
     const pathName = usePathname();
     const searchParams = useSearchParams();
@@ -14,62 +15,49 @@ const FilterBar: FC = () => {
 
     return (
         <div className={style.filterBar}>
-            <div className={style.filterItem}>
-                <p>Sorted By</p>
-                <NebulaButton
-                    className={`
-                        ${style.filterButton}
-                        ${sortType === 'relevance' ? style.active : ''}`}
-                    onClick={() => {
-                        currentParams.set('sort', 'relevance');
-                        router.push(`${pathName}?${currentParams.toString()}`);
-                    } }
-                    btnValues={"Relevance"}
-                />
-                <NebulaButton
-                    className={`
-                        ${style.filterButton} 
-                        ${sortType === 'recent' ? style.active : ''}
-                        `}
-                    onClick={() => {
-                        currentParams.set('sort', 'recent');
-                        router.push(`${pathName}?${currentParams.toString()}`);
-                    } }
-                    btnValues={"Most Recent"}
-                />
-                <NebulaButton
-                    className={`
-                        ${style.priceFilterButton}
-                        ${sortType === 'price_asc' || sortType === 'price_desc' ? style.active : ''}
-                    `}
-                    onClick={() => {} }
-                    btnValues={(
-                        <>
-                            <p>Price Range</p>
-                            <span>
-                                {
-                                    sortType === 'price_asc' ? (" : Low to High") : sortType === 'price_desc' ? (" : High to Low") : ""
-                                }
-                                <NerdFonts children={""}/>
-                            </span>
-                        </>
-                    )}
-                    relative={true}
-                    btnComponent={
-                        <>
-                            <button onClick={() => {
-                                currentParams.set('sort', 'price_asc');
-                                router.push(`${pathName}?${currentParams.toString()}`);
-                            }}>Low to High</button>
-                            <button onClick={() => {
-                                currentParams.set('sort', 'price_desc');
-                                router.push(`${pathName}?${currentParams.toString()}`);
-                            }}>High to Low</button>
-                        </>
-                    }
-                    componentClassName={style.dropdownContent}
-                />
-            </div>
+            <ButtonGroup>
+                <Label>Sorted By</Label>
+                <ButtonGroup>
+                    <Button
+                        variant={sortType === 'relevance' ? "default" : "secondary"}
+                        size={"sm"}
+                        onClick={() => {
+                            currentParams.set('sort', 'relevance');
+                            router.push(`${pathName}?${currentParams.toString()}`);
+                    }}>Relevance</Button>
+                </ButtonGroup>
+                <ButtonGroup>
+                    <Button
+                        variant={sortType === 'recent' ? "default" : "secondary"}
+                        size={"sm"}
+                        onClick={() => {
+                            currentParams.set('sort', 'recent');
+                            router.push(`${pathName}?${currentParams.toString()}`);
+                    }}>Most Recent</Button>
+                </ButtonGroup>
+                <ButtonGroup>
+                    <Select 
+                        value={sortType === 'price_asc' || sortType === 'price_desc' ? sortType : ""}
+                        onValueChange={(val) => {
+                            currentParams.set('sort', val);
+                            router.push(`${pathName}?${currentParams.toString()}`)
+                        }}
+                    >
+                        <SelectTrigger
+                            className={(sortType === 'price_asc' || sortType === 'price_desc') ? style.active : ""}
+                            style={{backgroundColor: "var(--secondary)",borderRadius: "var(--radius-small)",minWidth: "calc(var(--spacing)*48)"}}>
+                            <SelectValue placeholder="Select Price Range"/>
+                        </SelectTrigger>
+                        <SelectContent position='popper'>
+                            <SelectGroup>
+                                <SelectLabel>Price</SelectLabel>
+                                <SelectItem value='price_asc'>Low to High</SelectItem>
+                                <SelectItem value='price_desc'>High to Low</SelectItem>
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
+                </ButtonGroup>
+            </ButtonGroup>
             <div className={style.filterPages}>
                 <p>Page 1 of 7</p>
                 <div className={style.pageButtons}>
