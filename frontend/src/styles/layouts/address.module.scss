@@ -1,0 +1,74 @@
+.addressContainer{
+    .addressHead{
+        padding: 8px 0;
+        padding-bottom: 16px;
+        h3{
+        font-weight: normal;
+        }
+    }
+    .noLocation{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 400px;
+        margin: 8px 0;
+        border-bottom: 1px solid #ccc;
+        border-top: 1px solid #ccc;
+        h2{
+            font-weight: normal;
+        }
+    }
+    
+    .hasLocation{
+        .addressCard{
+            padding-bottom: 12px;
+            border-top: 1px solid #a5a5a5;
+            .header{
+                display: flex;
+                justify-content: space-between;
+                border-bottom: 1px solid #ccc;
+                align-items: center;
+                .name{
+                    padding: 12px 0;
+                    display: flex;
+                    gap: 1rem;
+                }
+            }
+            .cardInfo{
+                display: flex;
+                justify-content: space-between;
+                padding: 12px 0;
+                align-items: center;
+                .local{
+                    padding-bottom: 4px;
+                }
+
+            }
+        }
+        .setDefault, .edit{
+            padding: 4px 12px;
+            margin: 0 8px;
+            border: transparent;
+            cursor: pointer;
+            background-color: #dfdfdf;
+            transition: 0.3s ;
+        }
+        .setDefault:hover,
+        .edit:hover{
+            background-color: #cccccc;
+        }
+    }
+    .setAddress{
+        padding: 12px;
+        width: 100%;
+        border: transparent;
+        background-color: variables.$submit-button-bg;
+        color: variables.$text-lighter;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    .setAddress:hover{
+        background-color: variables.$submit-button-bg-hover;
+        color: variables.$text-dark;
+    }
+}
