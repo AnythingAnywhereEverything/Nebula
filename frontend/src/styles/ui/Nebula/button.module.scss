@@ -106,17 +106,22 @@
 // Sizes
 
 .defaultSize {
-    padding: 0.5rem 0.825rem;
+    // padding: 0.5rem 0.825rem;
+    padding-block: calc(var(--spacing) * 1.5);
+    padding-inline: calc(var(--spacing) * 3);
     font-size: var(--text-base);
 }
 
 .extraSmallSize {
-    padding: 0.125rem 0.5rem;
+    padding-block: calc(var(--spacing) * 0.5);
+    padding-inline: calc(var(--spacing) * 2);
     font-size: var(--text-extra-small);
 }
 
 .smallSize {
-    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-small);
+    padding-block: calc(var(--spacing) * 1.5);
+    padding-inline: calc(var(--spacing) * 2.5);
     font-size: var(--text-small);
 }
 
