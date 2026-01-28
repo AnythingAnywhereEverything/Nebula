@@ -1,12 +1,8 @@
 @use "sass:color";
 
 $background-color: white;
-$primary-color: #141f45;
-$secondary-color: color.adjust($primary-color, $lightness: 20%);
 $accent-color: rgb(56, 128, 210);
 
-$brand-color: #869aff;
-$opposite-brand-color: #e48c18;
 $light-color: #e9e9e9;
 
 $text-light: #c6c6c6;
@@ -21,7 +17,6 @@ $sale-color: #d75555;
 $saturated-hyper-link: #3c56ff;
 $saturated-hyper-link-hover: #162fcf;
 $image-select-border-color: #6b69ff;
-$star-color: #f5a018;
 $alert-color: #c73636;
 $notification-color: #ff8e8e;
 
@@ -43,3 +38,55 @@ $submit-button-bg-border-text: #d4d6ff;
 
 $container-bg: #fcfcfc;
 $container-border: 2px #eee solid;
+
+//TODO: Rewrite
+
+// COLORS -----------------
+$primary-color: #141f45;
+$secondary-color: #f9f9f9;
+
+// bgs
+$bg-primary: #233472;
+$bg-secondary: #f9f9f9;
+$bg-color: #fefefe;
+$bg-oppose: #e48c18;
+$bg-background-light: rgba($color: #000, $alpha: 0);
+$bg-background-dark: rgba($color: #fff, $alpha: 0.125);
+
+// text
+$text-foreground-dark: #fff;
+$text-foreground-light: #000000;
+
+$text-primary-foreground: #fff;
+$text-secondary-foreground: #161616;
+
+// accents
+$star-color: #f5a018;
+$destructive-color: #ff6467;
+$brand-color: #869aff;
+$opposite-brand-color: #e48c18;
+
+// Color Variants
+$primary-color-lighten-5: color.adjust($primary-color, $lightness: 5%);
+$primary-color-lighten-10: color.adjust($primary-color, $lightness: 10%);
+$primary-color-lighten-15: color.adjust($primary-color, $lightness: 15%);
+$primary-color-lighten-20: color.adjust($primary-color, $lightness: 20%);
+
+$secondary-color-darken-5: color.adjust($secondary-color, $lightness: -5%);
+$secondary-color-darken-10: color.adjust($secondary-color, $lightness: -10%);
+$secondary-color-darken-15: color.adjust($secondary-color, $lightness: -15%);
+$secondary-color-darken-20: color.adjust($secondary-color, $lightness: -20%);
+
+$oppose-color-20: color.adjust($bg-oppose, $lightness: 20%);
+$oppose-color-15: color.adjust($bg-oppose, $lightness: 15%);
+$oppose-color-10: color.adjust($bg-oppose, $lightness: 10%);
+$oppose-color-5: color.adjust($bg-oppose, $lightness: 5%);
+
+// Buttons 
+$btn-secondary: $secondary-color;
+$btn-primary-hover: $primary-color-lighten-20;
+$btn-secondary: $secondary-color;
+
+$ring-primary-btn: 0 0 0 2px $primary-color-lighten-10;
+
+$text-primary-foreground: #fff;
