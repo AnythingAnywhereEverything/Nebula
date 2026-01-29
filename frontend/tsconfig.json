@@ -23,7 +23,8 @@
             "@components/*": ["src/components/*"],
             "@public/*": ["public/*"],
             "@interfaces/*": ["src/interfaces/*"],
-            "@fonts/*": ["public/fonts/*"]
+            "@fonts/*": ["public/fonts/*"],
+            "@lib/*": ["src/lib/*"]
         }
     },
     "include": ["src", "next.config.js"],
