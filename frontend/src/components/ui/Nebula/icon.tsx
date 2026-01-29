@@ -25,7 +25,9 @@ function Icon ({
   ...props
 }: React.ComponentProps<"span"> & IconProps) {
   return (
-    <span className={`${NerdRegular.className} ${NerdMonoRegular.className} ${className}`} {...props}>
+    <span 
+      data-component="icon"
+      className={`${NerdRegular.className} ${NerdMonoRegular.className} ${className}`} {...props}>
       {value || children}
     </span>
   );
