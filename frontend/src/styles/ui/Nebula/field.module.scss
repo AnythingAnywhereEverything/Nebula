@@ -22,7 +22,7 @@
 .fieldTitle {
     display: flex;
     width: 100%;
-    line-height: 1.375rem;
+    line-height: 1.375;
     align-items: center;
     gap: calc(var(--spacing) * 2);
     font-size: var(--text-small);
@@ -84,21 +84,23 @@
 .fieldLabel {
     display: flex;
     width: fit-content;
-    line-height: 1.375rem;
+    line-height: 1.375;
     gap: calc(var(--spacing) * 2);
-    &:has([checked]) {
-        background-color: color-mix(in oklab, var(--primary) 5%, transparent);
-        border: 1px solid var(--primary);
-    }
-
+    
     &:has(>[data-component=field]){
         border-radius: var(--radius-large);
         border: 1px solid var(--border);
         width: 100%;
         flex-direction: column;
     }
+
+    &:has([data-state="checked"]) {
+        background-color: color-mix(in oklab, var(--primary) 5%, transparent);
+        border: 1px solid var(--primary);
+    }
+    
     * {
-        [data-component-field] {
+        &[data-component="field"] {
             padding: calc(var(--spacing) * 2.5);
         }
     }
@@ -120,9 +122,9 @@
 }
 
 .fieldContent {
-    gap: calc(var(--spacing) * 5);
+    gap: calc(var(--spacing) * .5);
     display: flex;
-    line-height: 1.375rem;
+    line-height: 1.375;
     flex-direction: column;
 }
 
@@ -159,7 +161,7 @@
     }
 
     &.horizontal {
-        flex-direction: column;
+        flex-direction: row;
         align-items: center;
 
         >[data-component="field-label"] {
@@ -168,7 +170,7 @@
         
         &:has(>[data-component="field-content"]){
             align-items: start;
-            >[role=checkbox], >[role=radio] {
+            &>[role=checkbox], &>[role=radio] {
                 margin-top: 1px;
             }
         }
