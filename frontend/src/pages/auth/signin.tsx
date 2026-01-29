@@ -30,10 +30,10 @@ const SignIn: NextPageWithLayout = () => {
                                 <InputGroup>
                                     <InputGroupAddon align="inline-end">
                                         <Button type="button" variant={"ghost"} size={"icon-xs"} onClick={() => setReveal(!reveal)}>
-                                            <Icon value={reveal ? "" : ""}/>
+                                            <Icon value={reveal ? "" : ""}/>
                                         </Button>
                                     </InputGroupAddon>
-                                    <InputGroupInput required type={reveal ? "password" : "text"} name="password" id="password" placeholder="• • • • • • • •" />
+                                    <InputGroupInput required type={reveal ? "text" : "password"} name="password" id="password" placeholder="• • • • • • • •" />
                                 </InputGroup>
                             </Field>
                         </FieldGroup>
