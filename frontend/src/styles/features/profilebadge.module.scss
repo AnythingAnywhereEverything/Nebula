@@ -1,0 +1,39 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+
+    user-select: none;
+
+    pointer-events: all;
+    cursor: pointer;
+
+    padding: var(--spacing);
+    border: 1px solid var(--border);
+    background-color: color-mix(in oklab, var(--input) 10%, transparent);
+    border-radius: var(--radius-medium);
+
+    transition: background-color 0.2s;
+
+    gap: calc(var(--spacing) * 2);
+    
+    &:hover {
+        background-color: color-mix(in oklab, var(--input) 20%, transparent);
+    }
+
+    .avatar { 
+        border-radius: var(--radius-small);
+        height: calc(var(--spacing) * 9);
+        width: calc(var(--spacing) * 9);
+        overflow: hidden;
+        flex-shrink: 0;
+
+        img {
+            object-fit: cover;
+            object-position: center;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+        }
+    }
+}

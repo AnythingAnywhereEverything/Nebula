@@ -14,7 +14,7 @@
 
     transform-origin: var(--radix-dropdown-menu-content-transform-origin);
 
-    min-width: var(--radix-select-trigger-width);
+    min-width: var(--radix-dropdown-menu-trigger-width);
 
     overflow-x: hidden;
     overflow-y: auto;
@@ -38,6 +38,11 @@
     transform-origin: var(--radix-dropdown-menu-content-transform-origin);
     color: var(--popover-foreground);
     overflow: hidden;
+}
+
+a.dropdownItem {
+  color: var(--accent-foreground);
+  text-decoration: none;
 }
 
 .dropdownItem {

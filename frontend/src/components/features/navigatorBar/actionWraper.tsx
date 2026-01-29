@@ -5,6 +5,7 @@ import { Button } from "@components/ui/NebulaUI"
 import Link from "next/link"
 import { cn } from "src/lib/utils"
 import { Icon } from "@components/ui/Nebula/icon"
+import { ProfileBadge } from '../profileBadge'
 
 const ActionWraper: React.FC = () => {
     return (
@@ -12,6 +13,9 @@ const ActionWraper: React.FC = () => {
         <Button variant={"oppose"} asChild>
             <Link href={"/auth/signin"}>Sign in</Link>
         </Button>
+
+        <ProfileBadge/>
+
         <Button asChild className={cn(nb.buttonDark)} size={"icon-lg"}>
             <Link href={"/wishlist"}>
                 <Icon value=""/>
