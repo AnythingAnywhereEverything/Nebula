@@ -1,6 +1,5 @@
 
 import React, { FC, JSX } from 'react';
-import { NerdFonts } from '../../utilities/NerdFonts';
 import style from '@styles/features/searchresult.module.scss';
 
 const SearchResultLoading: React.FC = () => {

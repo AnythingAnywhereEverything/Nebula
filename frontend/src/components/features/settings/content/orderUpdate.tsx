@@ -1,7 +1,7 @@
 import React from "react";
 import style from "@styles/layouts/orderUpdate.module.scss"
 import Link from "next/link";
-import { NerdFonts } from "@components/utilities/NerdFonts";
+import { Icon } from "@components/ui/NebulaUI";
 
 
 const OrderUpdate: React.FC = () => {
@@ -23,7 +23,7 @@ const OrderUpdate: React.FC = () => {
                             we've notified the seller. Kindly wait for your shipment.
                         </p>
                         <div className={style.time}>
-                            <NerdFonts>󱎫</NerdFonts> <span>1/28/2026</span> <span>18.30</span>
+                            <Icon>󱎫</Icon> <span>1/28/2026</span> <span>18.30</span>
                         </div>
                     </div>
 
@@ -46,7 +46,7 @@ const OrderUpdate: React.FC = () => {
                             your payment could not be verified.
                         </p>
                         <div className={style.time}>
-                            <NerdFonts>󱎫</NerdFonts> <span>1/18/2026</span> <span>01.30</span>
+                            <Icon>󱎫</Icon> <span>1/18/2026</span> <span>01.30</span>
                         </div>
                     </div>
 

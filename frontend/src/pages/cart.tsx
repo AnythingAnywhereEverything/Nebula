@@ -2,6 +2,8 @@ import style from '@styles/layouts/cart.module.scss';
 import Head from "next/head";
 import CartShopProduct from "@components/features/cart/cartShopProduct";
 import { RecommendPanel } from '@components/features/recommendation';
+import { Button, Field, FieldGroup, FieldLegend, FieldSeparator, FieldSet, Separator } from '@components/ui/NebulaUI';
+import { cn } from '@lib/utils';
 
 export default function Cart() {
     const hasItems = true; // later from backend
@@ -15,31 +17,33 @@ export default function Cart() {
 
             <section className={style.cartPage}>
 
-                <section className={style.cartSection}>
+                <Field orientation={"horizontal"} className={style.cartSection}>
 
-                    <div className={style.cartContainer}>
-
-                        <header className={style.header}>
+                    <FieldGroup className={style.cartContainer}>
+                        <Field className={style.header}>
                             <h1>Shopping Cart</h1>
 
-                            <div className={style.headerAction}>
+                            <Field orientation={"horizontal"}>
                                 {selectedCount === 0 ? (
                                     <p>No item selected.</p>
                                 ) : (
                                     <p>{selectedCount} items selected.</p>
                                 )}
 
-                                <button className={style.selectAllBtn}>
+                                <Button variant={"ghost"} size={"sm"} className={style.selectAllBtn}>
                                     Select all items
-                                </button>
-                            </div>
-                        </header>
+                                </Button>
+                            </Field>
+                        </Field>
 
-                        <div className={style.cartItemContainer}>
+                        <FieldSeparator/>
+
+                        <FieldGroup className={style.cartItemContainer}>
                             {hasItems ? (
                                 <>
                                     <CartShopProduct 
-                                        nsin="NB0000000001" 
+                                        nsin="NB00000001"
+                                        stock={20}
                                         product_name="Something something, dont forget to make this into a link after implement product on the backend btw." 
                                         product_image="https://placehold.co/400" 
                                         price={299}
@@ -48,12 +52,13 @@ export default function Cart() {
                                         availability={"in_stock"} 
                                         freeShipping amount={1} 
                                     /> 
-                                    <CartShopProduct 
-                                        nsin="NB0000000008"
+                                    <CartShopProduct
+                                        stock={3}
+                                        nsin="NB00000002"
                                         product_name="Something something Version 2 but make it veryyyy very longggggggggggggggggggg... NOT ENOUGH???????!?!? MAKE IT LONGERRRRRRRRRRRRRRRRRRRR LIKE THAT ONE VIDEO ON INSTAGRAM REELLLLLLLLLLLLLLLLLLLLLLLLL" 
                                         product_image="https://placehold.co/200" 
                                         price={1200} variant={{size: "L"}} 
-                                        freeShipping availability={"in_stock"} 
+                                        freeShipping availability={"low_stock"} 
                                         amount={1} 
                                     />
                                 </>
@@ -62,40 +67,40 @@ export default function Cart() {
                                     <p>Your cart is empty.</p>
                                 </div>
                             )}
-                        </div>
-
+                        </FieldGroup>
+                        <Separator />
                         <footer className={style.allTotal}>
                             <span>Total (2 items)</span>
                             <strong>$1,499</strong>
                         </footer>
-                    </div>
+                    </FieldGroup>
+                    <FieldSeparator />
+                    <FieldGroup className={cn(style.cartSummary, style.cartContainer)}>
+                        <Field className={style.summaryBox}>
+                            <FieldLegend>Order Summary</FieldLegend>
 
-                    <aside className={style.cartSummary}>
-                        <section className={style.summaryBox}>
-                            <h2>Order Summary</h2>
-
-                            <div className={style.summaryRow}>
+                            <Field orientation={"horizontal"} style={{justifyContent:"space-between"}}>
                                 <span>Items</span>
                                 <span>2</span>
-                            </div>
+                            </Field>
 
-                            <div className={style.summaryRow}>
+                            <Field orientation={"horizontal"} style={{justifyContent:"space-between"}}>
                                 <span>Shipping</span>
                                 <span>Free</span>
-                            </div>
+                            </Field>
 
-                            <div className={style.summaryTotal}>
+                            <Field orientation={"horizontal"} style={{justifyContent:"space-between"}}>
                                 <span>Total</span>
                                 <strong>$1,499</strong>
-                            </div>
+                            </Field>
 
-                            <button className={style.checkoutBtn}>
+                            <Button size={"sm"}>
                                 Proceed to Checkout
-                            </button>
-                        </section>
-                    </aside>
+                            </Button>
+                        </Field>
+                    </FieldGroup>
 
-                </section>
+                </Field>
 
                 <RecommendPanel />
 

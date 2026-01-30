@@ -1,8 +1,7 @@
-import { NerdFonts } from '../../utilities/NerdFonts';
 import style from '@styles/features/filterbar.module.scss';
 import { NebulaButton } from '@components/ui/NebulaBtn';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { Button, ButtonGroup, Label } from '@components/ui/NebulaUI';
+import { Icon, Button, ButtonGroup, Label } from '@components/ui/NebulaUI';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@components/ui/Nebula/selector';
 
 const FilterBar: React.FC = () => {
@@ -64,12 +63,12 @@ const FilterBar: React.FC = () => {
                     <NebulaButton
                         className={style.pageButton}
                         onClick={() => {} }
-                        btnValues={NerdFonts({ children: "" })}
+                        btnValues={Icon({ children: "" })}
                     />
                     <NebulaButton
                         className={style.pageButton}
                         onClick={() => {} }
-                        btnValues={NerdFonts({ children: "" })}
+                        btnValues={Icon({ children: "" })}
                     />
                 </div>
             </div>

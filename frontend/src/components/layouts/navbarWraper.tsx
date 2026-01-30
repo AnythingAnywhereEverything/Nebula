@@ -1,4 +1,3 @@
-// navbar component
 import React from 'react';
 import NavDesktop from './navbars/navbarDesktop';
 import NavAuth from './navbars/navbarLogin';

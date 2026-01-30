@@ -3,17 +3,15 @@ import style from '@styles/layouts/productlayout.module.scss';
 import Head from 'next/head';
 
 import ProductImageViewer from '@components/features/product/productImageViewer';
-import ReactMarkdown from 'react-markdown';
 
 import { productExample } from 'src/mocks/product.mock';
-import ProductTitle from '@components/features/product/productTitle';
-import ProductMinorDetail from '@components/features/product/productMinorDetails';
-import ProductPrice from '@components/features/product/productPrice';
-import ProductEssential from '@components/features/product/productEssential';
 import ProductVariantSelector from '@components/features/product/productVariantSelector';
 import ProductAmountSelector from '@components/features/product/productAmountSelector';
-import ProductAction from '@components/features/product/productAction';
 import ProductFullDetail from '@components/features/product/productFullDetail';
+import { Badge } from '@components/ui/Nebula/badge';
+import Link from 'next/link';
+import { Button, Field, FieldDescription, FieldSeparator, FieldSet, Icon, Separator } from '@components/ui/NebulaUI';
+import { formatLargeNumber, ratingStars } from '@lib/utils';
 
 interface ProductPageLayoutProps {
     nsin?: string;
@@ -34,34 +32,70 @@ const ProductPageLayout: React.FC<ProductPageLayoutProps> = ({nsin}) => {
                 <title>{product.name}</title>
             </Head>
 
-            <div className={style.topSideContainer}>
+            <Field orientation={"horizontal"} className={style.container}>
                 <ProductImageViewer mediaLists={variant.media}/>
-                <div className={style.overallDetailContainer}>
-                    <div className={style.topDetail}>
-                        <ProductTitle 
-                            name={product.name} 
-                            tag={product.productTag} 
-                            tag_color={product.productTagColor}/>
-
-                        <a className={style.storeName} href={`/store/${product.productStoreID}`}>
+                <FieldSeparator/>
+                <FieldSet>
+                    <Field>
+                        <h2 className={style.productTitle}>
+                            {(product.productTagColor && product.productTag) &&
+                                <Badge color={product.productTagColor} size={"lg"}>{product.productTag}</Badge>
+                            } 
+                            {product.name}
+                        </h2>
+                        
+                        <Link href={`/store/${product.productStoreID}`}>
                             Visit the {product.productStoreName} store
-                        </a>
+                        </Link>
 
-                        <ProductMinorDetail
-                            rating={product.rating}
-                            review={product.reviewsCount}
-                            sold={product.soldAmount}/>
+                        <Field orientation={"horizontal"}>
+                            <Field orientation={"horizontal"}>
+                                <FieldDescription>
+                                    {product.rating} <Icon className={style.star}>{ratingStars(product.rating)}</Icon>
+                                </FieldDescription>
+                                <Separator orientation="vertical" />
+                                <FieldDescription title={product.reviewsCount.toString()}>
+                                    {formatLargeNumber(product.reviewsCount)} Reviews
+                                </FieldDescription>
+                                <Separator orientation="vertical" />
+                                <FieldDescription title={product.soldAmount.toString()}>
+                                    {formatLargeNumber(product.soldAmount)} Sold
+                                </FieldDescription>
+                            </Field>
+                            <Button variant={"destructive"} size={"sm"}>
+                                Report
+                            </Button>
+                        </Field>
 
-                        <ProductPrice
-                            price={variant.price}
-                            discount={variant.discount}/>
-                    </div>
+                        <div className={`${style.productPrice} ${variant.price ? style.discounted : ""}`}>
+                            {variant.discount ? (
+                                <>
+                                    <p><span className={style.percent}>–{Math.round((1 - variant.discount / variant.price) * 100)}%</span> ${variant.discount}</p>
+                                    <s>${variant.price}</s>
+                                </>
+                            ) : (
+                                <p className={style.priceFocus}>${variant.price}</p>
+                            )}
+                        </div>
+                            
+                        <Separator orientation="horizontal" />
+                    </Field>
 
-                    <div className={style.bottomDetail}>
-
-                        {/* Product essential details e.g. Shipping/Coupons goes here */}
-                        <ProductEssential
-                            shippingCost={product.shippingCost}/>
+                    <FieldSet>
+                        
+                        <div className={style.essentialContainer}>
+                            <p className={style.essentialName}>Delivery</p>
+                            <div className={style.detail}>
+                                <Icon className={style.shipIcon}> </Icon>
+                                {
+                                    product.shippingCost !== 0 ? (
+                                        <p>Total shipping cost ${product.shippingCost /* This is a placeholder, there will be no calculation on this project */}</p>
+                                    ) : (
+                                        <p>Free shipping</p>
+                                    )
+                                }
+                            </div>
+                        </div>
                         
                         <ProductVariantSelector
                             variants={product.variants}
@@ -74,10 +108,22 @@ const ProductPageLayout: React.FC<ProductPageLayoutProps> = ({nsin}) => {
                             availability={variant.availability}
                             />
                         
-                        <ProductAction nsin={nsin}/>
-                    </div>
-                </div>  
-            </div>
+                        <Field orientation={"horizontal"} className={style.productAction}>
+                            <Button className={style.addToCart}>
+                                <Icon></Icon> Add to cart
+                            </Button>
+
+                            <Button className={style.buyNow}>
+                                Buy Now
+                            </Button>
+
+                            <Button variant={"destructive"} className={style.wishList}>
+                                <Icon></Icon>Add to wishlist
+                            </Button>
+                        </Field>
+                    </FieldSet>
+                </FieldSet>  
+            </Field>
 
             <div className={style.fullDetailContainer}>
                 <ProductFullDetail

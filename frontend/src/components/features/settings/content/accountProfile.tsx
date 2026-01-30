@@ -1,4 +1,4 @@
-import { NebulaTextField } from "@components/ui/NebulaTextField";
+import { Input } from "@components/ui/NebulaUI";
 import style from "@styles/layouts/usersetting.module.scss";
 import Form from "next/form";
 
@@ -10,14 +10,14 @@ const AccountProfile: React.FC = () => {
                     <label htmlFor="username" className={style.label}>
                         Username
                     </label>
-                    <NebulaTextField name="username" id="username" placeholder="Username" />
+                    <Input name="username" id="username" placeholder="Username" />
                 </div>
 
                 <div className={style.row}>
                     <label htmlFor="displayname" className={style.label}>
                         Display Name
                     </label>
-                    <NebulaTextField name="displayname" id="displayname" placeholder="Display Name" />
+                    <Input name="displayname" id="displayname" placeholder="Display Name" />
                 </div>
 
                 <div className={style.row}>

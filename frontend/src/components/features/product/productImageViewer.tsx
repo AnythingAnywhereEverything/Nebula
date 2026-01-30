@@ -1,6 +1,5 @@
 import React from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { NerdFonts } from '../../utilities/NerdFonts';
 import style from '@styles/features/productmediaviewer.module.scss';
 import { NebulaButton } from '@components/ui/NebulaBtn';
 

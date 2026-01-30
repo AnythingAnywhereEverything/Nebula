@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import style from '@styles/layouts/productlayout.module.scss';
+import { Field, FieldDescription, Icon, InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from '@components/ui/NebulaUI';
 
 interface ProductAmountSelectorProps {
     stock: number;
@@ -54,34 +55,47 @@ const ProductAmountSelector: React.FC<ProductAmountSelectorProps> = ({ stock, av
 
 
     return (
-        <div className={style.amountContainer}>
-            <h3>Amount</h3>
+        <Field>
+            <FieldDescription>Amount</FieldDescription>
 
-            <div className={style.amountSelector}>
-                <button onClick={() => setValue((v) => Math.max(1, Number(v) - 1))}>
-                -
-                </button>
+            <Field orientation={"horizontal"}>
+                <InputGroup style={{width: "calc(var(--spacing) * 30)"}}>
+                    <InputGroupAddon align='inline-start'>
+                        <InputGroupButton 
+                            size={"icon-xs"}
+                            onClick={() => setValue((v) => Math.max(1, Number(v) - 1))}
+                        >
+                            <Icon></Icon>
+                        </InputGroupButton>
+                    </InputGroupAddon>
+                    <InputGroupAddon align='inline-end'>
+                        <InputGroupButton 
+                            size={"icon-xs"}
+                            onClick={() => setValue((v) => Math.min(stock, Number(v) + 1))}
+                        >
+                            <Icon></Icon>
+                        </InputGroupButton>
+                    </InputGroupAddon>
+                    <InputGroupInput
+                        style={
+                            {textAlign:"center"}
+                        }
+                        type="text"
+                        min={1}
+                        max={stock}
+                        value={value}
+                        onChange={handleChange}
+                        onBlur={commitValue}
+                    />
+                </InputGroup>
+                <FieldDescription className={config.className}>
+                {typeof config.text === "function"
+                    ? config.text(stock)
+                    : config.text}
+                </FieldDescription>
+            </Field>
 
-                <input
-                    type="text"
-                    min={1}
-                    max={stock}
-                    value={value}
-                    onChange={handleChange}
-                    onBlur={commitValue}
-                />
-
-                <button onClick={() => setValue((v) => Math.min(stock, Number(v) + 1))}>
-                +
-                </button>
-            </div>
-
-            <p className={`${style.stockStatus} ${config.className}`}>
-            {typeof config.text === "function"
-                ? config.text(stock)
-                : config.text}
-            </p>
-        </div>
+        </Field>
     );
 };
 

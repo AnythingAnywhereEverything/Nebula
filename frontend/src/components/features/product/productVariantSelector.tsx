@@ -2,6 +2,7 @@ import React from 'react';
 import style from '@styles/layouts/productlayout.module.scss';
 import type { ProductOption, ProductVariant } from "src/types/product";
 import router from 'next/router';
+import { Button, Field, FieldDescription, FieldSet } from '@components/ui/NebulaUI';
 
 interface ProductVariantSelectorProps {
     options?: ProductOption[];
@@ -84,22 +85,22 @@ const ProductVariantSelector: React.FC<ProductVariantSelectorProps> = ({
 
 
     return (
-        <div className={style.variantsContainer}>
+        <FieldSet>
         {[...options]
             .sort((a, b) => a.order - b.order)
             .map((option) => (
-            <div key={option.name} className={style.variantSection}>
-                <h3>
+            <Field key={option.name}>
+                <FieldDescription>
                     {capitalizeFirstLetter(option.name)}
                     {selected[option.name] && ` : ${selected[option.name]}`}
-                </h3>
+                </FieldDescription>
 
-                <div className={style.variantOptions}>
+                <Field orientation={"horizontal"} style={{marginLeft: "var(--spacing)"}}>
                 {option.values.map((value) => {
                     const state = getValueState(option.name, value);
 
                     return (
-                        <button
+                        <Button variant={"outline"} size={"sm"}
                             key={value}
                             disabled={state === "disabled"}
                             className={[
@@ -113,13 +114,13 @@ const ProductVariantSelector: React.FC<ProductVariantSelectorProps> = ({
                             onClick={() => handleSelect(option.name, value)}
                             >
                             {value}
-                        </button>
+                        </Button>
                     );
                 })}
-                </div>
-            </div>
+                </Field>
+            </Field>
             ))}
-        </div>
+        </FieldSet>
     );
 };
 

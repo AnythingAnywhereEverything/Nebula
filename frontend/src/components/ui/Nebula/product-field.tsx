@@ -2,7 +2,7 @@ import { ProductItemExamples } from "src/mocks/productItem.mock";
 import { useState, useEffect } from "react";
 import * as ProductItemProps from "src/types/productItem";
 
-import { useGridColumnCount } from "@components/utilities/UseGridColumnCount";
+import { useGridColumnCount } from "@lib/utils";
 import { Badge } from "./badge";
 import { ProductItem, ProductImage, ProductContent, ProductHeader, ProductFooter, ProductPrice, ProductStars, ProductLocation, Button, ButtonGroup } from "../NebulaUI";
 

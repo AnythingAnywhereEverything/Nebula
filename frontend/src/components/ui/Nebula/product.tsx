@@ -1,4 +1,4 @@
-import { ratingStars } from '@components/utilities/StarRating';
+import { ratingStars } from '@lib/utils';
 import s from '@styles/ui/Nebula/product.module.scss';
 import { Icon } from './icon';
 import { cva, VariantProps } from 'class-variance-authority';
