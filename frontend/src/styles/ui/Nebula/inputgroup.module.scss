@@ -21,6 +21,14 @@
         );
     }
 
+    [data-theme=midnight] & {
+        background-color: color-mix(
+        in oklab,
+        var(--muted) 10%,
+        transparent
+        );
+    }
+
     &:has([data-component='input-group-control']:focus-visible) {
         border-color: var(--ring);
         box-shadow: 0 0 0 3px
