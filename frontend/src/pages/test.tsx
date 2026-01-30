@@ -9,11 +9,22 @@ import { SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectLabel, Se
 import { Switch } from '@components/ui/Nebula/switch';
 import { Field, FieldLabel, FieldDescription, FieldGroup, FieldLegend, FieldSet, FieldContent, FieldTitle } from '@components/ui/Nebula/field';
 import { Checkbox } from '@components/ui/Nebula/checkbox';
+import { Combobox, ComboboxChip, ComboboxChips, ComboboxChipsInput, ComboboxContent, ComboboxEmpty, ComboboxItem, ComboboxList, ComboboxValue, useComboboxAnchor } from '@components/ui/Nebula/combobox';
+import React from 'react';
+
+const frameworks = [
+  "Next.js",
+  "SvelteKit",
+  "Nuxt.js",
+  "Remix",
+  "Astro",
+] as const
 import Form from 'next/form';
 import NotificationComponent from '@components/features/settings/notification/notificationComponent';
 import { usePathname } from 'next/navigation';
 
 const TestPage: NextPageWithLayout = () => {
+    const anchor = useComboboxAnchor()
    const pathname = usePathname()
 
     const hasButton = pathname == "/notification/order"
@@ -78,7 +89,35 @@ const TestPage: NextPageWithLayout = () => {
                 <InputGroupText>USD</InputGroupText>
             </InputGroupAddon>
         </InputGroup>
-
+        <Combobox
+        multiple
+        autoHighlight
+        items={frameworks}
+        defaultValue={[frameworks[0]]}
+        >
+        <ComboboxChips ref={anchor} className="w-full max-w-xs">
+            <ComboboxValue>
+            {(values) => (
+                <React.Fragment>
+                {values.map((value: string) => (
+                    <ComboboxChip key={value}>{value}</ComboboxChip>
+                ))}
+                    <ComboboxChipsInput />
+                </React.Fragment>
+            )}
+            </ComboboxValue>
+        </ComboboxChips>
+        <ComboboxContent anchor={anchor} keepMount={false}>
+            <ComboboxEmpty>No items found.</ComboboxEmpty>
+            <ComboboxList>
+            {(item) => (
+                <ComboboxItem key={item} value={item}>
+                {item}
+                </ComboboxItem>
+            )}
+            </ComboboxList>
+        </ComboboxContent>
+        </Combobox>
 
 
         <DropdownMenu>

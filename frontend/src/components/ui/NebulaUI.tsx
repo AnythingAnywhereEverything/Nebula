@@ -19,3 +19,5 @@ export * from "./Nebula/checkbox"
 export * from "./Nebula/product"
 export * from "./Nebula/product-field"
 export * from "./Nebula/field"
+
+export * from "./Nebula/combobox"
