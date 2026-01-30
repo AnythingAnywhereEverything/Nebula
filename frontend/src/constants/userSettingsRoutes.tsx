@@ -3,6 +3,8 @@ import Address from "@components/features/settings/content/address";
 import Payment from "@components/features/settings/content/payment";
 import ChangePassword from "@components/features/settings/content/changePassword";
 import Notification from "@components/features/settings/content/notification";
+import OrderUpdate from "@components/features/settings/content/orderUpdate";
+import PromotionNotification from "@components/features/settings/content/promotionNoti";
 
 export const userSettingsAllowList: Record<string, {
     component: React.ComponentType;
@@ -51,12 +53,12 @@ export const userSettingsAllowList: Record<string, {
 
     // Notifications Areas
     "/notification/order": {
-        component: () => <p>Order Updates</p>,
+        component: OrderUpdate,
         title: "Order Updates",
         description: "Track your order notifications",
     },
-    "/notification/payment": {
-        component: () => <p>Promotions</p>,
+    "/notification/promotion": {
+        component: PromotionNotification,
         title: "Promotions",
         description: "See promotional updates",
     },
