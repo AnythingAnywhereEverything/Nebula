@@ -40,10 +40,36 @@ function DialogContent({
   className,
   children,
   showCloseButton = true,
+  noPortal = false,
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Content> & {
   showCloseButton?: boolean
+  noPortal?: boolean
 }) {
+  if (noPortal) return (
+    <>
+      <DialogOverlay />
+      <DialogPrimitive.Content
+        data-component="dialog-content"
+        className={cn(
+          s.dialogContent,
+          className
+        )}
+        {...props}
+      >
+        {children}
+        {showCloseButton && (
+          <DialogPrimitive.Close data-component="dialog-close" asChild>
+            <Button variant="ghost" className={s.closeBtn} size="icon-sm">
+              <Icon value=""/>
+              <span className={s.srOnly}>Close</span>
+            </Button>
+          </DialogPrimitive.Close>
+        )}
+      </DialogPrimitive.Content>
+    </>
+  )
+
   return (
     <DialogPortal>
       <DialogOverlay />

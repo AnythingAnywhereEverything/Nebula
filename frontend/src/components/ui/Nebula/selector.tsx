@@ -7,7 +7,7 @@ import s from "@styles/ui/Nebula/select.module.scss";
 function Select({
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Root>) {
-  return <SelectPrimitive.Root data-slot="select" {...props} />
+  return <SelectPrimitive.Root data-component="select" {...props} />
 }
 function SelectGroup({
   className,

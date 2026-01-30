@@ -71,7 +71,6 @@ function ComboboxInput({
             data-component="input-group-button"
             className={s.inputAddon}
             disabled={disabled}
-            asChild
           >
             <ComboboxTrigger />
           </InputGroupButton>

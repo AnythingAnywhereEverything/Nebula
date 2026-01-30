@@ -207,11 +207,11 @@
                 width: auto;
             }
 
-            > [data-slot='field-label'] {
+            > [data-component='field-label'] {
                 flex: 1 1 auto;
             }
 
-            &:has(> [data-slot='field-content']) {
+            &:has(> [data-component='field-content']) {
                 align-items: flex-start;
 
                 > [role='checkbox'],

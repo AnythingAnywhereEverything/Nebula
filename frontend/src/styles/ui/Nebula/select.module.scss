@@ -62,7 +62,7 @@
         box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 50%, transparent);
     }
 
-    *[data-slot='select-value'] {
+    *[data-component='select-value'] {
         display: flex;
         gap: calc(var(--spacing) * 1.5);
         -webkit-line-clamp: 1;
