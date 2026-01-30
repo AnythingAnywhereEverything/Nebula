@@ -14,7 +14,7 @@
     padding-right: calc(var(--spacing) * 2);
     padding-left: calc(var(--spacing) * 2.5);
     transition: color, background-color;
-    transition-duration: 1.2s;
+    transition-duration: .2s;
     user-select: none;
     width: fit-content;
     align-items: center;
@@ -72,9 +72,20 @@
 
 
     [data-theme=dark] & {
-        background: color-mix(in oklab, var(--input) 30%, transparent);;
+        background: color-mix(in oklab, var(--input) 30%, transparent);
         &:hover{
-            background: color-mix(in oklab, var(--input) 50%, transparent);;
+            background: color-mix(in oklab, var(--input) 50%, transparent);
+        }
+        &[aria-invalid] {
+            box-shadow: 0 0 0 3px color-mix(in srgb, var(--destructive) 40%, transparent);
+            border-color: color-mix(in srgb, var(--destructive) 50%, transparent);
+        }
+    }
+
+    [data-theme=midnight] & {
+        background: color-mix(in oklab, var(--input) 10%, transparent);
+        &:hover{
+            background: color-mix(in oklab, var(--input) 50%, transparent);
         }
         &[aria-invalid] {
             box-shadow: 0 0 0 3px color-mix(in srgb, var(--destructive) 40%, transparent);

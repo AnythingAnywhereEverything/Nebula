@@ -18,6 +18,10 @@
     [data-theme=dark] & {
         background: color-mix(in srgb, var(--input) 30%, transparent);
     }
+    [data-theme=midnight] & {
+        background: color-mix(in srgb, var(--input) 10%, transparent);
+    }
+
 
     input[type='file']::file-selector-button {
         height: calc(var(--spacing) * 6);
@@ -44,7 +48,7 @@
         opacity: 0.5;
         pointer-events: none;
         background-color: color-mix(in srgb, var(--input) 50%, transparent);
-        [data-theme=dark] {
+        [data-theme=dark] &, [data-theme=midnight] & {
             background: color-mix(in srgb, var(--ring) 80%, transparent);;
         }
     }

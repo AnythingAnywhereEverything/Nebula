@@ -29,9 +29,9 @@
     background-color: color-mix(
         in oklab, var(--input) 10%, transparent);
 
-    [data-theme=dark] & {
+    [data-theme=dark] &, [data-theme=midnight] & {
         background-color: color-mix(
-            in oklab, var(--input) 30%, transparent);
+            in oklab, var(--muted) 30%, transparent);
     }
 }
     

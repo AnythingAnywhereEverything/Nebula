@@ -54,6 +54,12 @@ a.dropdownItem {
     padding-inline: calc(var(--spacing) * 1.5);
     padding-block: calc(var(--spacing) * 1);
 
+    &[data-component="dropdown-menu-checkbox-item"],
+    &[data-component="dropdown-menu-radio-item"] {
+        padding-left: calc(var(--spacing) * 1.5);
+        padding-right: calc(var(--spacing) * 8);
+    }
+
     border-radius: var(--radius-medium);
     font-size: var(--text-small);
     line-height: var(--text-sm--line-height);
@@ -106,6 +112,16 @@ a.dropdownItem {
                     background-color: color-mix(
                     in oklab,
                     var(--destructive) 20%,
+                    transparent
+                );
+            }
+        }
+
+        [data-theme=dark] & {
+            &:focus-visible {
+                    background-color: color-mix(
+                    in oklab,
+                    var(--destructive) 30%,
                     transparent
                 );
             }

@@ -38,7 +38,7 @@
         box-shadow: 0 0 0 3px color-mix(in srgb, var(--destructive) 20%, transparent);
     }
 
-    [data-theme=dark] & {
+    [data-theme=dark] &, [data-theme=midnight] & {
         background: color-mix(in oklab,
             var(--input) 30%,
             transparent

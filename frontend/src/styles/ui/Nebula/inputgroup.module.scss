@@ -71,6 +71,21 @@
                 in oklab, var(--input) 80%, transparent);
         }
     }
+
+    [data-theme=midnight] & {
+        background-color: color-mix(in oklab,
+            var(--input) 10%, transparent);
+        
+        &:has([data-component][aria-invalid="true"]) {
+            box-shadow: 0 0 0 3px color-mix(
+                in oklab, var(--destructive) 20%, transparent);
+        }
+
+        &:has([data-disabled=true]) {
+            background-color: color-mix(
+                in oklab, var(--input) 80%, transparent);
+        }
+    }
 }
 
 .inputGroupAddon {
@@ -89,7 +104,7 @@
         padding-left: 0.5rem;
         order: -1;
         &:has(button) {
-            margin-right: -0.3rem;
+            margin-left: -0.3rem;
         }
     }
 
@@ -145,6 +160,7 @@
 
 .sizeIconXs {
     height: 1.5rem;
+    font-size: 0.5rem;
     border-radius: calc(var(--radius) - 3px);
     padding: 0;
 }
@@ -180,12 +196,13 @@
         box-shadow: none;
     }
 
-    [data-theme=dark] & {
+    [data-theme=dark] &, [data-theme=midnight] & {
         background: transparent;
         &:disabled {
             background: transparent;
         }
     }
+    
 }
 
 .inputGroupTextarea {

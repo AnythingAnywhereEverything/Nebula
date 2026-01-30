@@ -48,11 +48,10 @@
         inset-block: -0.5rem;
     }
 
-    [data-theme=dark] & {
-        background: color-mix(in oklab, var(--input) 30%, transparent);;
+    [data-theme=dark] &, [data-theme=midnight] & {
+        background: color-mix(in oklab, var(--input) 30%, transparent);
         &[aria-invalid='true'] {
             border-color: color-mix(in oklab, var(--destructive) 50%, transparent);
-
             
             box-shadow: 0 0 0 3px
             color-mix(in oklab, var(--destructive) 40%, transparent);

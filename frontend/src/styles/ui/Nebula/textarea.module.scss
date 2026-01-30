@@ -20,6 +20,9 @@
     [data-theme=dark] & {
         background: color-mix(in srgb, var(--input) 30%, transparent);;
     }
+    [data-theme=midnight] & {
+        background: color-mix(in srgb, var(--input) 10%, transparent);;
+    }
 
     &:focus-visible {
         border-color: var(--ring);
@@ -32,7 +35,7 @@
         box-shadow: 0 0 0 3px color-mix(in srgb, 
             var(--destructive) 20%, transparent);
 
-        [data-theme=dark] & {
+        [data-theme=dark] &, [data-theme=midnight] & {
             border-color: 1px solid color-mix(in srgb, 
                 var(--destructive) 50%, transparent);
             box-shadow: 0 0 0 3px color-mix(in srgb, 
@@ -48,6 +51,10 @@
         [data-theme=dark] & {
             background-color: color-mix(in srgb, 
                 var(--input) 80%, transparent);
+        }
+        [data-theme=midnight] & {
+            background-color: color-mix(in srgb, 
+                var(--input) 60%, transparent);
         }
     }
 

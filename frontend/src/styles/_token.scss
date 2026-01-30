@@ -13,7 +13,6 @@
     --spacing: 0.25rem;
     --container-md: 28rem;
     --radius: .625rem;
-    --text-base: 1rem;
     
     // Base colors
     --primary: #2e49ab;
@@ -26,25 +25,45 @@
     --muted-foreground: #505050;
     --card: #171717;
     --card-foreground: #fafafa;
-
+    
     --accent: #f5f5f5;
     --accent-foreground: #171717;
-
+    --accent-star: #f5a018;
+    --accent-link: #3c56ff;
+    --accent-link-hover: #162fcf;
+    --accent-sale: #d75555;
+    
+    --icon-blue: #2b93cf;
+    
     --popover: #fff;
     --popover-foreground: #000000;
-
+    
     --border: #b0b0b0;
     --input: #e5e5e5;
     --destructive: #ff6466;
     --destructive-foreground: #e32324;
+    
+    --stock-in: #16a34a;
+    --stock-low: #ea580c;
+    --stock-out: #dc2626;
 
+    --product-add-bg: #ff7b7b;
+    --product-add-foreground: #911a1a;
+    --product-buy-bg: #ffbb55;
+    --product-buy-foreground: #733f17;
+    
     --text-neutral: #0a0a0a;
     --text-link: #3a5ba3;
     // Fonts
+    --text-base: 1rem;
+    --text-base--line-height: calc(1.5 / 1);
     --text-extra-small: .75rem;
+    --text-xs--line-height: calc(1 / .75);
     --text-small: .875rem;
+    --text-sm--line-height: calc(1.25 / .875);
     --text-large: 1.125rem;
-
+    --text-lg--line-height: calc(1.75 / 1.125);
+    
     // Border
     --radius-extra-small: .25rem;
     --radius-small: calc(var(--radius) - 4px);
@@ -63,78 +82,76 @@
 
     --content-container-border: #eeeeee;
 
-    /* =========================
-        Text
-    ========================= */
-    --text-lightest: #efefef;
-    --text-light: #c6c6c6;
-    --text-muted: #858585;
-    --text-default: #4d4d4d;
-    --text-strong: #313131;
-
-    --text-foreground: #bbbbbb;
-    --text-muted-foreground: #747474;
-
-    --text-on-dark: #ffffff;
-    --text-on-light: #000000;
     --placeholder: #858585; /* added for input placeholders */
 
-    /* =========================
-        Brand / Primary
-    ========================= */
-    --brand-primary: #141f45;
-    --brand-primary-soft: #233472;
-    --brand-accent: #3880d2;
-    --brand-secondary: #f9f9f9;
-
-    /* =========================
-        Accents
-    ========================= */
-    --accent-star: #f5a018;
-    --accent-link: #3c56ff;
-    --accent-link-hover: #162fcf;
 
     /* =========================
         Status / Feedback
     ========================= */
-    --color-sale: #d75555;
     --color-alert: #c73636;
-    --color-notification: #ff8e8e;
-    --color-destructive: rgb(255, 100, 103);
-    --color-destructive-rgb: 255, 100, 103;
 
-    /* =========================
-        Borders
-    ========================= */
-    --border-default: #eee;
-    --border-input: #e9e9e9;
-    --border-input-rgb: 233, 233, 233;
-    --border-image-selected: #6b69ff;
-
-    /* =========================
-        Buttons
-    ========================= */
-    --btn-primary-bg: #3153cd;
-    --btn-primary-text: #d4d6ff;
-
-    --btn-secondary-bg: #f9f9f9;
-
-    /* =========================
-        Product UI
-    ========================= */
     --product-active-border: #3880d2;
     --product-active-bg: #b5d8ff;
 
-    --product-add-bg: #ffc5c5;
-    --product-add-border-text: #911a1a;
-
-    --product-buy-bg: #ffd390;
-    --product-buy-border-text: #7a441a;
 
     --product-delete-history: #91b7ff;
 
-    /* =========================
-        Radius / Shadows
-    ========================= */
     --ring-primary: 0 0 0 2px rgba(56, 128, 210, 0.4);;
+}
+
+[data-theme=dark] {
+    --background: #17171a;
+    --foreground: #fafafa;
+    --primary: #3d5ac3;
+    --primary-foreground: #ffffff;
+    --text-neutral: #dedede;
+    --secondary: #1c1c1c;
+    --secondary-foreground: #ffffff;
+    --muted: #323232;
+    --muted-foreground: #a2a2a2;
+    --text-link: #8aadf7;
+    --ring: #989898;
+
+    --popover: #2d2f34;
+    --popover-foreground: #fafafa;
+    --border: lab(100% 0 0 / .1);
+    --input: lab(100% 0 0 / .15);
+
+    --accent: #535353;
+    --accent-foreground: #f5f5f5;
+
+    --product-add-bg: #ff7272;
+    --product-add-foreground: #f99191;
+
+    --product-buy-bg: #ff904f;
+    --product-buy-foreground: #ffbc89;
+}
+
+[data-theme=midnight] {
+    color-scheme: dark;
+    --background: #000000;
+    --foreground: #fafafa;
+    --primary: #3d5ac3;
+    --primary-foreground: #ffffff;
+    --text-neutral: #dedede;
+    --secondary: #1c1c1c;
+    --secondary-foreground: #ffffff;
+    --muted: #323232;
+    --muted-foreground: #a2a2a2;
+    --text-link: #8aadf7;
+    --ring: #989898;
+
+    --popover: #2d2f34;
+    --popover-foreground: #fafafa;
+    --border: lab(100% 0 0 / .1);
+    --input: lab(100% 0 0 / .15);
+
+    --accent: #535353;
+    --accent-foreground: #f5f5f5;
+
+    --product-add-bg: #ff7272;
+    --product-add-foreground: #f99191;
+
+    --product-buy-bg: #ff904f;
+    --product-buy-foreground: #ffbc89;
 }
