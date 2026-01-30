@@ -103,7 +103,7 @@ const SignIn: NextPageWithLayout = () => {
                             </Field>
 
                             <Field data-invalid={!!errors.email}>
-                                <FieldLabel htmlFor="email">Username or Email</FieldLabel>
+                                <FieldLabel htmlFor="email">Email</FieldLabel>
                                 <Input
                                     aria-invalid={!!errors.email}
                                     required
