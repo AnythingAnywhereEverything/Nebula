@@ -24,15 +24,15 @@ const buttonVariants = cva(style.baseButton, {
             "icon-sm": style.smallIcon,
             "icon-lg": style.largeIcon,
         },
-        bg: {
-            light: style.bgLight,
-            dark: style.bgDark
+        justify: {
+            start: style.start,
+            center: style.center,
+            end: style.end,
         }
     },
     defaultVariants: {
         variant: "default",
         size: "default",
-        bg: "light"
     },
 })
 
@@ -41,7 +41,7 @@ export function Button({
     notification = 0,
     variant = "default",
     size = "default",
-    bg = "light",
+    justify = "center",
     asChild,
     ...props
 }: React.ComponentProps<"button"> & VariantProps<typeof buttonVariants> &{
@@ -56,7 +56,7 @@ export function Button({
         <Comp
             data-variant={variant}
             data-size={size}
-            className={cn(buttonVariants({ variant, size, bg }), className)}
+            className={cn(buttonVariants({ variant, size, justify }), className)}
             {...props}
         />
     )
