@@ -1,5 +1,5 @@
 import NebulaSettingListItem from '@components/ui/NebulaSettingListOption';
-import { NerdFonts } from '@components/utilities/NerdFonts';
+import { Icon } from '@components/ui/NebulaUI';
 import style from '@styles/features/profile/usersettingoption.module.scss';
 
 const UserSettingsOptions: React.FC = () => {
@@ -12,7 +12,7 @@ const UserSettingsOptions: React.FC = () => {
 
                 <div className={style.profileName}>
                     <p className={style.username}>Username</p>
-                    <p className={style.editbutton}><NerdFonts> </NerdFonts>Edit Profile</p>
+                    <p className={style.editbutton}><Icon> </Icon>Edit Profile</p>
                 </div>
             </div>
 
