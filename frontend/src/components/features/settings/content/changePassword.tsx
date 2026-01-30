@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import style from "@styles/layouts/changePassword.module.scss"
 import { NebulaButton } from "@components/ui/NebulaBtn";
 import Link from "next/link";
 import { Button, ButtonGroup, Field, FieldDescription, FieldGroup , FieldLabel, FieldSet, Icon, Input, InputGroup, InputGroupAddon, InputGroupInput } from "@components/ui/NebulaUI";
@@ -46,7 +45,7 @@ const ChangePassword: React.FC = () =>{
     }
         
     return (
-        <section className={style.changePasswordContainer}>
+        <section>
             <Form action="#">
                 <FieldSet
                 style={{width: "50%", margin: "4px"}}
