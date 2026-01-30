@@ -9,9 +9,14 @@ import { SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectLabel, Se
 import { Switch } from '@components/ui/Nebula/switch';
 import { Field, FieldLabel, FieldDescription, FieldGroup, FieldLegend, FieldSet, FieldContent, FieldTitle } from '@components/ui/Nebula/field';
 import { Checkbox } from '@components/ui/Nebula/checkbox';
+import Form from 'next/form';
+import NotificationComponent from '@components/features/settings/notification/notificationComponent';
+import { usePathname } from 'next/navigation';
 
 const TestPage: NextPageWithLayout = () => {
+   const pathname = usePathname()
 
+    const hasButton = pathname == "/notification/order"
   return (
     <div className={style.homeContainer} style={{gap: "2rem"}}>
         <h1>Hello, this is a test page, you may use your components here</h1>
@@ -328,7 +333,117 @@ const TestPage: NextPageWithLayout = () => {
             <ProductField max_rows={1}/>
         </ProductContainer>
 
+        <Form action={'#'}>
+            <FieldSet>
+                <h2>Add your username here</h2>
+                <FieldGroup>
+                    <Field>
+                        <FieldLabel></FieldLabel>
+                        <Input
+                            required
+                            name="username"
+                            id="username"
+                            placeholder="nebula_user"
+                            autoComplete='no'
+                        />
+                    </Field>
+
+                </FieldGroup>
+            </FieldSet>
+        </Form>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         
+
+        <div className={style.notificationTest}>
+        <NotificationComponent 
+            linkToPage='#'
+            title='Test'
+            description='Hello worlasgfuiasgufagsfsguasdasdsadadsadasdafsagasggsasagasgsagasgasgsasggasgasusfagufsagufsaafsiusfaiugsfaigfsauigfsaugfsagfsaiugfsaiugfsaiuhsiajfihfuabgbsuygbuasbsvavasiubvaiuvbiuasgfiuasgfiuaa'
+            mainImage='https://placehold.co/400'
+            additionalImage={['https://placehold.co/200','https://placehold.co/200']}
+            hasButton = {true}
+            timestamp={new Date('2025-01-01T20:00:00Z')}
+            />
+
+        <NotificationComponent 
+            linkToPage='#'
+            title='Test'
+            description='Hello worlasgfuiasgufagsfsguasdasdsadadsadasdafsagasggsasagasgsagasgasgsasggasgasusfagufsagufsaafsiusfaiugsfaigfsauigfsaugfsagfsaiugfsaiugfsaiuhsiajfihfuabgbsuygbuasbsvavasiubvaiuvbiuasgfiuasgfiuaa'
+            mainImage='https://placehold.co/400'
+            hasButton = {hasButton}
+            timestamp={new Date('2025-01-01T10:00:00Z')}
+            />
+
+        <NotificationComponent 
+            linkToPage='#'
+            title='Test'
+            description='Hello worlasgfuiasgufagsfsguasdasdsadadsadasdafsagasggsasagasgsagasgasgsasggasgasusfagufsagufsaafsiusfaiugsfaigfsauigfsaugfsagfsaiugfsaiugfsaiuhsiajfihfuabgbsuygbuasbsvavasiubvaiuvbiuasgfiuasgfiuaa'
+            mainImage='https://placehold.co/400'
+            hasButton = {true}
+            timestamp={new Date('2025-01-01T10:00:00Z')}
+            />
+        <NotificationComponent 
+            linkToPage='#'
+            title='Test'
+            description='Hello worlasgfuiasgufagsfsguasdasdsadadsadasdafsagasggsasagasgsagasgasgsasggasgasusfagufsagufsaafsiusfaiugsfaigfsauigfsaugfsagfsaiugfsaiugfsaiuhsiajfihfuabgbsuygbuasbsvavasiubvaiuvbiuasgfiuasgfiuaa'
+            mainImage='https://placehold.co/400'
+            additionalImage={['https://placehold.co/200','https://placehold.co/200']}
+            hasButton = {hasButton}
+            timestamp={new Date('2025-01-01T10:00:00Z')}
+            />
+        </div>
+
     </div>
   );
 };
