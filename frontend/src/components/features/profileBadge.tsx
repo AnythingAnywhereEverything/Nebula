@@ -1,9 +1,23 @@
-import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, Field, FieldDescription, FieldLabel, Label } from "@components/ui/NebulaUI";
+import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, Field, FieldDescription, FieldLabel, Label } from "@components/ui/NebulaUI";
 
 import s from "@styles/features/profilebadge.module.scss"
+import { useTheme } from "next-themes";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+
 
 export function ProfileBadge() {
+    const { theme, setTheme, resolvedTheme } = useTheme();
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => 
+        {setMounted(true)
+            console.log("mounted")
+        }, 
+    []);
+    
+    if (!mounted || !resolvedTheme) return null;
+    
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -17,7 +31,7 @@ export function ProfileBadge() {
                     </div>
                 </div>
             </DropdownMenuTrigger>
-            <DropdownMenuContent>
+            <DropdownMenuContent style={{width: "calc(var(--spacing) * 48)"}}>
                 <DropdownMenuGroup>
                     <DropdownMenuLabel>My Account</DropdownMenuLabel>
                     <DropdownMenuItem asChild>
@@ -28,6 +42,8 @@ export function ProfileBadge() {
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                         <Link href={"/user/purchaes"}>My Purchases</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
                     </DropdownMenuItem>
                     <DropdownMenuSub>
                         <DropdownMenuSubTrigger>Notification</DropdownMenuSubTrigger>
@@ -48,6 +64,19 @@ export function ProfileBadge() {
                             </DropdownMenuSubContent>
                         </DropdownMenuPortal>
                     </DropdownMenuSub>
+                    <DropdownMenuSub>
+                        <DropdownMenuSubTrigger>Theme: {theme && theme.charAt(0).toUpperCase()+theme.slice(1)}</DropdownMenuSubTrigger>
+                        <DropdownMenuPortal>
+                            <DropdownMenuSubContent>
+                                <DropdownMenuRadioGroup value={theme} onValueChange={setTheme}>
+                                    <DropdownMenuRadioItem value="system">Device Theme</DropdownMenuRadioItem>
+                                    <DropdownMenuRadioItem value="light">Light Theme</DropdownMenuRadioItem>
+                                    <DropdownMenuRadioItem value="dark">Dark Theme</DropdownMenuRadioItem>
+                                    <DropdownMenuRadioItem value="midnight">Midnight Theme</DropdownMenuRadioItem>
+                                </DropdownMenuRadioGroup>
+                            </DropdownMenuSubContent>
+                        </DropdownMenuPortal>
+                    </DropdownMenuSub>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
@@ -64,7 +93,7 @@ export function ProfileBadge() {
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                    <DropdownMenuItem>
+                    <DropdownMenuItem variant="destructive">
                         Log out
                     </DropdownMenuItem>
                 </DropdownMenuGroup>

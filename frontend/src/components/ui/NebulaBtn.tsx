@@ -1,6 +1,5 @@
 import React, { FC, ReactNode, useRef, useState } from 'react';
-import { useOutsideClick } from '@components/utilities/OutsideClick';
-import { NerdFonts } from '@components/utilities/NerdFonts';
+import { Icon } from '@components/ui/NebulaUI';
 import nb from '@styles/ui/nebulaButton.module.scss'
 import Link from 'next/link';
 
@@ -40,10 +39,6 @@ export const NebulaButton: FC<NebulaBtnProps> = (props) => {
     const isIcon = props.isIcon ? true : false
     const nCount = props.notificationCount ? props.notificationCount : 0;
 
-    useOutsideClick(wrapperRef as React.RefObject<HTMLElement>, () => {
-        if (open) setOpen(false);
-    });
-
     const closeTimeout = useRef<number | undefined>(undefined);
 
     if ('href' in props) {
@@ -77,7 +72,7 @@ export const NebulaButton: FC<NebulaBtnProps> = (props) => {
                 }}
             >
                 {isIcon ? (
-                <NerdFonts>{props.btnValues}</NerdFonts>
+                <Icon>{props.btnValues}</Icon>
                 ) : (
                 props.btnValues
                 )}
@@ -117,3 +112,4 @@ export const NebulaButton: FC<NebulaBtnProps> = (props) => {
     );
 
 };
+

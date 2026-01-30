@@ -1,8 +1,8 @@
 
 import React from 'react';
-import { NerdFonts } from '../utilities/NerdFonts';
-import { ratingStars } from '@components/utilities/StarRating';
 import style from '@styles/features/searchresult.module.scss';
+import { Icon } from './NebulaUI';
+import { ratingStars } from '@lib/utils';
 
 type NebulaProductItemProps = {
     nsin: string;
@@ -45,10 +45,10 @@ const NebulaProductItem: React.FC<NebulaProductItemProps> = (props) => {
                 <div className={style.bottomContent}>
                     <p className={style.itemPrice}>${itemprice_usd}</p>
                     <p className={style.itemRating}>
-                        <NerdFonts>{ratingStars(itemrating)}</NerdFonts> {itemrating}
+                        <Icon>{ratingStars(itemrating)}</Icon> {itemrating}
                     </p>
                     <p>
-                        <NerdFonts></NerdFonts> {productLocation}
+                        <Icon></Icon> {productLocation}
                     </p>
                 </div>
             </div>

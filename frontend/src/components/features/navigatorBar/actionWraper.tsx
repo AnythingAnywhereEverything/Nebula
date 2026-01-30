@@ -1,5 +1,3 @@
-import nb from '@styles/ui/nebulaButton.module.scss'
-
 import navDesktop from '@styles/layouts/navbarDesktop.module.scss'
 import { Button } from "@components/ui/NebulaUI"
 import Link from "next/link"
@@ -16,20 +14,20 @@ const ActionWraper: React.FC = () => {
 
         <ProfileBadge/>
 
-        <Button asChild className={cn(nb.buttonDark)} size={"icon-lg"}>
+        <Button asChild className={cn(navDesktop.buttonDark)} size={"icon-lg"}>
             <Link href={"/wishlist"}>
                 <Icon value=""/>
             </Link>
         </Button>
-        <Button asChild className={cn(nb.buttonDark)} size={"icon-lg"}>
+        <Button asChild className={cn(navDesktop.buttonDark)} size={"icon-lg"}>
             <Link href={"/gifts"}>
                 <Icon value="󰹄"/>
             </Link>
         </Button>
-        <Button asChild className={cn(nb.buttonDark, nb.containBadge)} size={"icon-lg"}>
+        <Button asChild className={cn(navDesktop.buttonDark, navDesktop.containBadge)} size={"icon-lg"}>
             <Link href={"/cart"}>
                 <Icon value=""/>
-                <span className={nb.notificationBadge}>5</span>
+                <span className={navDesktop.notificationBadge}>5</span>
             </Link>
         </Button>
     </div>

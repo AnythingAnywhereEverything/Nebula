@@ -35,6 +35,10 @@
             background-color: 
                 color-mix(in oklab, var(--input) 80%, transparent);
         }
+        [data-theme=midnight] & {
+            background-color: 
+                color-mix(in oklab, var(--input) 60%, transparent);
+        }
     }
 
     &:focus-visible {
@@ -46,7 +50,7 @@
         border-color: var(--destructive);
         box-shadow: 0 0 0 3px color-mix(in oklab, var(--destructive) 20%, transparent);
     
-        [data-theme=dark] & {
+        [data-theme=dark] &, [data-theme=midnight] & {
             box-shadow: 0 0 0 3px 
                 color-mix(in oklab, var(--destructive) 40%, transparent);
             border-color: 
@@ -76,7 +80,7 @@
 
     transition: transform 0.2s ease;
 
-    [data-theme="dark"] & {
+    [data-theme="dark"] &, [data-theme="midnight"] & {
         &[data-state=unchecked] {
             background-color: var(--foreground);
         }
