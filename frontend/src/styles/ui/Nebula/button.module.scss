@@ -4,7 +4,6 @@
     flex-shrink: 0;
     border-radius: var(--radius-medium);
     display: flex;
-    justify-content: center;
     align-items: center;
     white-space: nowrap;
     pointer-events: all;
@@ -18,6 +17,30 @@
         pointer-events: none;
         cursor: none;
     }
+    
+    &[aria-invalid="true"] {
+        border-color: var(--destructive);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--destructive) 20%, transparent);
+    }
+
+    [data-theme=dark] &[aria-invalid="true"] {
+        border-color: color-mix(in srgb, var(--destructive) 50%, transparent);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--destructive) 40%, transparent);
+    }
+}
+
+//position
+
+.start {
+    justify-content: start;
+}
+
+.center {
+    justify-content: center;
+}
+
+.end {
+    justify-content: end;
 }
 
 // Variants
@@ -53,8 +76,20 @@
     color: var(--text-neutral);
     border: solid 1px var(--border);
 
+    [data-theme="dark"] & {
+        background: color-mix(in oklab,
+            var(--input) 30%,
+            transparent
+        );
+        border-color: var(--input);
+        &:hover {
+            background: var(--muted);
+        }
+    }
+
     &:hover {
         background: var(--muted);
+        color: var(--foreground);
     }
 }
 
@@ -73,10 +108,27 @@
 
 .destructiveVariant {
     color: var(--destructive);
-    background-color: color-mix(in oklab, var(--destructive) 20%, transparent);
+    background-color: color-mix(in oklab, var(--destructive) 10%, transparent);
 
     &:hover {
-        background-color: color-mix(in oklab, var(--destructive) 30%, transparent);
+        background-color: color-mix(in oklab, var(--destructive) 20%, transparent);
+    }
+
+    &:focus-visible {
+        border: 1px solid color-mix(in oklab, var(--destructive) 40%, transparent);
+        box-shadow: 0 0 0 4px 
+            color-mix(in oklab, var(--destructive) 20%, transparent);
+    }
+
+    [data-theme=dark] & {
+        background-color: color-mix(in oklab, var(--destructive) 20%, transparent);
+        &:hover {
+            background-color: color-mix(in oklab, var(--destructive) 30%, transparent);
+        }
+        &:focus-visible {
+            box-shadow: 0 0 0 4px 
+                color-mix(in oklab, var(--destructive) 20%, transparent);
+        }
     }
 }
 
@@ -110,12 +162,14 @@
     padding-block: calc(var(--spacing) * 1.5);
     padding-inline: calc(var(--spacing) * 3);
     font-size: var(--text-base);
+    line-height: var(--text-base--line-height);
 }
 
 .extraSmallSize {
     padding-block: calc(var(--spacing) * 0.5);
     padding-inline: calc(var(--spacing) * 2);
     font-size: var(--text-extra-small);
+    line-height: var(--text-xs--line-height);
 }
 
 .smallSize {
@@ -123,16 +177,19 @@
     padding-block: calc(var(--spacing) * 1.5);
     padding-inline: calc(var(--spacing) * 2.5);
     font-size: var(--text-small);
+    line-height: var(--text-sm--line-height);
 }
 
 .largeSize {
     padding: 0.6rem 1rem;
     font-size: var(--text-large);
+    line-height: var(--text-lg--line-height);
 }
 
 .defaultIcon {
     width: calc(var(--spacing) * 8);
     height: calc(var(--spacing) * 8)
+    
 }
 
 .extraSmallIcon {

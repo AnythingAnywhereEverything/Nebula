@@ -12,21 +12,27 @@
     overflow: hidden;
     height: calc(var(--spacing) * 8);
     box-sizing: border-box;
-    
+
+    &:has([data-component="input-group-control"]:focus-visible){
+        box-shadow: 0 0 0 3px color-mix(
+            in oklab, var(--ring) 50%, transparent);
+    }
+
     &:focus-within {
         border-color: var(--ring);
         box-shadow: 0 0 0 3px color-mix(
             in oklab, var(--ring) 50%, transparent);
     }
     
-    &[aria-invalid="true"] {
+    &[aria-invalid="true"], &:has([data-component][aria-invalid="true"]) {
         border-color: var(--destructive);
         box-shadow: 0 0 0 3px color-mix(
             in oklab, var(--destructive) 20%, transparent);
     }
     
-    &:disabled {
-        background-color: var(--input);
+    &:has([data-disabled=true]) {
+        background-color: color-mix(
+            in oklab, var(--input) 50%, transparent);
         opacity: 0.5;
         cursor: not-allowed;
     }
@@ -47,11 +53,23 @@
         height: auto;
     }
 
-    input:-webkit-autofill,
-    input:-webkit-autofill:hover, 
-    input:-webkit-autofill:focus, 
-    input:-webkit-autofill:active{
-        -webkit-box-shadow: 0 0 0 30px var(--input) inset !important;
+    &:has(>textarea) {
+        height: auto;
+    }
+
+    [data-theme=dark] & {
+        background-color: color-mix(in oklab,
+            var(--input) 30%, transparent);
+        
+        &:has([data-component][aria-invalid="true"]) {
+            box-shadow: 0 0 0 3px color-mix(
+                in oklab, var(--destructive) 20%, transparent);
+        }
+
+        &:has([data-disabled=true]) {
+            background-color: color-mix(
+                in oklab, var(--input) 80%, transparent);
+        }
     }
 }
 
@@ -88,6 +106,9 @@
         width: 100%;
         order: -1;
         justify-content: flex-start;
+        .inputGroup:has(>[input]) & {
+            padding-top: calc(var(--spacing) * 2);
+        }
     }
 
     &[data-align="block-end"] {
@@ -95,9 +116,13 @@
         width: 100%;
         order: 1;
         justify-content: flex-start;
+
+        .inputGroup:has(>[input]) & {
+            padding-bottom: calc(var(--spacing) * 2);
+        }
     }
 
-    &[disabled] {
+    .inputGroup[data-disabled=true] & {
         opacity: 0.5;
     }
 }
@@ -154,6 +179,13 @@
     &:focus-visible {
         box-shadow: none;
     }
+
+    [data-theme=dark] & {
+        background: transparent;
+        &:disabled {
+            background: transparent;
+        }
+    }
 }
 
 .inputGroupTextarea {
@@ -164,4 +196,11 @@
     box-shadow: none;
     padding: 0.5rem 0;
     resize: none;
+
+    [data-theme=dark] & {
+        background: transparent;
+        &:disabled {
+            background: transparent;
+        }
+    }
 }

@@ -28,6 +28,11 @@
     
     background-color: color-mix(
         in oklab, var(--input) 10%, transparent);
+
+    [data-theme=dark] & {
+        background-color: color-mix(
+            in oklab, var(--input) 30%, transparent);
+    }
 }
     
 .vertical {

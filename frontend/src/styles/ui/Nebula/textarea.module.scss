@@ -10,13 +10,15 @@
     transition: color 0.2s, background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
     outline: none;
     box-sizing: border-box;
-
+    background: transparent;
+    
+    
     &::placeholder {
         color: var(--placeholder);
     }
-
-    @media (prefers-color-scheme: dark) {
-        background-color: rgba(var(--input-rgb), 0.3);
+    
+    [data-theme=dark] & {
+        background: color-mix(in srgb, var(--input) 30%, transparent);;
     }
 
     &:focus-visible {
@@ -27,11 +29,14 @@
 
     &[aria-invalid="true"] {
         border-color: var(--destructive);
-        box-shadow: 0 0 0 3px rgba(var(--color-destructive-rgb), 0.2);
+        box-shadow: 0 0 0 3px color-mix(in srgb, 
+            var(--destructive) 20%, transparent);
 
-        @media (prefers-color-scheme: dark) {
-            border-color: rgba(var(--color-destructive-rgb), 0.5);
-            box-shadow: 0 0 0 3px rgba(var(--color-destructive-rgb), 0.4);
+        [data-theme=dark] & {
+            border-color: 1px solid color-mix(in srgb, 
+                var(--destructive) 50%, transparent);
+            box-shadow: 0 0 0 3px color-mix(in srgb, 
+                var(--destructive) 40%, transparent);
         }
     }
 
@@ -40,8 +45,9 @@
         opacity: 0.5;
         cursor: not-allowed;
 
-        @media (prefers-color-scheme: dark) {
-            background-color: rgba(var(--input-rgb), 0.8);
+        [data-theme=dark] & {
+            background-color: color-mix(in srgb, 
+                var(--input) 80%, transparent);
         }
     }
 

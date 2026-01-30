@@ -13,7 +13,8 @@
     padding-block: calc(var(--spacing) * 2);
     padding-right: calc(var(--spacing) * 2);
     padding-left: calc(var(--spacing) * 2.5);
-    transition: color;
+    transition: color, background-color;
+    transition-duration: 1.2s;
     user-select: none;
     width: fit-content;
     align-items: center;
@@ -59,6 +60,26 @@
     &:focus-visible {
         border-color: var(--ring);
         box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 50%, transparent);
+    }
+
+    *[data-slot='select-value'] {
+        display: flex;
+        gap: calc(var(--spacing) * 1.5);
+        -webkit-line-clamp: 1;
+        line-clamp: 1;
+        justify-content: center;
+    }
+
+
+    [data-theme=dark] & {
+        background: color-mix(in oklab, var(--input) 30%, transparent);;
+        &:hover{
+            background: color-mix(in oklab, var(--input) 50%, transparent);;
+        }
+        &[aria-invalid] {
+            box-shadow: 0 0 0 3px color-mix(in srgb, var(--destructive) 40%, transparent);
+            border-color: color-mix(in srgb, var(--destructive) 50%, transparent);
+        }
     }
 }
 

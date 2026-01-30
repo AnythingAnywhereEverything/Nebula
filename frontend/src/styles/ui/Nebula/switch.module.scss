@@ -26,6 +26,10 @@
 
     &[data-state=unchecked] {
         background-color: var(--input);
+        [data-theme=dark] & {
+            background-color: 
+                color-mix(in oklab, var(--input) 80%, transparent);
+        }
     }
 
     &:focus-visible {
@@ -36,6 +40,13 @@
     &[aria-invalid='true'] {
         border-color: var(--destructive);
         box-shadow: 0 0 0 3px color-mix(in oklab, var(--destructive) 20%, transparent);
+    
+        [data-theme=dark] & {
+            box-shadow: 0 0 0 3px 
+                color-mix(in oklab, var(--destructive) 40%, transparent);
+            border-color: 
+                color-mix(in oklab, var(--destructive) 50%, transparent);
+        }
     }
 
     &[data-disabled] {
@@ -59,6 +70,15 @@
     background-color: var(--background);
 
     transition: transform 0.2s ease;
+
+    [data-theme="dark"] & {
+        &[data-state=unchecked] {
+            background-color: var(--foreground);
+        }
+        &[data-state=checked] {
+            background-color: var(--primary-foreground);
+        }
+    }
 
     .switch[data-size='default'] & {
         width: 1rem;

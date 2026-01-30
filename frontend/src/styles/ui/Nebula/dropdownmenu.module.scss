@@ -41,8 +41,8 @@
 }
 
 a.dropdownItem {
-  color: var(--accent-foreground);
-  text-decoration: none;
+    color: var(--accent-foreground);
+    text-decoration: none;
 }
 
 .dropdownItem {
@@ -56,7 +56,8 @@ a.dropdownItem {
 
     border-radius: var(--radius-medium);
     font-size: var(--text-small);
-
+    line-height: var(--text-sm--line-height);
+    pointer-events: all;
     cursor: default;
     user-select: none;
     outline: none;
@@ -85,6 +86,7 @@ a.dropdownItem {
         width: 1rem;
         height: 1rem;
         font-size: var(--text-extra-small);
+        line-height: var(--text-xs--line-height);
     }
 
     &[data-variant='destructive'] {
@@ -97,6 +99,16 @@ a.dropdownItem {
                 transparent
             );
         color: var(--destructive);
+        }
+
+        [data-theme=dark] & {
+            &:focus-visible {
+                    background-color: color-mix(
+                    in oklab,
+                    var(--destructive) 20%,
+                    transparent
+                );
+            }
         }
 
         span {
@@ -121,6 +133,7 @@ a.dropdownItem {
     color: var(--muted-foreground);
     margin-left: auto;
     font-size: var(--text-extra-small);
+    line-height: var(--text-xs--line-height);
     letter-spacing: 0.1em;
 }
 

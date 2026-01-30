@@ -9,8 +9,8 @@
 
     &:has(select[aria-hidden='true']:last-child) {
         > [data-component='select-trigger']:last-of-type {
-        border-top-right-radius: var(--radius-large);
-        border-bottom-right-radius: var(--radius-large);
+            border-top-right-radius: var(--radius-large);
+            border-bottom-right-radius: var(--radius-large);
         }
     }
 

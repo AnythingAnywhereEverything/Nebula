@@ -26,12 +26,19 @@
     align-items: center;
     gap: calc(var(--spacing) * 2);
     font-size: var(--text-small);
+    .fieldBase[data-disabled=true] & {
+        opacity: 0.5;
+    }
 }
 
 .fieldSeparatorContainer {
     margin-block: calc(var(--spacing) * -2);
     height: calc(var(--spacing) * 5);
     position: relative;
+
+    .fieldGroup[variant="outline"] {
+        margin-bottom: calc(var(--spacing) * -2);
+    }
 
     .separator {
         position: absolute;
@@ -57,8 +64,12 @@
         margin-top: calc(var(--spacing) * 1.5);
     }
 
-    .field:has([data-orientation='horizontal']) & {
+    .fieldBase:has([data-orientation='horizontal']) & {
         text-wrap: balance;
+    }
+
+    .fieldBase[data-disabled=true] & {
+        opacity: 0.5;
     }
 
     &:last-child {
@@ -99,6 +110,10 @@
         border: 1px solid var(--primary);
     }
     
+    .fieldBase[data-disabled=true] & {
+        opacity: 0.5;
+    }
+
     * {
         &[data-component="field"] {
             padding: calc(var(--spacing) * 2.5);

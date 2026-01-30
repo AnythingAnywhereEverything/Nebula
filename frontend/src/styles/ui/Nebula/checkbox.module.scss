@@ -4,7 +4,8 @@
     border-radius: 4px;
     width: calc(var(--spacing) * 4);
     height: calc(var(--spacing) * 4);
-    transition: color 0.2s;
+    transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke;
+    transition-duration: 0.2s;
     position: relative;
     flex-shrink: 0;
     outline: none;
@@ -33,8 +34,31 @@
     }
 
     &[aria-invalid="true"] {
-        border-color: var(--color-destructive);
+        border-color: var(--destructive);
         box-shadow: 0 0 0 3px color-mix(in srgb, var(--destructive) 20%, transparent);
+    }
+
+    [data-theme=dark] & {
+        background: color-mix(in oklab,
+            var(--input) 30%,
+            transparent
+        );
+        &[data-state="checked"] {
+            background-color: var(--primary);
+            color: var(--primary-foreground);
+            border-color: var(--primary);
+        }
+
+        &[aria-invalid="true"] {
+            border-color: 1px solid color-mix(in srgb, 
+                var(--destructive) 50%, transparent);
+            box-shadow: 0 0 0 3px color-mix(in srgb, 
+                var(--destructive) 40%, transparent);
+        }
+    }
+
+    [data-component="field"]:disabled & {
+        opacity: .5;
     }
 }
 

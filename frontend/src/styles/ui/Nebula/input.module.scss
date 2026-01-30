@@ -15,8 +15,23 @@
     box-sizing: border-box;
     outline: none;
 
+    [data-theme=dark] & {
+        background: color-mix(in srgb, var(--input) 30%, transparent);
+    }
+
+    input[type='file']::file-selector-button {
+        height: calc(var(--spacing) * 6);
+        color: var(--foreground);
+        font-size: var(--text-small);
+        line-height: var(--text-sm--line-height);
+        font-weight: 500;
+        display: inline-flex;
+        border: none;
+        background: transparent;
+    }
+
     &::placeholder {
-        color: var(--text-muted);
+        color: var(--muted-foreground);
     }
 
     &:focus-visible {
@@ -28,11 +43,14 @@
         cursor: not-allowed;
         opacity: 0.5;
         pointer-events: none;
-        background-color: var(--input-disabled);
+        background-color: color-mix(in srgb, var(--input) 50%, transparent);
+        [data-theme=dark] {
+            background: color-mix(in srgb, var(--ring) 80%, transparent);;
+        }
     }
 
     &[aria-invalid="true"] {
-        border-color: var(--color-destructive);
+        border-color: var(--destructive);
         box-shadow: 0 0 0 3px color-mix(in srgb, var(--destructive) 20%, transparent);
     }
 }
