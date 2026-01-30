@@ -46,7 +46,7 @@ const UserSettingsOptions: React.FC = () => {
                     main_link="/notification/order"
                     sub_lists={[
                         {title:"Order Updates", link:"/notification/order"},
-                        {title:"Promotions", link:"/notification/payment"},
+                        {title:"Promotions", link:"/notification/promotion"},
                         {title:"Finance Updates", link:"/notification/finance"},
                         {title:"Nebula Updates", link:"/notification/nebula"},
                     ]}

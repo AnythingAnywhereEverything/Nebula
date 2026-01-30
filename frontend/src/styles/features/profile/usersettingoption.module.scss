@@ -44,14 +44,14 @@
     gap: 0.5rem;
     padding: 1rem;
     a {
-        color: variables.$text-dark;
+        color: var(--muted-foreground);
         text-decoration: none;
         &.active {
             font-weight: 700;
-            color: variables.$secondary-color
+            color: var(--text-neutral)
         }
         &:hover{
-            color: variables.$secondary-color;
+            color: var(--text-neutral);
         }
     };
     .sublinkContainer {
@@ -65,14 +65,14 @@
         transition: max-height 0.2s ease-in-out, opacity 0.25s ease-in-out, padding 0.3s ease-out;
         
         a {
-            color: variables.$text-mid-gray;
+            color: var(--muted-foreground);
             text-decoration: none;
             &.active {
                 font-weight: 700;
-                color: variables.$secondary-color
+                color: var(--text-neutral);
             }
             &:hover{
-                color: variables.$secondary-color;
+                color: var(--text-neutral);
             }
         };
         &.dropdownActive{
