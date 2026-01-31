@@ -1,24 +1,23 @@
 import React from "react";
-import style from "@styles/layouts/notificationSetting.module.scss"
+import s from "@styles/layouts/notificationSetting.module.scss"
+import { financeItems } from "src/mocks/notificationComponent.mock";
 import { usePathname } from "next/navigation";
 import NotificationComponent from "../notification/notificationComponent";
-import { orderUpdatesItems } from "src/mocks/notificationComponent.mock";
 
-const OrderUpdate: React.FC = () => {
+const FinanceUpdates:React.FC = () => {
     const pathname = usePathname()
-
-    const hasButton = pathname === "/notification/order"
-    const orders = orderUpdatesItems
-    const noOrers = []
+    
+        const hasButton = pathname !== "/notification/order"
+        const finances = financeItems
+        const noFinance = []
     return(
-        <section className={style.orderContainer}>
-
-            {orders.length === 0 ? (
+        <section className={s.financeContainer}>
+            {finances.length === 0 ? (
                 <section>
-                    <p>Youdont have any updates yet</p>
+                    <p>You dont have any finances yet</p>
                 </section>
             ) : (
-                orders.map((item , index) => (
+                finances.map((item , index) => (
                     <NotificationComponent
                     key={index}
                     linkToPage={item.linkToPage}
@@ -30,9 +29,8 @@ const OrderUpdate: React.FC = () => {
                     />
                 ))
             )}
-
         </section>
-    );
+    )
 }
 
-export default OrderUpdate;
+export default FinanceUpdates;

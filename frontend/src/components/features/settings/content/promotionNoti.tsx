@@ -1,36 +1,44 @@
 import React from "react";
-import style from "@styles/layouts/promotionNotification.module.scss"
-import { Button, ButtonGroup } from "@components/ui/NebulaUI";
-import Link from "next/link";
+import s from "@styles/layouts/promotionNotification.module.scss"
+import { Button } from "@components/ui/NebulaUI";
+import NotificationComponent from "../notification/notificationComponent";
+import { usePathname } from "next/navigation";
+import { promotionItems } from "src/mocks/notificationComponent.mock";
 
 const PromotionNotification: React.FC = () => {
+    const pathname = usePathname()
+    
+    const hasButton = pathname !== "/notification/order"
+    const promotions = promotionItems
+    const noPromo = [];
     return(
-        <section className={style.promotionContainer}>
-            <div className={style.promotionHeader}>
+        <section className={s.promotionContainer}>
+            <div className={s.promotionHeader}>
                 <Button
-                variant={`ghost`}
-                className={style.markAsRead}
+                variant={`outline`}
+                className={s.markAsRead}
                 onClick={() => {}}
                 > Mark all as read
                 </Button>
             </div>
 
-            <section className={style.promotion}>
-                <div className={style.imgContainer}>
-                    <img src="https://placehold.co/400" alt="" />
-                </div>
-
-                <div className={style.promotionContent}>
-                    <h4>Discount 5$</h4>
-                    <div className={style.content}>
-                        testtttttttttttttttttttttttttttttttasdadadasdttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt
-                    </div>
-                </div>
-
-                <div className={style.viewBtn}>
-                    <Button variant={'outline'}><Link href = "#">View more</Link></Button>
-                </div>
-            </section>
+            {promotions.length === 0 ? (
+                <section>
+                    <p>No promotion yet</p>
+                </section>
+            ) : (
+                promotions.map((item , index) => (
+                    <NotificationComponent
+                    key={index}
+                    linkToPage={item.linkToPage}
+                    title = {item.title}
+                    description={item.description}
+                    mainImage={item.mainImage}
+                    hasButton = {hasButton}
+                    timestamp={item.timestamp}
+                    />
+                ))
+            )}
         </section>
     )
 }

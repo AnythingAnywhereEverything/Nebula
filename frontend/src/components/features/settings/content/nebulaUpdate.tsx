@@ -1,24 +1,24 @@
 import React from "react";
-import style from "@styles/layouts/notificationSetting.module.scss"
+
+import s from "@styles/layouts/notificationSetting.module.scss"
+import { NebulaUpdateItems } from "src/mocks/notificationComponent.mock";
 import { usePathname } from "next/navigation";
 import NotificationComponent from "../notification/notificationComponent";
-import { orderUpdatesItems } from "src/mocks/notificationComponent.mock";
 
-const OrderUpdate: React.FC = () => {
+const WebUpdate: React.FC = () => {
     const pathname = usePathname()
-
-    const hasButton = pathname === "/notification/order"
-    const orders = orderUpdatesItems
-    const noOrers = []
+    
+    const hasButton = pathname !== "/notification/order"
+    const updates = NebulaUpdateItems
+    const nothing = []
     return(
-        <section className={style.orderContainer}>
-
-            {orders.length === 0 ? (
+        <section className={s.nebulaUpdateContainer}>
+            {updates.length === 0 ? (
                 <section>
-                    <p>Youdont have any updates yet</p>
+                    <p>We dont have any Updates yet</p>
                 </section>
             ) : (
-                orders.map((item , index) => (
+                updates.map((item , index) => (
                     <NotificationComponent
                     key={index}
                     linkToPage={item.linkToPage}
@@ -30,9 +30,8 @@ const OrderUpdate: React.FC = () => {
                     />
                 ))
             )}
-
         </section>
-    );
+    )
 }
 
-export default OrderUpdate;
+export default WebUpdate

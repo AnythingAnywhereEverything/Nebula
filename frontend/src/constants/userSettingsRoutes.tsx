@@ -5,6 +5,8 @@ import ChangePassword from "@components/features/settings/content/changePassword
 import Notification from "@components/features/settings/content/notification";
 import OrderUpdate from "@components/features/settings/content/orderUpdate";
 import PromotionNotification from "@components/features/settings/content/promotionNoti";
+import FinanceUpdates from "@components/features/settings/content/financeUpdate";
+import WebUpdate from "@components/features/settings/content/nebulaUpdate";
 
 import NewAddressBtn from "@components/features/settings/address/newAddressButton";
 
@@ -66,12 +68,12 @@ export const userSettingsAllowList: Record<string, {
         description: "See promotional updates",
     },
     "/notification/finance": {
-        component: () => <p>Finance Updates</p>,
+        component: FinanceUpdates,
         title: "Finance Updates",
         description: "Updates about financial activity",
     },
     "/notification/nebula": {
-        component: () => <p>Nebula Updates</p>,
+        component: WebUpdate,
         title: "Nebula Updates",
         description: "System-wide notifications from Nebula",
     },
