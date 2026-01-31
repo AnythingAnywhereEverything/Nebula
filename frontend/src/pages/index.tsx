@@ -28,9 +28,6 @@ const Home: NextPageWithLayout = () => {
 
   return (
     <div className={style.homeContainer}>
-        <Head>
-            <title>Nebula - Shop However You Like</title>
-        </Head>
         <PromotionPanel/>
         <CategoryPanel/>
         <div className={style.giftsContainer}>
