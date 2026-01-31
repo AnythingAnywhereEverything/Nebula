@@ -1,54 +1,71 @@
-import { Input } from "@components/ui/NebulaUI";
+import { Button, Field, FieldDescription, FieldGroup, FieldLabel, FieldLegend, FieldSeparator, Input, Separator } from "@components/ui/NebulaUI";
 import style from "@styles/layouts/usersetting.module.scss";
 import Form from "next/form";
 
 const AccountProfile: React.FC = () => {
     return (
-        <Form action="#" className={style.profileForm}>
-            <div className={style.section}>
-                <div className={style.row}>
-                    <label htmlFor="username" className={style.label}>
+    <Form action="#" className={style.profileForm}>
+        <Field orientation={"horizontal"}>
+            <FieldGroup className={style.profileContainer}>
+                <Field>
+                    <FieldLabel htmlFor="username">
                         Username
-                    </label>
+                    </FieldLabel>
                     <Input name="username" id="username" placeholder="Username" />
-                </div>
-
-                <div className={style.row}>
-                    <label htmlFor="displayname" className={style.label}>
+                </Field>
+                <Field>
+                    <FieldLabel htmlFor="display_name">
                         Display Name
-                    </label>
-                    <Input name="displayname" id="displayname" placeholder="Display Name" />
-                </div>
+                    </FieldLabel>
+                    <Input name="display_name" id="display_name" placeholder="Display Name" />
+                </Field>
 
-                <div className={style.row}>
-                    <span className={style.label}>Email</span>
-                    <p className={style.readonly}>XY***************@gmail.com</p>
-                </div>
-
-                <div className={style.row}>
-                    <span className={style.label}>Phone Number</span>
-                    <p className={style.readonly}>*********89</p>
-                </div>
-
-                <div className={style.row}>
-                    <span className={style.label}>Date of Birth</span>
-                    <p className={style.readonly}>12/12/1990</p>
-                </div>
-
-                <button type="submit">Save</button>
-            </div>
-            <div className={style.imageContainer}>
-                <label htmlFor="profile" className={style.profilePicture}>
+                <Field>
+                    <FieldLabel>
+                        Email
+                    </FieldLabel>
+                    <FieldDescription>
+                        XY***************@gmail.com
+                    </FieldDescription>
+                </Field>
+                <Field>
+                    <FieldLabel>
+                        Phone Number
+                    </FieldLabel>
+                    <FieldDescription>
+                        *********89
+                    </FieldDescription>
+                </Field>
+                <Field>
+                    <FieldLabel>
+                        Date of Birth
+                    </FieldLabel>
+                    <FieldDescription>
+                        12/12/1990
+                    </FieldDescription>
+                </Field>
+            </FieldGroup>
+            <Separator orientation="vertical" />
+            <FieldGroup className={style.avatarContainer}>
+                <FieldLabel htmlFor="profile" className={style.avatar}>
                     <img src="https://placehold.co/400" alt='PlaceHolder'/>
-                </label>
-                <div className={style.selector}>
-                    <input type="file" name="profile" id="profile" accept="image/png, image/jpeg" hidden/>
-                    <label htmlFor="profile" className={style.imageinput}>Change Profile</label>
-                    <p className={style.readonly}>File size: maximum 8 MB</p>
-                    <p className={style.readonly}>File extension: .png, .jpeg</p>
-                </div>
-            </div>
-        </Form>
+                </FieldLabel>
+                <Button variant={"outline"} asChild>
+                    <FieldLabel htmlFor="profile">
+                        Upload
+                    </FieldLabel>
+                </Button>
+                <FieldDescription>
+                    File size: maximum 8 MB
+                </FieldDescription>
+                <FieldDescription>
+                    File extension: .png, .jpeg
+                </FieldDescription>
+                <Input type="file" id="profile" name="profile" hidden/>
+            </FieldGroup>
+        </Field>
+        <Button variant={"oppose"} size={"sm"} style={{width:"calc(var(--spacing)*32)"}}>Save</Button>
+    </Form>
     );
 };
 

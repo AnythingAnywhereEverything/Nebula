@@ -26,7 +26,7 @@ export default function UserPage() {
   return (
     <div className={style.userSetting}>
       <UserSettingsOptions />
-      <UserSettingContainer title={pageMeta.title} discription={pageMeta.description}>
+      <UserSettingContainer title={pageMeta.title} discription={pageMeta.description} extraHeader={pageMeta.extra}>
         <PageComponent />
       </UserSettingContainer>
     </div>

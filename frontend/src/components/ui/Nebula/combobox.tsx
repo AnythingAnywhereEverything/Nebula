@@ -71,7 +71,6 @@ function ComboboxInput({
             data-component="input-group-button"
             className={s.inputAddon}
             disabled={disabled}
-            asChild
           >
             <ComboboxTrigger />
           </InputGroupButton>
@@ -92,7 +91,7 @@ function ComboboxContent({
   anchor,
   keepMount,
   ...props
-}: ComboboxPrimitive.Popup.Props & {keepMount:boolean} &
+}: ComboboxPrimitive.Popup.Props & {keepMount?:boolean} &
   Pick<
     ComboboxPrimitive.Positioner.Props,
     "side" | "align" | "sideOffset" | "alignOffset" | "anchor"

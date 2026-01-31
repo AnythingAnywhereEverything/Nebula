@@ -1,7 +1,7 @@
 .userSettingContainer{
     flex: 1;
     display: flex;
-    gap: 1rem;
+    gap: calc(var(--spacing) * 4);
     flex-direction: column;
     background-color: color-mix(in oklab, var(--muted) 30%, transparent);
     box-sizing: border-box;
@@ -19,20 +19,6 @@
     .header {
         padding-inline: calc(var(--spacing) * 8);
         padding-block: calc(var(--spacing) * 4);
-        display: flex;
-        justify-content: space-between;
-        .title {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            width: 100%;
-            h1 {
-                font-weight: 300;
-            }
-            p {
-                color: var(--muted-foreground);
-            }
-        }
         border-bottom: 1px solid var(--border);
     }
 

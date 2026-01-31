@@ -1,49 +1,47 @@
 import React from "react";
-import { NebulaButton } from "@components/ui/NebulaBtn";
 import style from "@styles/layouts/address.module.scss"
 import { AddressInfo } from "src/types/address";
+import { Button, Field, FieldDescription, FieldLegend, FieldSet, Separator } from "@components/ui/NebulaUI";
 
 const AddressCard: React.FC<AddressInfo> = ({
-    name,
-    internationalPrefix,
-    phoneNumber,
-    addressLocal,
-    addressInter,
-    postalCode
+    full_name,
+    phonecode,
+    phone,
+    address_line1,
+    address_line2,
+    postal,
+    city,
+    state,
+    country,
+    is_default
 }) => {
     return (
-        <div className={style.addressCard}>
-            <div className={style.header}>
-                
-                <div className={style.name}>
-                    <h3>{name}</h3> <span>|</span>
-                    <h3>({internationalPrefix}) {phoneNumber}</h3>
-                </div>
-                
-                <NebulaButton 
-                btnValues = "Edit"
-                onClick={()=>{}}
-                className={style.edit}
-                />
-            </div>
-            <div className={style.cardInfo}>
-                <div style={{opacity: "50%"}}>
-                    <div className={style.local}>
-                        <p>{addressLocal} {postalCode}</p>
-                    </div>
-                    
-                    <div>
-                        <p>{addressInter} {postalCode}</p>
-                    </div>
-                </div>
-                
-                <NebulaButton 
-                btnValues = "Set as default"
-                onClick={() => {}}
-                className={style.setDefault}
-                />
-            </div>
-        </div>
+        <FieldSet className={style.addressCard}>
+            <Field orientation={"horizontal"} className={style.header}>
+                <Field orientation={"horizontal"}>
+                    <FieldLegend>
+                        {full_name}
+                    </FieldLegend>
+                    <Separator orientation="vertical"/>
+                    <FieldLegend variant="label">
+                        ({phonecode.startsWith('+') ? phonecode : '+' + phonecode}) {phone}
+                    </FieldLegend>
+                </Field>
+                <Button variant={"outline"} size={"sm"}>Edit</Button>
+            </Field>
+            <Field orientation={"horizontal"} className={style.cardInfo}>
+                <Field>
+                    <FieldLegend>{address_line2} {address_line1}</FieldLegend>
+                    <FieldDescription>
+                        {city}, {state}, {country}, {postal}
+                    </FieldDescription>
+                    {is_default &&
+                        <p className={style.defaultAddr}>Default Address</p>
+                    }
+                </Field>
+                {!is_default && <Button size={"sm"}>Set as Default</Button>}
+            </Field>
+        </FieldSet>
     );
 }
 

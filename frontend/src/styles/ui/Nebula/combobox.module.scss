@@ -3,6 +3,7 @@
     width: calc(var(--spacing) * 4);
     height: calc(var(--spacing) * 4);
     pointer-events: none;
+    flex-shrink: 0;
     font-size: 0.5rem;
 }
 
@@ -18,7 +19,7 @@
 
 .comboPositioner {
     isolation: isolate;
-    z-index: 50;
+    z-index: 100;
 }
 
 .comboList {
@@ -149,6 +150,10 @@
     min-width: calc(var(--spacing) * 16);
     flex: 1;
     outline: none;
+
+    :has(.comboboxTriggerIcon) {
+        max-height: calc(var(--spacing) * 8);
+    }
 }
 
 .comboChips {

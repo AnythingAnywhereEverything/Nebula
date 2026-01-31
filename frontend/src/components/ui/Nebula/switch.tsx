@@ -12,7 +12,7 @@ function Switch({
 }) {
   return (
     <SwitchPrimitive.Root
-      data-slot="switch"
+      data-component="switch"
       data-size={size}
       className={cn(
         s.switch,
@@ -21,7 +21,7 @@ function Switch({
       {...props}
     >
       <SwitchPrimitive.Thumb
-        data-slot="switch-thumb"
+        data-component="switch-thumb"
         className={s.switchThumb}
       />
     </SwitchPrimitive.Root>

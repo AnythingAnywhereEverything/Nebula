@@ -8,11 +8,13 @@ import PromotionNotification from "@components/features/settings/content/promoti
 import FinanceUpdates from "@components/features/settings/content/financeUpdate";
 import WebUpdate from "@components/features/settings/content/nebulaUpdate";
 
+import NewAddressBtn from "@components/features/settings/address/newAddressButton";
+
 export const userSettingsAllowList: Record<string, {
     component: React.ComponentType;
     title: string;
     description: string;
-    extra?: React.ComponentType;
+    extra?: React.ReactNode;
 }> = {
     // Account Areas
     "/account/profile": {
@@ -29,6 +31,7 @@ export const userSettingsAllowList: Record<string, {
         component: Address,
         title: "Address",
         description: "Manage your delivery addresses",
+        extra: <NewAddressBtn/>
     },
     "/account/password": {
         component: ChangePassword,

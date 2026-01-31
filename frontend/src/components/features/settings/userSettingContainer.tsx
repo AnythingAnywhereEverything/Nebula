@@ -1,3 +1,4 @@
+import { Field, FieldDescription, FieldSet } from '@components/ui/NebulaUI';
 import style from '@styles/features/profile/usersettingcontainer.module.scss';
 import { ReactNode } from 'react';
 
@@ -15,19 +16,19 @@ const UserSettingContainer: React.FC<UserSettingContainerProps> = ({
     extraHeader
 }) => {
     return (
-        <div className={style.userSettingContainer}>
-            <div className={style.header}>
-                <div className={style.title}>
+        <FieldSet className={style.userSettingContainer}>
+            <Field orientation={"horizontal"} className={style.header}>
+                <Field>
                     <h1>{title}</h1>
-                    <p>{discription}</p>
-                </div>
+                    <FieldDescription>{discription}</FieldDescription>
+                </Field>
                 
                 {extraHeader}
-            </div>
+            </Field>
             <div className={style.contentContainer}>
                 {children}
             </div>
-        </div>
+        </FieldSet>
     );
 }
 
