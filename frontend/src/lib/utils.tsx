@@ -54,3 +54,24 @@ export const ratingStars = (itemrating:number) => {
     }
     return stars.join("");
 }
+
+export function formatPhoneByCountry(digits: string, countryCode: string) {
+    const numbers = digits.replace(/\D/g, "");
+
+    if (!countryCode) return numbers;
+
+    if (countryCode === "1") {
+        const area = numbers.slice(0, 3);
+        const mid = numbers.slice(3, 6);
+        const last = numbers.slice(6, 10);
+
+        let formatted = "+1";
+        if (area) formatted += ` (${area}`;
+        if (area.length === 3) formatted += `)`;
+        if (mid) formatted += ` ${mid}`;
+        if (last) formatted += `-${last}`;
+        return formatted;
+    }
+
+    return `+${countryCode} ${numbers}`;
+}

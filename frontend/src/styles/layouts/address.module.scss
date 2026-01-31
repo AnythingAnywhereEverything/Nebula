@@ -1,74 +1,45 @@
-.addressContainer{
-    .addressHead{
-        padding: 8px 0;
-        padding-bottom: 16px;
-        h3{
-        font-weight: normal;
+.addressCard{
+    border-radius: var(--radius-medium);
+    border: 1px solid var(--border);
+    .header{
+        background-color: color-mix(in oklab,
+            var(--muted) 40%, transparent);
+        border-bottom: 1px solid var(--border);
+        padding: calc(var(--spacing) * 2);
+        legend {
+            margin: 0;
         }
     }
+    .cardInfo{
+        padding-block: calc(var(--spacing) * 4);
+        padding-inline: calc(var(--spacing) * 2);
+        align-items: end;
+        .local{
+            padding-bottom: 4px;
+        }
+    }
+}
+.addressContainer{
     .noLocation{
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 400px;
-        margin: 8px 0;
-        border-bottom: 1px solid #ccc;
-        border-top: 1px solid #ccc;
+        height: calc(var(--spacing) * 64);
+        margin-bottom: calc(var(--spacing) * 4);
         h2{
             font-weight: normal;
         }
     }
-    
-    .hasLocation{
-        .addressCard{
-            padding-bottom: 12px;
-            border-top: 1px solid #a5a5a5;
-            .header{
-                display: flex;
-                justify-content: space-between;
-                border-bottom: 1px solid #ccc;
-                align-items: center;
-                .name{
-                    padding: 12px 0;
-                    display: flex;
-                    gap: 1rem;
-                }
-            }
-            .cardInfo{
-                display: flex;
-                justify-content: space-between;
-                padding: 12px 0;
-                align-items: center;
-                .local{
-                    padding-bottom: 4px;
-                }
+}
 
-            }
-        }
-        .setDefault, .edit{
-            padding: 4px 12px;
-            margin: 0 8px;
-            border: transparent;
-            cursor: pointer;
-            background-color: #dfdfdf;
-            transition: 0.3s ;
-        }
-        .setDefault:hover,
-        .edit:hover{
-            background-color: #cccccc;
-        }
-    }
-    .setAddress{
-        padding: 12px;
-        width: 100%;
-        border: transparent;
-        background-color: variables.$submit-button-bg;
-        color: variables.$text-lighter;
-        cursor: pointer;
-        transition: 0.3s;
-    }
-    .setAddress:hover{
-        background-color: variables.$submit-button-bg-hover;
-        color: variables.$text-dark;
-    }
+.defaultAddr {
+    font-size: var(--text-small);
+    line-height: var(--text-sm--lineheight);
+    padding-block: calc(var(--spacing) * 1.5);
+    padding-inline: calc(var(--spacing) * 2);
+    border-radius: var(--radius-extra-small);
+    border: 1px solid;
+    border-color: var(--tertiary);
+    background-color: color-mix(in oklab, var(--tertiary) 30%, transparent);
+    max-width: fit-content;
 }
