@@ -91,7 +91,7 @@ function ComboboxContent({
   anchor,
   keepMount,
   ...props
-}: ComboboxPrimitive.Popup.Props & {keepMount:boolean} &
+}: ComboboxPrimitive.Popup.Props & {keepMount?:boolean} &
   Pick<
     ComboboxPrimitive.Positioner.Props,
     "side" | "align" | "sideOffset" | "alignOffset" | "anchor"
