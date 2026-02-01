@@ -1,4 +1,3 @@
-import { NebulaButton } from "@components/ui/NebulaBtn";
 import React from "react";
 import style from "@styles/layouts/payment.module.scss";
 import { CardInfo } from "src/types/card";
@@ -6,12 +5,9 @@ import {
     Button,
     ButtonGroup,
     Field,
-    FieldDescription,
     FieldLabel,
-    FieldLegend,
 } from "@components/ui/NebulaUI";
 
-import Image from "next/image";
 import { CardBadge } from "@lib/getCardBadge";
 import { creditCardType } from "card-validator";
 import { Badge } from "@components/ui/Nebula/badge";

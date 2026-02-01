@@ -1,4 +1,3 @@
-import { NebulaButton } from "@components/ui/NebulaBtn";
 import pp from '@styles/features/promotionpanel.module.scss';
 import React, { useEffect, useRef, useState } from "react";
 

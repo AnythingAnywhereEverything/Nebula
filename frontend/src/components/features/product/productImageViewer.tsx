@@ -1,7 +1,5 @@
 import React from 'react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import style from '@styles/features/productmediaviewer.module.scss';
-import { NebulaButton } from '@components/ui/NebulaBtn';
 
 interface ProductImageViewerProps {
     mediaLists: string[];

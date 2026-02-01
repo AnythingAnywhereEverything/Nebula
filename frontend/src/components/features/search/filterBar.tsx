@@ -1,5 +1,4 @@
 import style from '@styles/features/filterbar.module.scss';
-import { NebulaButton } from '@components/ui/NebulaBtn';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Icon, Button, ButtonGroup, Label } from '@components/ui/NebulaUI';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@components/ui/Nebula/selector';
@@ -44,7 +43,7 @@ const FilterBar: React.FC = () => {
                     >
                         <SelectTrigger
                             className={(sortType === 'price_asc' || sortType === 'price_desc') ? style.active : ""}
-                            style={{backgroundColor: "var(--secondary)",borderRadius: "var(--radius-small)",minWidth: "calc(var(--spacing)*48)"}}>
+                            style={{color: "var(--secondary-foreground)", backgroundColor: "var(--secondary)",borderRadius: "var(--radius-small)",minWidth: "calc(var(--spacing)*48)"}}>
                             <SelectValue placeholder="Select Price Range"/>
                         </SelectTrigger>
                         <SelectContent position='popper'>
@@ -60,16 +59,12 @@ const FilterBar: React.FC = () => {
             <div className={style.filterPages}>
                 <p>Page 1 of 7</p>
                 <div className={style.pageButtons}>
-                    <NebulaButton
-                        className={style.pageButton}
-                        onClick={() => {} }
-                        btnValues={Icon({ children: "" })}
-                    />
-                    <NebulaButton
-                        className={style.pageButton}
-                        onClick={() => {} }
-                        btnValues={Icon({ children: "" })}
-                    />
+                    <Button size={"icon"} variant={"secondary"} asChild>
+                        <Icon></Icon>
+                    </Button>
+                    <Button size={"icon"} variant={"secondary"} asChild>
+                        <Icon></Icon>
+                    </Button>
                 </div>
             </div>
         </div>
