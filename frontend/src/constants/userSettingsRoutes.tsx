@@ -9,6 +9,8 @@ import FinanceUpdates from "@components/features/settings/content/financeUpdate"
 import WebUpdate from "@components/features/settings/content/nebulaUpdate";
 
 import NewAddressBtn from "@components/features/settings/address/newAddressButton";
+import PrivacySetting from "@components/features/settings/content/privacy";
+import MyPurchase from "@components/features/settings/content/myPurchase";
 
 export const userSettingsAllowList: Record<string, {
     component: React.ComponentType;
@@ -39,7 +41,7 @@ export const userSettingsAllowList: Record<string, {
         description: "Update your password",
     },
     "/account/privacy": {
-        component: () => <p>Privacy Settings</p>,
+        component: PrivacySetting,
         title: "Privacy Settings",
         description: "Manage your privacy preferences",
     },
@@ -51,7 +53,7 @@ export const userSettingsAllowList: Record<string, {
 
     // My Purchases Area
     "/purchaes": {
-        component: () => <p>My Purchases</p>,
+        component: MyPurchase,
         title: "My Purchases",
         description: "View your purchase history",
     },

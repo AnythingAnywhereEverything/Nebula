@@ -6,3 +6,4 @@
 # media files
 media/*
 !media/.gitkeep
+.vscode/
