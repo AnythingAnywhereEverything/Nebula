@@ -1,15 +1,10 @@
 import React from "react";
-import { NebulaButton } from "@components/ui/NebulaBtn";
 import style from "@styles/layouts/payment.module.scss";
 import LoadCard from "../payment/hasCard";
 import { noCard, hasCard } from "src/mocks/card.mock";
 import {
-    Button,
     Field,
-    FieldDescription,
     FieldGroup,
-    FieldLabel,
-    Switch,
 } from "@components/ui/NebulaUI";
 import AddPaymentMethod from "../payment/addPaymentBtn";
 

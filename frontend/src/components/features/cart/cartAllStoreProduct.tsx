@@ -1,5 +1,4 @@
 import React from "react";
-import { NebulaButton } from "@components/ui/NebulaBtn";
 import style from "@styles/layouts/cart.module.scss"
 
 const CartAllStore: React.FC = () => {
