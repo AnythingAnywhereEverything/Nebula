@@ -1,3 +1,4 @@
+import { Button, Field, Icon } from '@components/ui/NebulaUI';
 import pp from '@styles/features/promotionpanel.module.scss';
 import React, { useEffect, useRef, useState } from "react";
 
@@ -43,50 +44,56 @@ const PromotionPanel: React.FC = () => {
     }, [isPaused, currentIndex]);
 
     return (
-        <div 
+        <Field 
             className={pp.panelsContainer}
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
             role="region"
             aria-roledescription="carousel"
         >
-            <div className={pp.controller}>
-                <button onClick={handlePrev}>Prev</button>
-                <button onClick={handleNext}>Next</button>
-            </div>
+            <Field className={pp.carouselContainer}>
+                <Field orientation={"horizontal"} className={pp.controller}>
+                    <Button asChild variant={"secondary"} onClick={handlePrev} size={"icon-lg"}>
+                        <Icon></Icon>
+                    </Button>
+                    <Button asChild variant={"secondary"} onClick={handleNext} size={"icon-lg"}>
+                        <Icon></Icon>
+                    </Button>
+                </Field>
 
-            <div className={pp.carouselContainer}>
-                <ol
-                    className={pp.carouselList}
-                    onTransitionEnd={handleTransitionEnd}
-                    style={{
-                        transform: `translateX(-${currentIndex * 100}%)`,
-                        transition: isTransitioning ? 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)' : 'none'
-                    }}
-                >
-                    {slides.map((src, index) => {
-                        const isClone = index === 0 || index === totalSlides - 1;
-                        const actualPos = index === 0 ? images.length : index === totalSlides - 1 ? 1 : index;
+                <Field className={pp.carouselImageContainer}>
+                    <ol
+                        className={pp.carouselList}
+                        onTransitionEnd={handleTransitionEnd}
+                        style={{
+                            transform: `translateX(-${currentIndex * 100}%)`,
+                            transition: isTransitioning ? 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)' : 'none'
+                        }}
+                    >
+                        {slides.map((src, index) => {
+                            const isClone = index === 0 || index === totalSlides - 1;
+                            const actualPos = index === 0 ? images.length : index === totalSlides - 1 ? 1 : index;
 
-                        return (
-                            <li
-                                key={`${index}-${src}`}
-                                className={pp.slide}
-                                role="group"
-                                aria-roledescription="slide"
-                                aria-hidden={isClone || index !== currentIndex}
-                                aria-posinset={actualPos}
-                                aria-setsize={images.length}
-                            >
-                                <a href="#" className={pp.promoLink}>
-                                    <img src={src} alt={`Promotion ${actualPos}`} />
-                                </a>
-                            </li>
-                        );
-                    })}
-                </ol>
-            </div>
-        </div>
+                            return (
+                                <li
+                                    key={`${index}-${src}`}
+                                    className={pp.slide}
+                                    role="group"
+                                    aria-roledescription="slide"
+                                    aria-hidden={isClone || index !== currentIndex}
+                                    aria-posinset={actualPos}
+                                    aria-setsize={images.length}
+                                >
+                                    <a href="#" className={pp.promoLink}>
+                                        <img src={src} alt={`Promotion ${actualPos}`} />
+                                    </a>
+                                </li>
+                            );
+                        })}
+                    </ol>
+                </Field>
+            </Field>
+        </Field>
     );
 };
 
