@@ -12,9 +12,9 @@
     --foreground: #0a0a0a;
     --spacing: 0.25rem;
     --container-md: 28rem;
-    --radius: .625rem;
     
     // Base colors
+
     --primary: #2e49ab;
     --primary-foreground: #ffffff;
     --secondary: #ffffff;
@@ -54,17 +54,19 @@
     
     --text-neutral: #0a0a0a;
     --text-link: #3a5ba3;
+    
     // Fonts
     --text-base: 1rem;
     --text-base--line-height: calc(1.5 / 1);
-    --text-extra-small: .75rem;
+    --text-extra-small: calc(var(--text-base) * 0.75);
     --text-xs--line-height: calc(1 / .75);
-    --text-small: .875rem;
+    --text-small: calc(var(--text-base) * 0.875);
     --text-sm--line-height: calc(1.25 / .875);
-    --text-large: 1.125rem;
+    --text-large: calc(var(--text-base) * 1.125);
     --text-lg--line-height: calc(1.75 / 1.125);
     
     // Border
+    --radius: .625rem;
     --radius-extra-small: .25rem;
     --radius-small: calc(var(--radius) - 4px);
     --radius-medium: calc(var(--radius) - 2px);
