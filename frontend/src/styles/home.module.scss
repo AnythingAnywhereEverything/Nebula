@@ -22,3 +22,11 @@
     justify-content: space-between;
     width: 100%;
 }
+
+// TEST
+.notificationTest{
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing) * 2);
+    width: 1000px; //testing
+} 

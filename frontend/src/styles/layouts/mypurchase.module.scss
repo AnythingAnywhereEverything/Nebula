@@ -1,0 +1,58 @@
+.purchaseContainer{
+    gap: 0;
+    button{
+        border-radius: 0;
+    }
+}
+
+.productContainer{
+    margin-top: calc(var(--spacing) * 4);
+    padding: calc(var(--spacing) * 2);
+    .imgContainer{
+        max-width: 125px;
+        overflow: hidden;
+        aspect-ratio: 1 / 1;
+        border-radius: 8px;
+        position: relative;
+        display: grid;
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+            grid-column: 1 / -1;
+        }
+    }
+    .details{
+        gap: calc(var(--spacing) * 1);
+        .status{
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+        .nameContainer{
+            min-width: 800px;
+            max-width: 850px;
+            align-items: center;
+            margin-top: var(--spacing);
+            .productName{
+                display: -webkit-box;
+                line-clamp: 2;
+                -webkit-box-orient: vertical;
+                -webkit-line-clamp: 2;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                word-break: break-all;
+                margin-bottom: calc(var(--spacing) * 2);
+            }
+        }
+    }
+    .storeContainer{
+        .chatBtn, .viewStore{
+            display: flex;
+            gap: var(--spacing);
+            padding: var(--spacing) calc(var(--spacing)*2);
+            font-size: var(--text-small);
+        }
+    }
+}

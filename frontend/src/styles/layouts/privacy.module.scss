@@ -1,0 +1,16 @@
+.privacyContainer{
+    margin: 0 calc(var(--spacing) * 4);
+    .privacyItem{
+        margin-bottom: calc(var(--spacing) * 4);
+        .header{
+            margin-bottom: var(--spacing);
+        }
+        a{
+            color: var(--text-link);
+            text-decoration: none;
+        }
+    }
+    .deleteBtn{
+        justify-content: end;
+    }
+}
