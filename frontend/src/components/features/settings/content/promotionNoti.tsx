@@ -1,6 +1,6 @@
 import React from "react";
-import s from "@styles/layouts/promotionNotification.module.scss"
-import { Button } from "@components/ui/NebulaUI";
+import s from "@styles/layouts/notificationComponent.module.scss"
+import { Button, Field, FieldGroup } from "@components/ui/NebulaUI";
 import NotificationComponent from "../notification/notificationComponent";
 import { usePathname } from "next/navigation";
 import { promotionItems } from "src/mocks/notificationComponent.mock";
@@ -9,37 +9,40 @@ const PromotionNotification: React.FC = () => {
     const pathname = usePathname()
     
     const hasButton = pathname !== "/notification/order"
-    const promotions = promotionItems
     const noPromo = [];
+    const promotions = promotionItems
     return(
-        <section className={s.promotionContainer}>
-            <div className={s.promotionHeader}>
+        <FieldGroup>
+            <Field orientation={"horizontal"} className={s.promotionHeader}>
+                <Field></Field>
                 <Button
-                variant={`outline`}
                 className={s.markAsRead}
                 onClick={() => {}}
                 > Mark all as read
                 </Button>
-            </div>
+            </Field>
 
-            {promotions.length === 0 ? (
-                <section>
-                    <p>No promotion yet</p>
-                </section>
-            ) : (
-                promotions.map((item , index) => (
-                    <NotificationComponent
-                    key={index}
-                    linkToPage={item.linkToPage}
-                    title = {item.title}
-                    description={item.description}
-                    mainImage={item.mainImage}
-                    hasButton = {hasButton}
-                    timestamp={item.timestamp}
-                    />
-                ))
-            )}
-        </section>
+
+            <FieldGroup>
+                {promotions.length === 0 ? (
+                    <section>
+                        <p>No promotion yet</p>
+                    </section>
+                ) : (
+                    promotions.map((item , index) => (
+                        <NotificationComponent
+                        key={index}
+                        linkToPage={item.linkToPage}
+                        title = {item.title}
+                        description={item.description}
+                        mainImage={item.mainImage}
+                        hasButton = {hasButton}
+                        timestamp={item.timestamp}
+                        />
+                    ))
+                )}
+            </FieldGroup>
+        </FieldGroup>
     )
 }
 
