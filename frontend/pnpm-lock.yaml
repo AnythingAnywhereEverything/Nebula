@@ -46,6 +46,9 @@ importers:
       '@types/react-dom':
         specifier: ^19.1.9
         version: 19.1.9(@types/react@19.1.16)
+      card-validator:
+        specifier: ^10.0.4
+        version: 10.0.4
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -1316,6 +1319,9 @@ packages:
   caniuse-lite@1.0.30001746:
     resolution: {integrity: sha512-eA7Ys/DGw+pnkWWSE/id29f2IcPHVoE8wxtvE5JdvD2V28VTDPy1yEeo11Guz0sJ4ZeGRcm3uaTcAqK1LXaphA==}
 
+  card-validator@10.0.4:
+    resolution: {integrity: sha512-1Q/tDCSvM5iL3psPo6j8KF/VoI63WA7Y4Zthy1E7l/H4Iul2e2X+1S0vp33n3OMRjLgGU2+gLaK2NsGtwArJkQ==}
+
   ccount@2.0.1:
     resolution: {integrity: sha512-eyrF0jiFpY+3drT6383f1qhkbGsLSifNAjA61IUjZjmLCWjItY6LB9ft9YhoDgwfmclB2zhu51Lc7+95b8NRAg==}
 
@@ -1368,6 +1374,9 @@ packages:
 
   country-state-city@3.2.1:
     resolution: {integrity: sha512-kxbanqMc6izjhc/EHkGPCTabSPZ2G6eG4/97akAYHJUN4stzzFEvQPZoF8oXDQ+10gM/O/yUmISCR1ZVxyb6EA==}
+
+  credit-card-type@10.1.2:
+    resolution: {integrity: sha512-fP9vlyeYSHfKbIdE6IOR63YivTXMy0ZqyEkBhHxuAbvpltepe+zJmQ34A2Va7zJ8J7ZaB5IMAdD+1YJOmsajJA==}
 
   cross-env@10.1.0:
     resolution: {integrity: sha512-GsYosgnACZTADcmEyJctkJIoqAhHjttw7RsFrVoJNXbsWWqaq6Ym+7kZjq6mS45O0jij6vtiReppKQEtqWy6Dw==}
@@ -3351,6 +3360,10 @@ snapshots:
 
   caniuse-lite@1.0.30001746: {}
 
+  card-validator@10.0.4:
+    dependencies:
+      credit-card-type: 10.1.2
+
   ccount@2.0.1: {}
 
   chalk@4.1.2:
@@ -3391,6 +3404,8 @@ snapshots:
   cookie@1.0.2: {}
 
   country-state-city@3.2.1: {}
+
+  credit-card-type@10.1.2: {}
 
   cross-env@10.1.0:
     dependencies:
