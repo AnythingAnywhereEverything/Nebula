@@ -1,60 +1,45 @@
-.paymentContainer{
-    .paymentHead{
-        padding: 8px 0;
-        h3 {
-            padding-bottom: 8px;
-            font-weight: normal;
-        }
-        p{
-            padding-bottom: 4px;
-        }
+.card {
+    background: #fff;
+    flex-shrink: 0;
+    border-radius: var(--radius-small);
+    aspect-ratio: 32 / 22;
+    justify-content: center;
+    
+    img {
+        object-position: center;
     }
+}
+
+.border {
+    border: 1px solid var(--input);
+}
+
+.badge {
+    border: 1px solid color-mix(in oklab,
+        var(--primary) 50%, transparent);
+    color: var(--primary-foreground) !important;
+    font-size: var(--text-extra-small);
+    border-radius: var(--radius-extra-small);
+    width: fit-content !important;
+}
+
+.cardContainer {
+    padding-inline: calc(var(--spacing) * 3);
+    padding-block: calc(var(--spacing) * 3);
+    background-color: color-mix(in oklab, var(--input) 20%, transparent);
+    border: 1px var(--border) solid;
+    border-radius: var(--radius-medium);
+}
+
+.paymentContainer{
     .noCard{
         display: flex;
         justify-content: center;
         align-items: center;
         height: 400px;
         margin: 8px 0;
-        border-bottom: 1px solid #ccc;
-        border-top: 1px solid #ccc;
         h2{
             font-weight: normal;
         }
-    }
-
-    .hasCard{
-        display: grid;
-        grid-template-columns: 48% 48%;
-        justify-content: space-between;
-        margin-bottom: 8px;
-        .cardContainer{
-            display: flex;
-            padding: 12px;
-            justify-content: space-between;
-            align-items: center;
-            .editBtn{
-                padding: 8px 16px;
-                border: transparent;
-                cursor: pointer;
-                background-color: variables.$white-button-bg;
-                transition: 0.3s;
-            }
-            .editBtn:hover{
-                background-color: variables.$white-button-bg-hover;
-            }
-        }
-    }
-    .addCard{
-        padding: 12px;
-        width: 100%;
-        border: transparent;
-        background-color: variables.$submit-button-bg;
-        color: variables.$text-lighter;
-        cursor: pointer;
-        transition: 0.3s;
-    }
-    .addCard:hover{
-        background-color: variables.$submit-button-bg-hover;
-        color: variables.$text-dark;
     }
 }

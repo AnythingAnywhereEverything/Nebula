@@ -24,8 +24,8 @@ export const userSettingsAllowList: Record<string, {
     },
     "/account/payment": {
         component:  Payment,
-        title: "Banks & Cards",
-        description: "Manage your payment methods",
+        title: "Payment Method",
+        description: "Your payment methods are encrypted and stored with a secured payment processing service.",
     },
     "/account/address": {
         component: Address,

@@ -1,5 +1,6 @@
 export interface CardInfo {
-    cardType : string
-    cardNumber : string
-    expireDate : Date
+    card_type : string
+    last_four_digits : string
+    expireDate : Date,
+    is_default: boolean
 }

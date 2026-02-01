@@ -209,6 +209,10 @@
         box-shadow: none;
     }
 
+    &[aria-invalid=true] {
+        box-shadow: none;
+    }
+
     [data-theme=dark] &, [data-theme=midnight] & {
         background: transparent;
         &:disabled {
