@@ -10,17 +10,22 @@
     outline: none;
     transition: all 0.2s ease;
 
+    &[data-size='sm'] {
+        width: 24px;
+        height: 14px;
+    }
+    
     &[data-size='default'] {
         width: 32px;
         height: 18.4px;
     }
 
-    &[data-size='sm'] {
-        width: 24px;
-        height: 14px;
+    &[data-size='lg'] {
+        width: 44px;
+        height: 24.5px;
     }
 
-    &[data-size='lg'] {
+    &[data-size='xl'] {
         width: 51px;
         height: 25.5px;
     }
@@ -100,6 +105,11 @@
     }
 
     .switch[data-size='lg'] & {
+        width: 1.25rem;
+        height: 1.25rem;
+    }
+
+    .switch[data-size='xl'] & {
         width: 1.5rem;
         height: 1.5rem;
     }
