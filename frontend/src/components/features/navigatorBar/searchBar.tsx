@@ -19,7 +19,7 @@ const SearchBar: React.FC = () => {
             action="/search"
             onSubmit={handleSubmit}>
             <InputGroup className={style.navInput}>
-                <InputGroupInput name='q' id="inline-start-input" placeholder="Search..." />
+                <InputGroupInput name='q' id="inline-start-input" placeholder="Search..." style={{color: "#000"}} />
                 <InputGroupAddon align="inline-start">
                     <Icon value="" />
                 </InputGroupAddon>
