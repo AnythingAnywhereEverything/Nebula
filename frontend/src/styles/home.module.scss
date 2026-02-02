@@ -16,6 +16,68 @@
     background-color: color-mix(in oklab, var(--muted) 50%, transparent);
 }
 
+.categoryUl {
+    display: grid;
+    grid-template-rows: repeat(2, auto);
+    grid-auto-flow: column;
+
+    grid-auto-columns: minmax(114px, max-content);
+    justify-content: start;
+
+    gap: calc(var(--spacing) * 2);
+
+    list-style: none;
+    margin: 0;
+    padding: calc(var(--spacing) * 2);
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+
+    border: 1px var(--border) solid;
+    border-radius: var(--radius-medium);
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+    li {
+        overflow: hidden;
+        border: 1px var(--border) solid;
+        border-radius: var(--radius-medium);
+        padding: calc(var(--spacing) * 2);
+        background: color-mix(in oklab, var(--input) 10%, transparent);
+
+        a {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: calc(var(--spacing) * 4);
+            text-decoration: none;
+            color: var(--text-neutral);
+            
+            &:hover {
+                color: var(--text-link);
+            }
+
+            legend {
+                width: 100%;
+                overflow: hidden;
+                text-align: center;
+                -webkit-line-clamp: 2;
+                line-clamp: 2;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                font-size: var(--text-base);
+                line-height: calc(var(--text-base--line-height));
+                height: calc(var(--text-base--line-height) * var(--text-base) * 2);
+            }
+        }
+    }
+}
 
 .giftsContainer {
     display: flex;
