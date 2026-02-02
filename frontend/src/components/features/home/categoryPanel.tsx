@@ -55,6 +55,7 @@ const CategoryPanel: React.FC = () => {
                         variant={"secondary"}
                         onClick={() => scroll("left")}
                         className={s.carouselBtnLeft}
+                        size={"icon-lg"}
                     >
                         <Icon></Icon>
                     </Button>
@@ -63,6 +64,7 @@ const CategoryPanel: React.FC = () => {
                         variant={"secondary"}
                         onClick={() => scroll("right")}
                         className={s.carouselBtnRight}
+                        size={"icon-lg"}
                     >
                         <Icon></Icon>
                     </Button>
