@@ -6,6 +6,11 @@
 }
 
 .productContainer{
+    a{
+        text-decoration: none;
+        color: var(--text-neutral);
+        cursor: pointer;
+    }
     margin-top: calc(var(--spacing) * 4);
     padding: calc(var(--spacing) * 2);
     .imgContainer{
@@ -25,6 +30,7 @@
     }
     .details{
         gap: calc(var(--spacing) * 1);
+        cursor: pointer;
         .status{
             width: 100%;
             display: flex;
@@ -34,7 +40,7 @@
             min-width: 800px;
             max-width: 850px;
             align-items: center;
-            margin-top: var(--spacing);
+            margin-bottom: calc(var(--spacing));
             .productName{
                 display: -webkit-box;
                 line-clamp: 2;
