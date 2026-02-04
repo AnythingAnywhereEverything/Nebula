@@ -12,6 +12,7 @@ import { Badge } from '@components/ui/Nebula/badge';
 import Link from 'next/link';
 import { Button, Field, FieldDescription, FieldSeparator, FieldSet, Icon, Separator } from '@components/ui/NebulaUI';
 import { formatLargeNumber, ratingStars } from '@lib/utils';
+import ProductComment from '@components/features/product/productComment';
 
 interface ProductPageLayoutProps {
     nsin?: string;
@@ -129,6 +130,10 @@ const ProductPageLayout: React.FC<ProductPageLayoutProps> = ({nsin}) => {
                 <ProductFullDetail
                     specs={product.productDetail.specification}
                     about={product.productDetail.about}/>
+            </div>
+
+            <div className={style.commentContainer}>
+                <ProductComment />
             </div>
         </>
     )
