@@ -2,7 +2,7 @@ import style from '@styles/home.module.scss';
 import { NextPageWithLayout } from '../types/global.d';
 import { DropdownMenuTrigger, DropdownMenuContent, DropdownMenuGroup, DropdownMenuLabel, DropdownMenuItem, DropdownMenuSeparator, DropdownMenu, DropdownMenuPortal, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger } from '@components/ui/Nebula/dropdown-menu';
 import Link from 'next/link';
-import {Dialog, Button, Input, Textarea, InputGroup, InputGroupInput, InputGroupAddon, Icon, InputGroupText, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose, ButtonGroup, ButtonGroupSeparator, ProductItem, ProductImage, ProductContent, ProductHeader, ProductFooter, ProductStars, ProductLocation, ProductPrice, InputGroupButton, Label } from '@components/ui/NebulaUI';
+import {Dialog, Button, Input, Textarea, InputGroup, InputGroupInput, InputGroupAddon, Icon, InputGroupText, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose, ButtonGroup, ButtonGroupSeparator, ProductItem, ProductImage, ProductContent, ProductHeader, ProductFooter, ProductStars, ProductLocation, ProductPrice, InputGroupButton, Label, TooltipProvider, TooltipTrigger, TooltipContent, Tooltip } from '@components/ui/NebulaUI';
 import { Badge } from '@components/ui/Nebula/badge';
 import { ProductContainer, ProductContainerDescription, ProductContainerHeader, ProductContainerHeaderAddon, ProductContainerTitle, ProductField } from '@components/ui/Nebula/product-field';
 import { SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectLabel, SelectItem, Select, SelectSeparator } from '@components/ui/Nebula/selector';
@@ -35,8 +35,18 @@ const TestPage: NextPageWithLayout = () => {
         <Button variant={"oppose"}>TEST</Button>
         <Button variant={"ghost"} size={"sm"}>Test Ghost sm</Button>
         <Button variant={"link"} size={"xs"}>Test Link xs</Button>
-        <Button variant={"outline"} size={"lg"}>TEST lg</Button>
         <Button variant={"destructive"}>TEST destructive</Button>
+
+        <Tooltip>
+            <TooltipTrigger asChild>
+                <Button variant={"outline"}>Left</Button>
+            </TooltipTrigger>
+        
+            <TooltipContent side='left' sideOffset={10}>
+                Yes
+            </TooltipContent>
+        </Tooltip>
+
         <Input placeholder="Hello"/>
 
         <FieldGroup style={{width:"100%", maxWidth:"25rem"}}>

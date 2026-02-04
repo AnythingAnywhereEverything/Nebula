@@ -20,4 +20,6 @@ export * from "./Nebula/product"
 export * from "./Nebula/product-field"
 export * from "./Nebula/field"
 
+export * from "./Nebula/tooltip"
+export * from "./Nebula/sidebar"
 export * from "./Nebula/combobox"
