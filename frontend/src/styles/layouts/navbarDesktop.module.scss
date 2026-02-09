@@ -100,6 +100,27 @@
         }
     }
 
+    .navTopPortal{
+        height: calc(var(--spacing) * 18);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        gap: 3rem;
+        padding: 0.75rem 1.5rem;
+
+        .navLogo{
+            height: 50px;
+            margin-top: -10px;
+        }
+
+        .navActions{
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+    }
+
     .navBottom{
         width: 100%;
         background-color: color-mix(in oklab, var(--background) 40%, transparent);
