@@ -13,6 +13,8 @@
     --spacing: 0.25rem;
     --container-md: 28rem;
     
+    --navbar-height: calc(var(--spacing) * 18);
+
     // Base colors
 
     --primary: #2e49ab;
@@ -76,28 +78,11 @@
     --blur-extra-small: 4px;
     --blur-small: 8px;
 
-    // misc
+    //sidebar
+    --sidebar-width: 16rem;
+
+    // ring
     --ring: #5f5f5f;
-    /* =========================
-        Base / Background
-    ========================= */
-
-    --content-container-border: #eeeeee;
-
-    --placeholder: #858585; /* added for input placeholders */
-
-
-    /* =========================
-        Status / Feedback
-    ========================= */
-    --color-alert: #c73636;
-
-    --product-active-border: #3880d2;
-    --product-active-bg: #b5d8ff;
-
-
-    --product-delete-history: #91b7ff;
-
     --ring-primary: 0 0 0 2px rgba(56, 128, 210, 0.4);;
 }
 
