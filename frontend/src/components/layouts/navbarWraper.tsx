@@ -1,9 +1,10 @@
 import React from 'react';
 import NavDesktop from './navbars/navbarDesktop';
 import NavAuth from './navbars/navbarLogin';
+import NavPortal from './navbars/navbarPortal';
 
 interface NavProps {
-  type?: string;
+  type?: 'auth' | 'portal';
 }
 
 const Navbar: React.FC<NavProps> = ({type}) => {
@@ -11,7 +12,8 @@ const Navbar: React.FC<NavProps> = ({type}) => {
         return (
             <NavAuth/>
         )
-    }
+    } else if (type === "portal")
+        return <NavPortal/>
     return (
         <NavDesktop/>
     );
