@@ -70,7 +70,6 @@
                 -webkit-line-clamp: 2;
                 line-clamp: 2;
                 text-overflow: ellipsis;
-                overflow: hidden;
                 font-size: var(--text-base);
                 line-height: calc(var(--text-base--line-height));
                 height: calc(var(--text-base--line-height) * var(--text-base) * 2);
