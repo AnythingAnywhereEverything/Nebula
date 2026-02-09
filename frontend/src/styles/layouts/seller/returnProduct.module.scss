@@ -1,0 +1,39 @@
+.returnProductPage{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
+    gap: 2rem;
+    padding: 2rem 1rem;
+
+    .returnProductContainer{
+        width: 100%;
+        display: flex;
+        padding: calc(var(--spacing) * 4);
+        gap: calc(var(--spacing) * 4);
+        padding-block: calc(var(--spacing) * 4);
+        background-color: color-mix(in oklab, var(--muted) 30%, transparent);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-medium);
+
+        [data-theme=dark] & {
+            background-color: color-mix(in oklab, var(--input) 30%, transparent);
+        }
+
+    }
+    .triggerBtn,.selector{
+        width: 100%;
+    }
+}
+.header{
+    padding: calc(var(--spacing) * 4);
+    h2{
+        font-weight: 400;
+    }
+}
+.sortByStatus{
+    display: flex;
+    padding: calc(var(--spacing) * 2) calc(var(--spacing) * 2) ;
+    gap: calc(var(--spacing) * 2);
+}
