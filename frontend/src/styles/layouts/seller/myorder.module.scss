@@ -1,0 +1,14 @@
+.myOrderPage{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
+    gap: 2rem;
+    padding: 2rem 1rem;
+    
+    .sortByStatus{
+        display: flex;
+        gap: calc(var(--spacing) * 2);
+    }
+}
