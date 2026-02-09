@@ -13,6 +13,10 @@
     box-sizing: border-box;
     text-decoration: none;
 
+    &:has([data-component="icon"]) {
+        gap: calc(var(--spacing) * 2);
+    }
+
     &:disabled {
         pointer-events: none;
         cursor: not-allowed;
