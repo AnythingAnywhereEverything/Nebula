@@ -31,7 +31,7 @@ export function ProfileBadge() {
                     </div>
                 </div>
             </DropdownMenuTrigger>
-            <DropdownMenuContent style={{width: "calc(var(--spacing) * 48)"}}>
+            <DropdownMenuContent align="center" style={{width: "calc(var(--spacing) * 48)"}}>
                 <DropdownMenuGroup>
                     <DropdownMenuLabel>My Account</DropdownMenuLabel>
                     <DropdownMenuItem asChild>
