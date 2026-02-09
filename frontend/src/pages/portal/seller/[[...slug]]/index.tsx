@@ -1,9 +1,15 @@
 import { useRouter } from "next/router";
-import { useEffect } from "react";
-import style from '@styles/layouts/usersetting.module.scss';
+import { ReactNode, useEffect, FC } from "react";
 import { portalSellerAllowedList } from "src/constants/portalSellerRoutes";
+import { NextPageWithLayout } from "src/types/global";
+import PortalLayout from "@components/layouts/main-layouts/portalLayout";
+import { usePathname } from 'next/navigation';
 
-export default function SellerPortal() {
+import s from "@styles/sidebar.module.scss"
+import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, Field, FieldDescription, FieldGroup, FieldLabel, FieldLegend, Icon, Separator } from "@components/ui/NebulaUI";
+import Link from "next/link";
+
+const SellerPortal: NextPageWithLayout = () => {
     const router = useRouter();
     const { slug } = router.query;
 
@@ -14,16 +20,116 @@ export default function SellerPortal() {
     useEffect(() => {
         if (!router.isReady) return;
 
-        if (!pageMeta) router.replace("/portal/seller/dashboard");
+        if (!pageMeta || !pageMeta.component) router.replace("/portal/seller/dashboard");
     }, [router, pageMeta]);
 
-    if (!router.isReady || !pageMeta) return <p>Loading...</p>;
+    if (!router.isReady || !pageMeta || !pageMeta.component) return <p>Loading...</p>;
 
     const PageComponent = pageMeta.component;
 
     return (
-        <div className={style.userSetting}>
+        <div>
             <PageComponent />
         </div>
     );
 }
+
+SellerPortal.getLayout = (page) => {
+    return <PortalLayout Sidebar={SellerSideBar}>{page}</PortalLayout>
+}
+
+const SellerSideBar: React.FC = () => {
+
+    const currentPath = usePathname();
+    const renderSidebarButtons = (
+        items: { icon: string; name: string; link?: string }[],
+        activePath: string
+    ) => {
+        return items.map((item, index) => {
+            const isActive = item.link === activePath;
+            return (
+                <Button
+                    key={index}
+                    size={"sm"}
+                    variant={"ghost"}
+                    justify={"start"}
+                    asChild
+                    className={isActive ? s.active : ''}
+                >
+                    <Link href={item.link ?? ""}>
+                        <Icon value={item.icon} />
+                        {item.name}
+                    </Link>
+                </Button>
+            );
+        });
+    };
+
+    const ListMapping = [
+        {
+            description: null,
+            items: [
+                { icon: "", name: "Shop Dashboard", link: "/portal/seller/dashboard" },
+            ]
+        },
+        {
+            description: "Order",
+            items: [
+                { icon: "", name: "My Orders", link: "/portal/seller/order/my_order" },
+                { icon: "", name: "Mass Shipping", link: "/portal/seller/order/mass_shipping" },
+                { icon: "", name: "Shipping Settings", link: "/portal/seller/order/setting" }
+            ]
+        },
+    ];
+
+    return (
+        <div data-component="sidebar" className={s.sidebar}>
+            <Field className={s.sidebarHeader}>
+                <DropdownMenu>
+                    <DropdownMenuTrigger>
+                        <div className={s.shopSelector}>
+                            <div className={s.imageContainer}>
+                                <img src="https://placehold.co/50" width={50} height={50} alt="" />
+                            </div>
+                            <div className={s.shopInfo}>
+                                <p className={s.shopname}>Longggg Shop Name</p>
+                                <p className={s.shoplabel}>Shop label</p>
+                            </div>
+                        </div>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent side="right" align="start">
+                        <DropdownMenuGroup>
+                            <DropdownMenuLabel>Shop you owned</DropdownMenuLabel>
+                            <DropdownMenuItem>NebulaStore</DropdownMenuItem>
+                        </DropdownMenuGroup>
+                        <DropdownMenuSeparator/>
+                        <DropdownMenuItem>
+                            <Icon value="" />
+                            Create new shop
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </Field>
+            <FieldGroup className={s.sidebarContent}>
+                {ListMapping.map((section, index) => (
+                    <Field key={index}>
+                        {section.description && (
+                            <FieldDescription>
+                                {section.description}
+                            </FieldDescription>
+                        )}
+                        {/* Pass currentPath to renderSidebarButtons */}
+                        {renderSidebarButtons(section.items, currentPath)}
+                    </Field>
+                ))}
+            </FieldGroup>
+            <Separator/>
+            <Field className={s.sidebarFooter}>
+                Footer
+            </Field>
+        </div>
+    )
+}
+
+
+export default SellerPortal

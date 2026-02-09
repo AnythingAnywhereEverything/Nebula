@@ -1,0 +1,96 @@
+.sidebarProvider{ 
+    display: flex;
+    width: 100%;
+}
+
+.contentContain {
+    height: calc(100svh - var(--navbar-height));
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 100%;
+}
+
+.sidebar {
+    width: var(--sidebar-width);
+    flex-shrink: 0;
+    height: calc(100svh - var(--navbar-height));
+    background: var(--popover);
+    border-right: 1px solid var(--border);
+    padding-inline: calc(var(--spacing) * 2.5);
+    padding-block: calc(var(--spacing) * 2.5);
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    gap: calc(var(--spacing) * 4);
+    justify-content: space-between;
+}
+
+.sidebarContent {
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-color: var(--border) transparent;
+    scrollbar-width: thin;
+}
+
+.sidebarHeader, .sidebarFooter {
+    flex-shrink: 0;
+}
+
+.shopSelector {
+    display: flex;
+    align-items: center;
+    padding: calc(var(--spacing) * 2);
+    border: 1px solid color-mix(in oklab, var(--border) 30%, transparent);
+
+    background-color: color-mix(in oklab, var(--muted) 30%, transparent);
+
+    border-radius: var(--radius-medium);
+
+    gap: calc(var(--spacing) * 2);
+
+    .shopInfo {
+        width: 100%;
+        text-align: start;
+
+        .shopname, .shoplabel {
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            word-break: break-all;
+            text-overflow: ellipsis;
+            -webkit-line-clamp: 1;
+            line-clamp: 1;
+            overflow: hidden;
+        }
+
+        .shopname {
+            width: 100%;
+            font-size: var(--text-base);
+            line-height: calc(var(--text-base--line-height));
+            height: calc(var(--text-base--line-height) * var(--text-base));
+        }
+
+        .shoplabel {
+            width: 100%;
+            color: var(--muted-foreground);
+            font-size: var(--text-small);
+            line-height: calc(var(--text-sm--line-height));
+            height: calc(var(--text-sm--line-height) * var(--text-small));
+        }
+    }
+
+    .imageContainer {
+        flex-shrink: 0;
+        width: 50px;
+        height: 50px;
+        border-radius: var(--radius-small);
+        overflow: hidden;
+        img {
+            display: block;
+        }
+    }
+}
+
+.active {
+    background-color: color-mix(in oklab,
+    var(--foreground) 20%, transparent);
+}
