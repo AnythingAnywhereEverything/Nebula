@@ -70,6 +70,7 @@ const SellerSideBar: React.FC = () => {
             description: null,
             items: [
                 { icon: "", name: "Shop Dashboard", link: "/portal/seller/dashboard" },
+                { icon: "", name: "Shop Product", link: "/portal/seller/myProduct" },
             ]
         },
         {
