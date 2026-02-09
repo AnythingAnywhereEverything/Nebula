@@ -1,0 +1,49 @@
+.wishlistPage{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
+    gap: 2rem;
+    padding: 2rem 1rem;
+
+
+    .wishlistContainer{
+        width: 100%;
+        display: flex;
+        gap: calc(var(--spacing) * 4);
+        padding-block: calc(var(--spacing) * 4);
+        background-color: color-mix(in oklab, var(--muted) 30%, transparent);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-medium);
+
+        [data-theme=dark] & {
+            background-color: color-mix(in oklab, var(--input) 30%, transparent);
+        }
+
+        .header{
+            padding-inline: calc(var(--spacing) * 4) calc(var(--spacing) * 8);
+        h1{
+            font-weight: 400;
+        }
+    }
+    }
+    
+    .wishlistItemContainer {
+        padding: calc(var(--spacing) * 4)
+         calc(var(--spacing)* 16);
+         
+    }
+    .addItemContainer{
+        padding: calc(var(--spacing) * 2) calc(var(--spacing) * 16);
+        .selection,.addItem {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            gap: calc(var(--spacing) * 4);
+        }
+        .addItem{
+            justify-content: flex-end;
+        }
+    }
+}
