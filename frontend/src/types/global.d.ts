@@ -1,8 +1,9 @@
 import { NextPage } from 'next';
-import { ReactElement, ReactNode } from 'react';
+import { FC, ReactElement, ReactNode } from 'react';
 
 export type LayoutProps = {
   children: ReactNode;
+  Sidebar?: FC;
 };
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
