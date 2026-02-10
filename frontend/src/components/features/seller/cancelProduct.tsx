@@ -45,7 +45,7 @@ export default function CancelRefunedReturn() {
                             <Button>Reply to buyer</Button>
                             <Button>Provide evidence</Button>
                             <Button>Withdraw Parcel</Button>
-                            <Button>Review Refund Approved by Shopee</Button>
+                            <Button>Review Refund Approved by Nebula</Button>
                             <Button>Claim shipping fee</Button>
                         </Field>
                     </Field>
