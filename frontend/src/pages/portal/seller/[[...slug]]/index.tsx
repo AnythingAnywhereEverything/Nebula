@@ -41,12 +41,17 @@ SellerPortal.getLayout = (page) => {
 const SellerSideBar: React.FC = () => {
 
     const currentPath = usePathname();
+
     const renderSidebarButtons = (
         items: { icon: string; name: string; link?: string }[],
         activePath: string
     ) => {
         return items.map((item, index) => {
-            const isActive = item.link === activePath;
+            const isActive =
+                typeof activePath === 'string' &&
+                typeof item.link === 'string' &&
+                activePath.startsWith(item.link);
+    
             return (
                 <Button
                     key={index}
@@ -70,7 +75,8 @@ const SellerSideBar: React.FC = () => {
             description: null,
             items: [
                 { icon: "", name: "Shop Dashboard", link: "/portal/seller/dashboard" },
-                { icon: "", name: "Shop Product", link: "/portal/seller/myProduct" },
+                { icon: "", name: "Shop Products", link: "/portal/seller/products" },
+                { icon: "󱝋", name: "Cancel Refund Return", link: "/portal/seller/canceled" },
             ]
         },
         {
@@ -119,7 +125,6 @@ const SellerSideBar: React.FC = () => {
                                 {section.description}
                             </FieldDescription>
                         )}
-                        {/* Pass currentPath to renderSidebarButtons */}
                         {renderSidebarButtons(section.items, currentPath)}
                     </Field>
                 ))}

@@ -1,4 +1,5 @@
-import MyProduct from "@components/features/seller/myProduct/myProduct";
+import CancelRefunedReturn from "@components/features/seller/cancelProduct";
+import MyProduct from "@components/features/seller/myProduct";
 
 export const portalSellerAllowedList: Record<string, {
     component: React.ComponentType;
@@ -6,7 +7,10 @@ export const portalSellerAllowedList: Record<string, {
     "/dashboard": {
         component: () => <p>Dashboard</p>
     },
-    "/myProduct": {
+    "/products": {
         component: MyProduct
+    },
+    "/canceled": {
+        component: CancelRefunedReturn
     }
 }

@@ -82,13 +82,7 @@ export function ProfileBadge() {
                 <DropdownMenuGroup>
                     <DropdownMenuLabel>My Nebula Shops</DropdownMenuLabel>
                     <DropdownMenuItem asChild>
-                        <Link href={"#"}>Dashboard</Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                        <Link href={"#"}>Dashboard</Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                        <Link href={"#"}>Dashboard</Link>
+                        <Link href={"/portal/seller/dashboard"}>Dashboard</Link>
                     </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
