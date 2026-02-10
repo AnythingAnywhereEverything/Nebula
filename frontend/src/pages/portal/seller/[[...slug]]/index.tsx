@@ -84,9 +84,26 @@ const SellerSideBar: React.FC = () => {
             items: [
                 { icon: "", name: "My Orders", link: "/portal/seller/order/my_order" },
                 { icon: "", name: "Mass Shipping", link: "/portal/seller/order/mass_shipping" },
-                { icon: "", name: "Shipping Settings", link: "/portal/seller/order/setting" }
+                { icon: "", name: "Shipping Settings", link: "/portal/seller/order/setting" },
             ]
         },
+        {
+            description: "Finance",
+            items: [
+                { icon: "", name: "My income", link: "/portal/seller/finance/my_income"},
+                { icon: "", name: "My balance", link: "/portal/seller/finance/my_balance"},
+                { icon: "", name: "Bank account", link: "/portal/seller/finance/bank_account"},
+            ]
+        },
+        {
+        description: "Data",
+        items: [
+                { icon: "", name: "Bussinate insight", link: "/portal/seller/data/businate_insight"},
+                { icon: "", name: "Account health", link: "/portal/seller/data/account_health"},
+            ]
+        },
+        
+
     ];
 
     return (
