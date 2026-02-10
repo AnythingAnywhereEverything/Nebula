@@ -75,7 +75,6 @@ const SellerSideBar: React.FC = () => {
             description: null,
             items: [
                 { icon: "", name: "Shop Dashboard", link: "/portal/seller/dashboard" },
-                { icon: "", name: "Shop Products", link: "/portal/seller/products" },
                 { icon: "󱝋", name: "Cancel Refund Return", link: "/portal/seller/canceled" },
             ]
         },
@@ -85,6 +84,13 @@ const SellerSideBar: React.FC = () => {
                 { icon: "", name: "My Orders", link: "/portal/seller/order/my_order" },
                 { icon: "", name: "Mass Shipping", link: "/portal/seller/order/mass_shipping" },
                 { icon: "", name: "Shipping Settings", link: "/portal/seller/order/setting" },
+            ]
+        },
+        {
+            description: "Product",
+            items: [
+                { icon: "󰏗", name: "Shop Products", link: "/portal/seller/products/product_list" },
+                { icon: "󱧕", name: "Add New Product", link: "/portal/seller/products/new_product" },
             ]
         },
         {
@@ -99,7 +105,7 @@ const SellerSideBar: React.FC = () => {
         description: "Data",
         items: [
                 { icon: "", name: "Bussinate insight", link: "/portal/seller/data/businate_insight"},
-                { icon: "", name: "Account health", link: "/portal/seller/data/account_health"},
+                { icon: "󱕎", name: "Account health", link: "/portal/seller/data/account_health"},
             ]
         },
         

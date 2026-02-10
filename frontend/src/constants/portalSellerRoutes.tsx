@@ -8,12 +8,10 @@ export const portalSellerAllowedList: Record<string, {
     "/dashboard": {
         component: () => <p>Dashboard</p>
     },
-    "/products": {
-        component: MyProduct
-    },
     "/canceled": {
         component: CancelRefunedReturn
     },
+
     "/order/my_order":{
         component: myOrder 
     },
@@ -23,6 +21,14 @@ export const portalSellerAllowedList: Record<string, {
     "/order/setting":{
         component: () => <p>shipping setting</p>
     },
+
+    "/products/product_list": {
+        component: MyProduct
+    },
+    "/products/new_product": {
+        component: () => <p>Add new product</p>
+    },
+
     "/finance/my_income":{
         component: () => <p>my income</p>
     },
@@ -32,6 +38,7 @@ export const portalSellerAllowedList: Record<string, {
     "/finance/bank_account":{
         component: () => <p>bank account</p>
     },
+    
     "/data/businate_insight":{
         component: () => <p>bank account</p>
     },
