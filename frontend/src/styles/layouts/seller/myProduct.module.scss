@@ -1,53 +1,55 @@
-.myProductPage{
+.myProductContainer{
+    width: 100%;
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    max-width: 1400px;
-    margin: 0 auto;
-    gap: 2rem;
-    padding: 2rem 1rem;
-    .myProductContainer{
+    padding: calc(var(--spacing) * 4);
+    gap: calc(var(--spacing) * 4);
+    padding-block: calc(var(--spacing) * 4);
+    background-color: color-mix(in oklab, var(--muted) 30%, transparent);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-medium);
+
+    [data-theme=dark] & {
+        background-color: color-mix(in oklab, var(--input) 30%, transparent);
+    }
+}
+
+.imgContainer{
+    width: calc(var(--spacing) * 24);
+    overflow: hidden;
+    aspect-ratio: 1 / 1;
+    border-radius: var(--radius-medium);
+    position: relative;
+    object-fit: cover;
+    display: grid !important;
+    flex-shrink: 0;
+    img{
+        display: block;
         width: 100%;
-        display: flex;
-        padding: calc(var(--spacing) * 4);
-        gap: calc(var(--spacing) * 4);
-        padding-block: calc(var(--spacing) * 4);
-        background-color: color-mix(in oklab, var(--muted) 30%, transparent);
-        border: 1px solid var(--border);
-        border-radius: var(--radius-medium);
-
-        [data-theme=dark] & {
-            background-color: color-mix(in oklab, var(--input) 30%, transparent);
-        }
-
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+        grid-column: 1 / -1;
     }
-    .productContainer{
-        display: flex;
-        flex-direction: column;
-        gap: calc(var(--spacing) * 4);
-        .product{
-            .imgContainer{
-                width: calc(var(--spacing)*30);
-                overflow: hidden;
-                aspect-ratio: 1 / 1;
-                border-radius: var(--radius-medium);
-                position: relative;
-                object-fit: cover;
-                display: grid;
-                flex-shrink: 0;
-                img{
-                    width: 100%;
-                    height: 100%;
-                    object-fit: cover;
-                    transition: transform 0.3s ease;
-                    grid-column: 1 / -1;
-                }
-            }
-            .sizeSelector,.variableSelector{
-                display: flex;
-                align-items: center;
-                gap: calc(var(--spacing) * 2);
-            }
-        }
-    }
+}
+
+.prodTitle {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    width: 100%;
+    overflow: hidden;
+    text-align: start;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+    text-overflow: ellipsis;
+    font-size: var(--text-base);
+    line-height: calc(var(--text-base--line-height));
+    height: calc(var(--text-base--line-height) * var(--text-base) * 1);
+}
+
+.prodDetail {
+    gap: calc(var(--spacing) * 2) !important;
+}
+
+.myProductPage{
+    padding: 2rem 1rem;
 }
