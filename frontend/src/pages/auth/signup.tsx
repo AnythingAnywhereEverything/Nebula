@@ -1,6 +1,6 @@
 import { useState } from "react";
 import style from '@styles/layouts/authLayout.module.scss';
-import { NextPageWithLayout } from "src/types/global";
+import { NextPageWithLayout } from "@/types/global";
 import AuthLayout from "@components/layouts/main-layouts/authLayout";
 import Head from "next/head";
 import Form from "next/form";
@@ -8,7 +8,7 @@ import { FieldSet, FieldGroup, Field, FieldLabel, Input, InputGroup, InputGroupA
 import Link from "next/link";
 import GoogleAuthButton from "@components/ui/GoogleLoginBtn";
 import { cn } from "@lib/utils";
-import { register } from "src/api/auth";
+import { register } from "@/api/auth";
 import { useRouter } from "next/router";
 
 

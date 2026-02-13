@@ -1,15 +1,15 @@
 import { useState } from "react";
 import style from '@styles/layouts/authLayout.module.scss';
-import { NextPageWithLayout } from "src/types/global";
+import { NextPageWithLayout } from "@/types/global";
 import AuthLayout from "@components/layouts/main-layouts/authLayout";
 import Head from "next/head";
 import { Field, FieldLabel, FieldDescription, FieldGroup, FieldLegend, FieldSet, FieldTitle, Input, InputGroup, InputGroupAddon, Button, InputGroupInput, Icon, FieldError, FieldSeparator } from "@components/ui/NebulaUI";
 import Link from "next/link";
 import Form from "next/form";
-import { login } from "src/api/auth";
+import { login } from "@/api/auth";
 import { useRouter } from "next/router";
 import GoogleAuthButton from "@components/ui/GoogleLoginBtn";
-import { setToken } from "src/handler/token_handler";
+import { setToken } from "@/handler/token_handler";
 
 const SignIn: NextPageWithLayout = () => {
 
