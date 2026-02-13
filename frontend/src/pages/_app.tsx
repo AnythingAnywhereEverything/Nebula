@@ -5,6 +5,7 @@ import { AppProps } from 'next/app';
 
 import { UAParser } from 'ua-parser-js';
 import Head from 'next/head';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout;
@@ -14,7 +15,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const getLayout = Component.getLayout ?? ((page) => <DefaultLayout>{page}</DefaultLayout>);
 
   return getLayout(
-    <><Head>
+    <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}><Head>
       <title>Nebula - Shop However You Like</title>
       <link rel="icon" href="/favicon.ico" />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -22,7 +23,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       <link rel="apple-touch-icon" href="/logo192.png" />
       <link rel="manifest" href="/manifest.json" />
     </Head>
-    <Component {...pageProps} /></>
+    <Component {...pageProps} /></GoogleOAuthProvider>
   );
 }
 
