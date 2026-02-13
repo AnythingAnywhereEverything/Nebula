@@ -1,7 +1,8 @@
 /backend/rust-service-example
 
 # docker
-.env_docker
+.env_docker_*
+!.env_docker_*_example
 
 # media files
 media/*
