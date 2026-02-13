@@ -4,15 +4,31 @@ import Link from "next/link"
 import { cn } from "src/lib/utils"
 import { Icon } from "@components/ui/Nebula/icon"
 import { ProfileBadge } from '../profileBadge'
+import { isAuthenticated } from 'src/handler/token_handler'
+import { useEffect, useState } from 'react'
 
 const ActionWraper: React.FC = () => {
+
+    const [Authenticated, setAuthenticated] = useState(false);
+
+     useEffect(() => {
+        setAuthenticated(isAuthenticated());
+    }, []);
+
     return (
     <div className={navDesktop.navActions}>
-        <Button variant={"oppose"} asChild>
-            <Link href={"/auth/signin"}>Sign in</Link>
-        </Button>
 
-        <ProfileBadge/>
+        {
+            !Authenticated ? (
+                <Button variant={"oppose"} asChild>
+                    <Link href={"/auth/signin"}>Sign in</Link>
+                </Button>
+            )
+            :
+            <ProfileBadge/>
+        }
+        
+
 
         <Button asChild className={cn(navDesktop.buttonDark)} size={"icon-lg"}>
             <Link href={"/wishlist"}>
