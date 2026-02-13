@@ -3,7 +3,7 @@ import s from "@styles/layouts/payment.module.scss";
 import { creditCardType } from "card-validator";
 
 import Image, { ImageProps } from "next/image";
-import { acceptCards } from "src/constants/validCards";
+import { acceptCards } from "@/constants/validCards";
 import { cn } from "./utils";
 
 interface CardBadgeProps extends Omit<

@@ -1,6 +1,6 @@
 import { Label as LabelPrimitive } from "radix-ui"
 
-import { cn } from "src/lib/utils"
+import { cn } from "@/lib/utils"
 
 import s from "@styles/ui/Nebula/label.module.scss"
 

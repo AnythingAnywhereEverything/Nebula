@@ -1,6 +1,6 @@
 
 import { DropdownMenu as DropdownMenuPrimitive } from "radix-ui"
-import { cn } from "src/lib/utils"
+import { cn } from "@/lib/utils"
 import { Icon } from "../NebulaUI"
 
 import s from "@styles/ui/Nebula/dropdownmenu.module.scss"

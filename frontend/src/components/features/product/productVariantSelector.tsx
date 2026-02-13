@@ -1,6 +1,6 @@
 import React from 'react';
 import style from '@styles/layouts/productlayout.module.scss';
-import type { ProductOption, ProductVariant } from "src/types/product";
+import type { ProductOption, ProductVariant } from "@/types/product";
 import router from 'next/router';
 import { Button, Field, FieldDescription, FieldSet } from '@components/ui/NebulaUI';
 

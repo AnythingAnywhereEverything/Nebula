@@ -1,9 +1,8 @@
 import { Button, Combobox, Field, FieldDescription, FieldGroup, FieldLabel, FieldLegend, FieldSet, Icon } from "@components/ui/NebulaUI";
 import React from "react";
-import { ProductVariant } from "src/types/product";
 import s from "@styles/layouts/mypurchase.module.scss"
 import Link from "next/link";
-import { PurchaseItems } from "src/mocks/mypurchase.mock";
+import { PurchaseItems } from "@/mocks/mypurchase.mock";
 
 const PurchaseBox : React.FC = () => {
 

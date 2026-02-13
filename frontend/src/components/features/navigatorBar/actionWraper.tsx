@@ -1,10 +1,10 @@
 import navDesktop from '@styles/layouts/navbarDesktop.module.scss'
 import { Button } from "@components/ui/NebulaUI"
 import Link from "next/link"
-import { cn } from "src/lib/utils"
+import { cn } from "@lib/utils"
 import { Icon } from "@components/ui/Nebula/icon"
 import { ProfileBadge } from '../profileBadge'
-import { isAuthenticated } from 'src/handler/token_handler'
+import { isAuthenticated } from '@/handler/token_handler'
 import { useEffect, useState } from 'react'
 
 const ActionWraper: React.FC = () => {

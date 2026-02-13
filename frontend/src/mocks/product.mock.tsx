@@ -1,4 +1,4 @@
-import { Product } from "src/types/product";
+import { Product } from "@/types/product";
 
 export const productExample = {
     id: "123456",

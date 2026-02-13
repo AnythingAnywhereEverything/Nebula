@@ -1,6 +1,6 @@
 import React from "react";
 import style from "@styles/layouts/payment.module.scss";
-import { CardInfo } from "src/types/card";
+import { CardInfo } from "@/types/card";
 import {
     Button,
     ButtonGroup,

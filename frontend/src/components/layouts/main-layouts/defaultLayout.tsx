@@ -1,4 +1,4 @@
-import { LayoutProps } from 'src/types/global';
+import { LayoutProps } from '@/types/global';
 import { Navbar } from '../navbarWraper';
 import { ThemeProvider } from 'next-themes';
 

@@ -1,7 +1,7 @@
 import { Button, Field, FieldDescription, FieldGroup, FieldLabel, FieldSet, Icon, ProductStars } from "@components/ui/NebulaUI";
 import React from "react";
 import s from "@styles/ui/productComment.module.scss"
-import { CommentMockUp } from "src/mocks/comment.mock";
+import { CommentMockUp } from "@/mocks/comment.mock";
 import CommentComponent from "./comment/commentComponent";
 
 const ProductComment:React.FC = () => {

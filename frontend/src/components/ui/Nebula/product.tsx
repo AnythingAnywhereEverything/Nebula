@@ -2,7 +2,7 @@ import { ratingStars } from '@lib/utils';
 import s from '@styles/ui/Nebula/product.module.scss';
 import { Icon } from './icon';
 import { cva, VariantProps } from 'class-variance-authority';
-import { cn } from 'src/lib/utils';
+import { cn } from '@/lib/utils';
 import { Slot } from 'radix-ui';
 
 function ProductImage({

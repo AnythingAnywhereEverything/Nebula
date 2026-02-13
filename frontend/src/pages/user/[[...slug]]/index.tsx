@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import style from '@styles/layouts/usersetting.module.scss';
 import UserSettingsOptions from "@components/features/settings/userSettingsOptions";
 import UserSettingContainer from "@components/features/settings/userSettingContainer";
-import { userSettingsAllowList } from "src/constants/userSettingsRoutes";
+import { userSettingsAllowList } from "@/constants/userSettingsRoutes";
 
 export default function UserPage() {
   const router = useRouter();

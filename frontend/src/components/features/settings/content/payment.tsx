@@ -1,7 +1,7 @@
 import React from "react";
 import style from "@styles/layouts/payment.module.scss";
 import LoadCard from "../payment/hasCard";
-import { noCard, hasCard } from "src/mocks/card.mock";
+import { noCard, hasCard } from "@/mocks/card.mock";
 import {
     Field,
     FieldGroup,

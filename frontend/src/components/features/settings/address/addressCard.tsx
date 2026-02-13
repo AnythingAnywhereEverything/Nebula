@@ -1,6 +1,6 @@
 import React from "react";
 import style from "@styles/layouts/address.module.scss"
-import { AddressInfo } from "src/types/address";
+import { AddressInfo } from "@/types/address";
 import { Button, Field, FieldDescription, FieldLegend, FieldSet, Separator } from "@components/ui/NebulaUI";
 
 const AddressCard: React.FC<AddressInfo> = ({

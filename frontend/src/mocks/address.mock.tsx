@@ -1,4 +1,4 @@
-import { AddressInfo } from "src/types/address";
+import { AddressInfo } from "@/types/address";
 
 export const userAddresses: AddressInfo[] = [
     {

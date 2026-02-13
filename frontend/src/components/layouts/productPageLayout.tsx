@@ -4,7 +4,7 @@ import Head from 'next/head';
 
 import ProductImageViewer from '@components/features/product/productImageViewer';
 
-import { productExample } from 'src/mocks/product.mock';
+import { productExample } from '@/mocks/product.mock';
 import ProductVariantSelector from '@components/features/product/productVariantSelector';
 import ProductAmountSelector from '@components/features/product/productAmountSelector';
 import ProductFullDetail from '@components/features/product/productFullDetail';

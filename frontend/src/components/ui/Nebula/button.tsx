@@ -1,7 +1,7 @@
 import style from "@styles/ui/Nebula/button.module.scss"
 import { cva, type VariantProps } from "class-variance-authority"
 import { Slot } from "radix-ui";
-import { cn } from "src/lib/utils";
+import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(style.baseButton, {
     variants: {

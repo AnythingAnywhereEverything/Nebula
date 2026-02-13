@@ -3,7 +3,7 @@ import s from "@styles/layouts/notificationComponent.module.scss"
 import { Button, Field, FieldGroup } from "@components/ui/NebulaUI";
 import NotificationComponent from "../notification/notificationComponent";
 import { usePathname } from "next/navigation";
-import { promotionItems } from "src/mocks/notificationComponent.mock";
+import { promotionItems } from "@/mocks/notificationComponent.mock";
 
 const PromotionNotification: React.FC = () => {
     const pathname = usePathname()

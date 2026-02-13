@@ -1,7 +1,7 @@
 import React from "react";
 
 import s from "@styles/layouts/notificationSetting.module.scss"
-import { NebulaUpdateItems } from "src/mocks/notificationComponent.mock";
+import { NebulaUpdateItems } from "@/mocks/notificationComponent.mock";
 import { usePathname } from "next/navigation";
 import NotificationComponent from "../notification/notificationComponent";
 

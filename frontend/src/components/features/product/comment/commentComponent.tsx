@@ -1,7 +1,7 @@
 import { Button, ButtonGroup, DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger, Field, FieldDescription, FieldGroup, FieldLabel, FieldSet, Icon, ProductStars } from "@components/ui/NebulaUI";
 import React, { useState } from "react";
 import s from "@styles/ui/productComment.module.scss"
-import { Comment } from "src/types/comment";
+import { Comment } from "@/types/comment";
 import ReactMarkdown from "react-markdown";
 
 const CommentComponent:React.FC<Comment> = ({

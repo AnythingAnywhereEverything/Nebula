@@ -1,6 +1,6 @@
 import { Separator as SeparatorPrimitive } from "radix-ui"
 
-import { cn } from "src/lib/utils"
+import { cn } from "@/lib/utils"
 
 import s from "@styles/ui/Nebula/separator.module.scss"
 

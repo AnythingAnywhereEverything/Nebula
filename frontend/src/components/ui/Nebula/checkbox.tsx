@@ -1,5 +1,5 @@
 import { Checkbox as CheckboxPrimitive } from "radix-ui"
-import { cn } from "src/lib/utils"
+import { cn } from "@/lib/utils"
 import { Icon } from "./icon"
 
 import s from "@styles/ui/Nebula/checkbox.module.scss"

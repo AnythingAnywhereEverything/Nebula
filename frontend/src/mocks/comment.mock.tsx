@@ -1,4 +1,4 @@
-import { Comment } from "src/types/comment"
+import { Comment } from "@/types/comment"
 
 export const CommentMockUp: Comment[] = [
     {

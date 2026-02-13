@@ -1,7 +1,7 @@
 import s from "@styles/ui/Nebula/inputgroup.module.scss"
 import { cva, type VariantProps } from "class-variance-authority"
 import { Button, Input, Textarea } from "../NebulaUI"
-import { cn } from "src/lib/utils"
+import { cn } from "@/lib/utils"
 
 function InputGroup({ className, ...props }: React.ComponentProps<"div">) {
   return (

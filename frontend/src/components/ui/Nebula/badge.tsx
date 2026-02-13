@@ -1,7 +1,7 @@
 import style from "@styles/ui/Nebula/badge.module.scss"
 import { cva, type VariantProps } from "class-variance-authority"
-import { getWCAGColor } from "src/lib/getWCAGcolor";
-import { cn } from "src/lib/utils";
+import { getWCAGColor } from "@/lib/getWCAGcolor";
+import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(style.baseBadge, {
     variants: {

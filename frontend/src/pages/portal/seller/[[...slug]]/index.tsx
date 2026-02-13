@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
-import { ReactNode, useEffect, FC } from "react";
-import { portalSellerAllowedList } from "src/constants/portalSellerRoutes";
-import { NextPageWithLayout } from "src/types/global";
+import { useEffect } from "react";
+import { portalSellerAllowedList } from "@/constants/portalSellerRoutes";
+import { NextPageWithLayout } from "@/types/global";
 import PortalLayout from "@components/layouts/main-layouts/portalLayout";
 import { usePathname } from 'next/navigation';
 

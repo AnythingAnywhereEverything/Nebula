@@ -1,4 +1,4 @@
-import { CardInfo } from "src/types/card";
+import { CardInfo } from "@/types/card";
 
 export const hasCard: CardInfo[] = [
     {

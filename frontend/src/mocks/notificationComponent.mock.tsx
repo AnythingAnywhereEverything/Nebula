@@ -1,4 +1,4 @@
-import { notificationCompo } from "src/types/notificationComponent";
+import { notificationCompo } from "@/types/notificationComponent";
 
 export const orderUpdatesItems: notificationCompo[] =[
     {

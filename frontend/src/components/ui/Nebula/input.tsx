@@ -1,4 +1,4 @@
-import { cn } from "src/lib/utils"
+import { cn } from "@/lib/utils"
 import s from "@styles/ui/Nebula/input.module.scss"
 
 function Input({ className, type, ...props }: React.ComponentProps<"input">) {

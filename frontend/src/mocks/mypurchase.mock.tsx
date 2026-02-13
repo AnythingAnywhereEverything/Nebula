@@ -1,4 +1,4 @@
-import { PurchaseHistory } from "src/types/mypurchase";
+import { PurchaseHistory } from "@/types/mypurchase";
 
 export const PurchaseItems: PurchaseHistory[] = [
     {

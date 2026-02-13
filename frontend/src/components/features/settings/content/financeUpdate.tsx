@@ -1,6 +1,6 @@
 import React from "react";
 import s from "@styles/layouts/notificationSetting.module.scss"
-import { financeItems } from "src/mocks/notificationComponent.mock";
+import { financeItems } from "@/mocks/notificationComponent.mock";
 import { usePathname } from "next/navigation";
 import NotificationComponent from "../notification/notificationComponent";
 

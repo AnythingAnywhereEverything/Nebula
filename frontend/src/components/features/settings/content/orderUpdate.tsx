@@ -2,7 +2,7 @@ import React from "react";
 import style from "@styles/layouts/notificationSetting.module.scss"
 import { usePathname } from "next/navigation";
 import NotificationComponent from "../notification/notificationComponent";
-import { orderUpdatesItems } from "src/mocks/notificationComponent.mock";
+import { orderUpdatesItems } from "@/mocks/notificationComponent.mock";
 
 const OrderUpdate: React.FC = () => {
     const pathname = usePathname()

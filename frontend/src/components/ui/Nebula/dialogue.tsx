@@ -1,5 +1,5 @@
 import { Dialog as DialogPrimitive } from "radix-ui"
-import { cn } from "src/lib/utils"
+import { cn } from "@/lib/utils"
 import { Button, Icon } from "@components/ui/NebulaUI"
 
 import s from "@styles/ui/Nebula/dialogue.module.scss"

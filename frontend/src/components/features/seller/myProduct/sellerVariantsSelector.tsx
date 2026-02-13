@@ -1,5 +1,5 @@
 import React from "react";
-import { ProductOption, ProductVariant } from "src/types/product";
+import { ProductOption, ProductVariant } from "@/types/product";
 
 interface ProductVariantSelectorProps {
     options?: ProductOption[];
