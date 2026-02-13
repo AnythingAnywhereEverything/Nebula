@@ -24,7 +24,7 @@ services:
   rust:
     build: ./backend/rust-service
     env_file:
-      - .env_docker_backend
+      - .env_docker
     ports:
       - "3000:3000"
     extra_hosts:
@@ -36,8 +36,8 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile.nextjs
-    env_file:
-      - .env_docker_frontend
+      args:
+        NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${NEXT_PUBLIC_GOOGLE_CLIENT_ID}
     ports:
       - "5175:5175"
 
