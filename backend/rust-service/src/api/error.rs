@@ -8,6 +8,9 @@ use axum::{
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
+use crate::application::security::session::SessionError;
+
+
 pub const API_DOCUMENT_URL: &str =
     "https://github.com/sheroz/axum-rest-api-sample/blob/main/docs/api-docs.md";
 
@@ -118,6 +121,9 @@ pub enum APIErrorCode {
     AuthenticationTokenCreationError,
     AuthenticationInvalidToken,
     AuthenticationRevokedTokensInactive,
+    AuthenticationEmailNotVerified,
+    AuthenticationInvalidGoogleAccessToken,
+    AuthenticationUnsupportedOAuthProvider,
     AuthenticationForbidden,
     UserNotFound,
     TransactionNotFound,
@@ -131,6 +137,7 @@ pub enum APIErrorCode {
     RedisError,
     SnowflakeError,
     Argon2Error,
+    SessionError
 }
 
 impl Display for APIErrorCode {
@@ -151,6 +158,7 @@ pub enum APIErrorKind {
     ValidationError,
     DatabaseError,
     RedisError,
+    SystemError
 }
 
 impl Display for APIErrorKind {
@@ -353,5 +361,21 @@ impl IntoResponse for APIError {
         let status_code =
             StatusCode::from_u16(self.status).unwrap_or(StatusCode::INTERNAL_SERVER_ERROR);
         (status_code, Json(self)).into_response()
+    }
+}
+
+impl From<SessionError> for APIError {
+    fn from(session_error: SessionError) -> Self {
+        let api_error_entry = APIErrorEntry::from(session_error);
+        let status_code = match api_error_entry.code.as_deref() {
+            Some("authentication_wrong_credentials") => StatusCode::UNAUTHORIZED,
+            Some("authentication_missing_credentials") => StatusCode::BAD_REQUEST,
+            Some("authentication_forbidden") => StatusCode::FORBIDDEN,
+            _ => StatusCode::INTERNAL_SERVER_ERROR,
+        };
+        Self {
+            status: status_code.as_u16(),
+            errors: vec![api_error_entry],
+        }
     }
 }

@@ -9,6 +9,7 @@ use axum::{
     response::{IntoResponse, Response},
     routing::{any, get},
 };
+use axum_client_ip::ClientIpSource;
 use chrono::Utc;
 use serde_json::json;
 use tokio::{
@@ -62,6 +63,7 @@ pub async fn start(state: SharedState) {
         .fallback(error_404_handler)
         .with_state(Arc::clone(&state))
         .layer(cors_layer)
+        .layer(ClientIpSource::RightmostXForwardedFor.into_extension())
         .layer(middleware::from_fn(logging_middleware));
 
     // Build the listener.

@@ -14,23 +14,27 @@ use crate::{
         version::{self, APIVersion},
     },
     application::{
-        repository::user_repo,
-        security::jwt::{AccessClaims, ClaimsMethods},
+        repository::{session_repo::validate_session, user_repo},
+        security::{session},
         state::SharedState,
     },
     domain::models::user::User,
 };
 
 pub async fn get_user_handler(
-    access_claims: AccessClaims,
     Path((version, id)): Path<(String, i64)>,
     State(state): State<SharedState>,
+    token: String,
 ) -> Result<Json<User>, APIError> {
     let api_version: APIVersion = version::parse_version(&version)?;
     tracing::trace!("api version: {}", api_version);
-    tracing::trace!("authentication details: {:#?}", access_claims);
+    tracing::trace!("authentication details: {:#?}", token);
     tracing::trace!("id: {}", id);
-    access_claims.validate_role_admin()?;
+
+    let token_parsed = session::parse(&token)?;
+
+    validate_session(&state.db_pool, &state.redis, token_parsed.user_id, token_parsed.created_time, 60 * 60).await?;
+
     let user = user_repo::get_by_id(id, &state)
         .await
         .map_err(|e| match e {
