@@ -22,8 +22,6 @@ pub struct AccessClaims {
     pub exp: usize,
     /// Token type.
     pub typ: u8,
-    /// Roles.
-    pub roles: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -42,8 +40,6 @@ pub struct RefreshClaims {
     pub pex: usize,
     /// Token type.
     pub typ: u8,
-    /// Roles.
-    pub roles: String,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -73,7 +69,7 @@ pub trait ClaimsMethods {
 
 impl ClaimsMethods for AccessClaims {
     fn validate_role_admin(&self) -> Result<(), AuthError> {
-        roles::is_role_admin(&self.roles)
+        roles::is_role_admin("")
     }
     fn get_sub(&self) -> &str {
         &self.sub
@@ -93,7 +89,7 @@ impl ClaimsMethods for AccessClaims {
 }
 impl ClaimsMethods for RefreshClaims {
     fn validate_role_admin(&self) -> Result<(), AuthError> {
-        roles::is_role_admin(&self.roles)
+        roles::is_role_admin("")
     }
     fn get_sub(&self) -> &str {
         &self.sub

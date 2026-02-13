@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
+use deadpool_redis::Connection;
 use redis::{AsyncCommands, RedisResult, aio::MultiplexedConnection};
-use tokio::sync::MutexGuard;
 
 use crate::application::{
     constants::*,
@@ -12,12 +12,12 @@ use crate::application::{
 pub async fn revoke_global(state: &SharedState) -> RedisResult<()> {
     let timestamp_now = chrono::Utc::now().timestamp() as usize;
     tracing::debug!("setting a timestamp for global revoke: {}", timestamp_now);
-    state
-        .redis
-        .lock()
-        .await
+    let mut conn = state.redis.get().await.map_err(|e| redis::RedisError::from((redis::ErrorKind::IoError, "Failed to get Redis connection", e.to_string())))?;
+
+    let _: () = conn
         .set(JWT_REDIS_REVOKE_GLOBAL_BEFORE_KEY, timestamp_now)
-        .await
+        .await?;
+    Ok(())
 }
 
 pub async fn revoke_user_tokens(user_id: &str, state: &SharedState) -> RedisResult<()> {
@@ -27,17 +27,15 @@ pub async fn revoke_user_tokens(user_id: &str, state: &SharedState) -> RedisResu
         user_id,
         timestamp_now
     );
-    state
-        .redis
-        .lock()
-        .await
-        .hset(JWT_REDIS_REVOKE_USER_BEFORE_KEY, user_id, timestamp_now)
-        .await
+    let mut conn = state.redis.get().await.map_err(|e| redis::RedisError::from((redis::ErrorKind::IoError, "Failed to get Redis connection", e.to_string())))?;
+    let _: () = conn.hset(JWT_REDIS_REVOKE_USER_BEFORE_KEY, user_id, timestamp_now)
+        .await?;
+    Ok(())
 }
 
 async fn is_global_revoked<T: ClaimsMethods + Sync + Send>(
     claims: &T,
-    redis: &mut MutexGuard<'_, redis::aio::MultiplexedConnection>,
+    redis: &mut Connection,
 ) -> RedisResult<bool> {
     // Check in global revoke.
     let opt_exp: Option<String> = redis.get(JWT_REDIS_REVOKE_GLOBAL_BEFORE_KEY).await?;
@@ -52,7 +50,7 @@ async fn is_global_revoked<T: ClaimsMethods + Sync + Send>(
 
 async fn is_user_revoked<T: ClaimsMethods + Sync + Send>(
     claims: &T,
-    redis: &mut MutexGuard<'_, redis::aio::MultiplexedConnection>,
+    redis: &mut Connection,
 ) -> RedisResult<bool> {
     // Check in user revoke.
     let user_id = claims.get_sub();
@@ -71,7 +69,7 @@ async fn is_user_revoked<T: ClaimsMethods + Sync + Send>(
 
 async fn is_token_revoked<T: ClaimsMethods + Sync + Send>(
     claims: &T,
-    redis: &mut MutexGuard<'_, redis::aio::MultiplexedConnection>,
+    redis: &mut Connection,
 ) -> RedisResult<bool> {
     // Check the token in revoked list.
     redis
@@ -83,7 +81,7 @@ pub async fn is_revoked<T: std::fmt::Debug + ClaimsMethods + Send + Sync>(
     claims: &T,
     state: &SharedState,
 ) -> RedisResult<bool> {
-    let mut redis = state.redis.lock().await;
+    let mut redis = state.redis.get().await.map_err(|e| redis::RedisError::from((redis::ErrorKind::IoError, "Failed to get Redis connection", e.to_string())))?;
 
     let global_revoked = is_global_revoked(claims, &mut redis).await?;
     if global_revoked {
@@ -114,7 +112,8 @@ pub async fn revoke_refresh_token(claims: &RefreshClaims, state: &SharedState) -
     let list_to_revoke = vec![&claims.jti, &claims.prf];
     tracing::debug!("adding jwt tokens into revoked list: {:#?}", list_to_revoke);
 
-    let mut redis = state.redis.lock().await;
+    let mut redis = state.redis.get().await.map_err(|e| redis::RedisError::from((redis::ErrorKind::IoError, "Failed to get Redis connection", e.to_string())))?;
+
     for claims_jti in list_to_revoke {
         let _: () = redis
             .hset(JWT_REDIS_REVOKED_TOKENS_KEY, claims_jti, claims.exp)
@@ -132,7 +131,7 @@ pub async fn revoke_refresh_token(claims: &RefreshClaims, state: &SharedState) -
 pub async fn cleanup_expired(state: &SharedState) -> RedisResult<usize> {
     let timestamp_now = chrono::Utc::now().timestamp() as usize;
 
-    let mut redis = state.redis.lock().await;
+    let mut redis = state.redis.get().await.map_err(|e| redis::RedisError::from((redis::ErrorKind::IoError, "Failed to get Redis connection", e.to_string())))?; 
 
     let revoked_tokens: HashMap<String, String> =
         redis.hgetall(JWT_REDIS_REVOKED_TOKENS_KEY).await?;
