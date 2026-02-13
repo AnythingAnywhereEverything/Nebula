@@ -1,21 +1,16 @@
-use redis::aio::MultiplexedConnection;
-
+use deadpool_redis::{Config as RedisConfig, Pool, Runtime};
 use crate::application::config::Config;
 
-pub async fn open(config: &Config) -> MultiplexedConnection {
-    match redis::Client::open(config.redis_url()) {
-        Ok(redis) => match redis.get_multiplexed_async_connection().await {
-            Ok(connection) => {
-                tracing::info!("Connected to redis");
-                connection
-            }
-            Err(e) => {
-                tracing::error!("Could not connect to redis: {}", e);
-                std::process::exit(1);
-            }
-        },
+pub async fn open(config: &Config) -> Pool {
+    let cfg = RedisConfig::from_url(config.redis_url());
+
+    match cfg.create_pool(Some(Runtime::Tokio1)) {
+        Ok(pool) => {
+            tracing::info!("Connected to redis (deadpool)");
+            pool
+        }
         Err(e) => {
-            tracing::error!("Could not open redis: {}", e);
+            tracing::error!("Could not create redis pool: {}", e);
             std::process::exit(1);
         }
     }

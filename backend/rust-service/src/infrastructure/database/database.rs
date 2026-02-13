@@ -33,11 +33,19 @@ impl Database {
         Ok(db)
     }
 
+    pub fn is_unique_violation(e: &sqlx::Error) -> bool {
+        if let sqlx::Error::Database(db_err) = e {
+            db_err.code().as_deref() == Some("23505")
+        } else {
+            false
+        }
+    }
+
     pub async fn migrate(pool: &DatabasePool) -> Result<(), DatabaseError> {
         sqlx::migrate!("src/infrastructure/database/postgres/migrations")
             .run(pool)
             .await?;
-
+        tracing::info!("database migrations completed");
         Ok(())
     }
 }
