@@ -1,7 +1,5 @@
 use std::sync::Arc;
 
-use tokio::sync::Mutex;
-
 use crate::{
     api::server,
     application::{config, service::snowflake_service::SnowflakeGenerator, state::AppState},
@@ -29,7 +27,7 @@ pub async fn run() {
     let shared_state = Arc::new(AppState {
         config,
         db_pool,
-        redis: Mutex::new(redis),
+        redis: redis,
         snowflake_generator,
     });
     server::start(shared_state).await;
