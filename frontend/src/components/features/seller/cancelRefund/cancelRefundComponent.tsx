@@ -5,7 +5,7 @@ const CancelRefundAction:React.FC = () => {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger style={{width: "100%"}} asChild>
-                <Button size={'sm'} width={'full'}>Select status</Button>
+                <Button size={'sm'}>Select status</Button>
             </DropdownMenuTrigger>
 
             <DropdownMenuContent>
