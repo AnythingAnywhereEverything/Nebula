@@ -45,14 +45,14 @@
         inset: 0;
         top: 50%;
 
-        .content {
-            color: var(--muted-foreground);
-            padding-inline: calc(var(--spacing) * 2);
-            position: relative;
-            margin-inline: auto;
-            display: block;
-            width: fit-content;
-        }
+    }
+    .content {
+        color: var(--muted-foreground);
+        padding-inline: calc(var(--spacing) * 2);
+        position: relative;
+        margin-inline: auto;
+        display: block;
+        width: fit-content;
     }
 }
 
