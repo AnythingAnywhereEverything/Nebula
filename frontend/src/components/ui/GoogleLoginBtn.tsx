@@ -1,7 +1,7 @@
 import { useGoogleLogin } from "@react-oauth/google";
 import { Button, Icon } from "./NebulaUI";
 import { useRouter } from "next/router";
-import { setToken } from "@/handler/token_handler";
+import { setCacheUserId, setToken } from "@/handler/token_handler";
 
 export default function GoogleAuthButton() {
   const router = useRouter();
@@ -27,6 +27,7 @@ export default function GoogleAuthButton() {
       
       const data = await res.json();
       setToken(data.token);
+      setCacheUserId(data.user_id);
 
       router.push("/");
     },

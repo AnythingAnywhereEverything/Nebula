@@ -9,7 +9,7 @@ import Form from "next/form";
 import { login } from "@/api/auth";
 import { useRouter } from "next/router";
 import GoogleAuthButton from "@components/ui/GoogleLoginBtn";
-import { setToken } from "@/handler/token_handler";
+import { setCacheUserId, setToken } from "@/handler/token_handler";
 
 const SignIn: NextPageWithLayout = () => {
 
@@ -28,6 +28,7 @@ const SignIn: NextPageWithLayout = () => {
         }).then(response => {
             setError(null);
             setToken(response.token);
+            setCacheUserId(response.user_id);
             router.push("/");
         }).catch(error => {
             console.log(error);

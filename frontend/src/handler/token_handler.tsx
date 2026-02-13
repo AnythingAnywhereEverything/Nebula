@@ -6,6 +6,14 @@ export function setToken(token: string) {
     localStorage.setItem(TOKEN_KEY, token);
 }
 
+export function setCacheUserId(userId: string) {
+    localStorage.setItem("userId", userId);
+}
+
+export function getCacheUserId(): string | null {
+    return localStorage.getItem("userId");
+}
+
 export function getToken(): string | null {
     return localStorage.getItem(TOKEN_KEY)?.toString() || null;
 }

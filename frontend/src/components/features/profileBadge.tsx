@@ -1,20 +1,35 @@
+import { logout } from "@/api/auth";
+import { get_user } from "@/api/user";
 import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, Field, FieldDescription, FieldLabel, Label } from "@components/ui/NebulaUI";
 
 import s from "@styles/features/profilebadge.module.scss"
 import { useTheme } from "next-themes";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { use, useEffect, useState } from "react";
 
 
 export function ProfileBadge() {
     const { theme, setTheme, resolvedTheme } = useTheme();
     const [mounted, setMounted] = useState(false);
 
+    const router = useRouter();
+    const [userData, setUserData] = useState<{display_name: string, username: string} | null>(null);
+
     useEffect(() => 
-        {setMounted(true)
-            console.log("mounted")
-        }, 
+        {setMounted(true)},
     []);
+
+    useEffect(() => {
+        const user = get_user().then(data => {
+            setUserData({
+                display_name: data.display_name,
+                username: "@" + data.username,
+            });
+        }).catch(() => {
+            setUserData(null);
+        });
+    }, []);
     
     if (!mounted || !resolvedTheme) return null;
     
@@ -26,8 +41,8 @@ export function ProfileBadge() {
                         <img src="https://placehold.co/400" alt="" />
                     </div>
                     <div>
-                        <FieldLabel>Display name</FieldLabel>
-                        <FieldDescription>@username</FieldDescription>
+                        <FieldLabel>{userData?.display_name || "Guest"}</FieldLabel>
+                        <FieldDescription>{userData?.username || "@guest"}</FieldDescription>
                     </div>
                 </div>
             </DropdownMenuTrigger>
@@ -87,7 +102,7 @@ export function ProfileBadge() {
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                    <DropdownMenuItem variant="destructive">
+                    <DropdownMenuItem variant="destructive" onClick={() => logout(router)}>
                         Log out
                     </DropdownMenuItem>
                 </DropdownMenuGroup>

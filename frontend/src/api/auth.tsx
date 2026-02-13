@@ -1,5 +1,8 @@
 //authenticcation api call
 
+import { clearToken, getToken } from "@/handler/token_handler";
+import { useRouter } from "next/router";
+
 interface RegisterResponse {
     message?: string;
 }
@@ -16,6 +19,7 @@ interface LoginData {
 }
 
 interface LoginResponse {
+    user_id: string;
     token: string;
 }
 
@@ -43,4 +47,19 @@ export async function register(data: RegisterData): Promise<RegisterResponse> {
     if (!res.ok) throw new Error("Registration failed");
     const response = await res.json();
     return response;
+}
+
+export async function logout(router: ReturnType<typeof useRouter>) {
+    const res = await fetch("/api/v2/auth/logout", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "token": `${getToken()}`,
+        },
+    });
+
+    if (!res.ok) throw new Error("Logout failed");
+
+    clearToken();
+    router.push("/auth/signin");
 }

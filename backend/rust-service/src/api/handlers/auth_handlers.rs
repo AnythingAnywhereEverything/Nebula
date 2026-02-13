@@ -10,7 +10,7 @@ use crate::{
     api::{APIError, APIErrorCode, APIErrorEntry, APIErrorKind, version::APIVersion},
     application::{
         repository::{session_repo::validate_session, user_repo}, security::{
-            argon, auth::{self, AuthError, AuthToken}, jwt::RefreshClaims, oauth::google, session
+            argon, auth::{self, AuthError, AuthToken}, oauth::google, session
         }, state::SharedState
     },
 };
@@ -42,7 +42,7 @@ pub struct OAuthRegisterRequest {
 
 #[derive(Debug, Serialize)]
 pub struct OAuthRegisterResponse {
-    pub user_id: i64,
+    pub user_id: String,
     pub token: String,
 }
 
@@ -102,7 +102,7 @@ pub async fn oauth_register_handler(
     ).await?;
 
     let response = OAuthRegisterResponse {
-        user_id,
+        user_id: user_id.to_string(),
         token: tokens.package,
     };
 
@@ -160,7 +160,7 @@ pub async fn login_handler(
             let tokens: AuthToken = session::new(user.id).await?;
             let response = Json(json!(
                 {
-                    "user_id": user.id,
+                    "user_id": user.id.to_string(),
                     "token" : tokens.package,
                 }
             ));
@@ -212,11 +212,14 @@ pub async fn register_handler(
 pub async fn logout_handler(
     api_version: APIVersion,
     State(state): State<SharedState>,
-    refresh_claims: RefreshClaims,
+    headers: HeaderMap,
 ) -> Result<impl IntoResponse, APIError> {
     tracing::trace!("api version: {}", api_version);
-    tracing::trace!("refresh_claims: {:?}", refresh_claims);
-    auth::logout(refresh_claims, state).await?;
+    let token: &str = headers
+        .get("token")
+        .and_then(|token| token.to_str().ok())
+        .unwrap_or("");
+    auth::logout(token, state).await?;
     Ok(())
 }
 

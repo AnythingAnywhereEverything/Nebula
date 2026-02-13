@@ -1,9 +1,11 @@
 use axum::{
     Json,
     extract::{Path, State},
-    http::StatusCode,
+    http::StatusCode, response::IntoResponse,
     // response::IntoResponse,
 };
+use hyper::HeaderMap;
+use serde_json::json;
 // use hyper::HeaderMap;
 use thiserror::Error;
 
@@ -18,16 +20,21 @@ use crate::{
         security::{session},
         state::SharedState,
     },
-    domain::models::user::User,
 };
 
 pub async fn get_user_handler(
     Path((version, id)): Path<(String, i64)>,
     State(state): State<SharedState>,
-    token: String,
-) -> Result<Json<User>, APIError> {
+    headers: HeaderMap,
+) -> Result<impl IntoResponse, APIError> {
     let api_version: APIVersion = version::parse_version(&version)?;
     tracing::trace!("api version: {}", api_version);
+
+    let token = headers
+        .get("token")
+        .and_then(|token| token.to_str().ok())
+        .unwrap_or("");
+    
     tracing::trace!("authentication details: {:#?}", token);
     tracing::trace!("id: {}", id);
 
@@ -45,7 +52,16 @@ pub async fn get_user_handler(
             _ => APIError::from(e),
         })?;
 
-    Ok(Json(user))
+    let response = Json(json!({
+        "username": user.username,
+        "display_name": user.display_name,
+        "email": user.email,
+        "active": user.active,
+        "created_at": user.created_at,
+        "updated_at": user.updated_at,
+    }));
+
+    Ok(response)
 }
 
 // pub async fn deactive_user_handler(

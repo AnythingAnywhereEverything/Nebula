@@ -100,17 +100,9 @@ pub async fn register_oauth(
 }
 
 
-pub async fn logout(refresh_claims: RefreshClaims, state: SharedState) -> Result<(), AuthError> {
-    // Check if revoked tokens are enabled.
-    if !state.config.jwt_enable_revoked_tokens {
-        Err(AuthError::RevokedTokensInactive)?
-    }
-
-    // Decode and validate the refresh token.
-    if !validate_token_type(&refresh_claims, JwtTokenType::RefreshToken) {
-        return Err(AuthError::InvalidToken.into());
-    }
-    revoke_refresh_token(&refresh_claims, &state).await?;
+pub async fn logout(token: &str, state: SharedState) -> Result<(), AuthError> {
+    let mut tx = state.db_pool.begin().await?;
+    session_repo::delete_session_by_token(&mut tx, &state.redis, &token).await?;
     Ok(())
 }
 

@@ -104,6 +104,7 @@ pub async fn delete_session_by_token(
     let token_parsed = session::parse(session_token)
         .map_err(|e| sqlx::Error::Protocol(e.to_string()))?;
 
+    let create_time = Utc.timestamp_opt(token_parsed.created_time, 0).unwrap().naive_utc();
     sqlx::query(
         r#"
         DELETE FROM sessions
@@ -111,7 +112,7 @@ pub async fn delete_session_by_token(
         "#,
     )
     .bind(token_parsed.user_id)
-    .bind(token_parsed.created_time)
+    .bind(create_time)
     .execute(tx.as_mut())
     .await?;
 
@@ -146,6 +147,8 @@ pub async fn validate_session(
         return Ok(());
     }
 
+    let date_time = Utc.timestamp_opt(created_time, 0).unwrap().naive_utc();
+
     let session_exists: Option<i64> = sqlx::query_scalar(
         r#"
         SELECT id
@@ -154,7 +157,7 @@ pub async fn validate_session(
         "#,
     )
     .bind(user_id)
-    .bind(created_time)
+    .bind(date_time)
     .fetch_optional(pool)
     .await?;
 
