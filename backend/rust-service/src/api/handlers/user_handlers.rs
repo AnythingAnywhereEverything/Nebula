@@ -1,105 +1,145 @@
-use axum::{
-    Json,
-    extract::{Path, State},
-    http::StatusCode, response::IntoResponse,
-    // response::IntoResponse,
-};
-use hyper::HeaderMap;
-use serde_json::json;
-// use hyper::HeaderMap;
-use thiserror::Error;
-
 use crate::{
     api::{
-        APIError, APIErrorCode, APIErrorEntry, APIErrorKind,
-        error::API_DOCUMENT_URL,
+        APIError,
+        middleware::user_mw::AuthUser,
         version::{self, APIVersion},
     },
     application::{
-        repository::{session_repo::validate_session, user_repo},
-        security::{session},
+        repository::user_repo,
+        security::auth::AuthError,
+        service::media_service::{AllowedMediaType, ImageTransform, MediaOptions},
         state::SharedState,
     },
+    domain::models::user::{UserResponse, UserUpdate},
 };
+use axum::{
+    Extension,
+    Json,
+    extract::{Multipart, Path, State},
+    http::StatusCode,
+    response::IntoResponse, // response::IntoResponse,
+};
+use serde::Deserialize;
+
+// -----------------------
+// GET
+// -----------------------
 
 pub async fn get_user_handler(
     Path((version, id)): Path<(String, i64)>,
     State(state): State<SharedState>,
-    headers: HeaderMap,
 ) -> Result<impl IntoResponse, APIError> {
     let api_version: APIVersion = version::parse_version(&version)?;
     tracing::trace!("api version: {}", api_version);
 
-    let token = headers
-        .get("token")
-        .and_then(|token| token.to_str().ok())
-        .unwrap_or("");
-    
-    tracing::trace!("authentication details: {:#?}", token);
-    tracing::trace!("id: {}", id);
+    let mut tx = state.db_pool.begin().await?;
+    let user = user_repo::get_by_id(&mut tx, id).await?;
 
-    let token_parsed = session::parse(&token)?;
-
-    validate_session(&state.db_pool, &state.redis, token_parsed.user_id, token_parsed.created_time, 60 * 60).await?;
-
-    let user = user_repo::get_by_id(id, &state)
-        .await
-        .map_err(|e| match e {
-            sqlx::Error::RowNotFound => {
-                let user_error = UserError::UserNotFound(id);
-                (user_error.status_code(), APIErrorEntry::from(user_error)).into()
-            }
-            _ => APIError::from(e),
-        })?;
-
-    let response = Json(json!({
-        "username": user.username,
-        "display_name": user.display_name,
-        "email": user.email,
-        "active": user.active,
-        "created_at": user.created_at,
-        "updated_at": user.updated_at,
-    }));
-
-    Ok(response)
+    Ok(Json(UserResponse::from(user)))
 }
 
-// pub async fn deactive_user_handler(
-//     State(state): State<SharedState>,
-//     Path((version, id)): Path<(String, i64)>,
-//     headers: HeaderMap,
-// ) -> Result<impl IntoResponse, APIError> {
-//     Ok("Ok")
-// }
+// ------------------------------------
+// PATCH
+// ------------------------------------
 
-#[derive(Debug, Error)]
-enum UserError {
-    #[error("user not found: {0}")]
-    UserNotFound(i64),
+// Helper!!! YIPPEE
+async fn update_user_field(
+    version: String,
+    id: i64,
+    state: SharedState,
+    update: UserUpdate,
+) -> Result<impl IntoResponse, APIError> {
+    let api_version: APIVersion = version::parse_version(&version)?;
+    tracing::trace!("api version: {}", api_version);
+
+    let mut tx = state.db_pool.begin().await?;
+    let updated_user = user_repo::update(&mut tx, update, id).await?;
+    tx.commit().await?;
+
+    Ok(Json(UserResponse::from(updated_user)))
 }
 
-impl UserError {
-    const fn status_code(&self) -> StatusCode {
-        match self {
-            Self::UserNotFound(_) => StatusCode::NOT_FOUND,
-        }
+#[derive(Deserialize)]
+pub struct ChangeDisplayNameRequest {
+    pub display_name: String,
+}
+#[derive(Deserialize)]
+pub struct ChangeUsernameRequest {
+    pub username: String,
+}
+
+pub async fn change_display_name(
+    Extension(auth): Extension<AuthUser>,
+    Path((version, id)): Path<(String, i64)>,
+    State(state): State<SharedState>,
+    Json(payload): Json<ChangeDisplayNameRequest>,
+) -> Result<impl IntoResponse, APIError> {
+    let update = UserUpdate {
+        display_name: Some(payload.display_name),
+        ..Default::default()
+    };
+
+    if auth.user_id != id {
+        return Err(APIError::from(AuthError::MissingAppropriatePermission));
     }
+
+    update_user_field(version, id, state, update).await
 }
 
-impl From<UserError> for APIErrorEntry {
-    fn from(user_error: UserError) -> Self {
-        let message = user_error.to_string();
-        match user_error {
-            UserError::UserNotFound(user_id) => Self::new(&message)
-                .code(APIErrorCode::UserNotFound)
-                .kind(APIErrorKind::ResourceNotFound)
-                .description(&format!("user with the ID '{}' does not exist in our records", user_id))
-                .detail(serde_json::json!({"user_id": user_id}))
-                .reason("must be an existing user")
-                .instance(&format!("/api/v1/users/{}", user_id))
-                .trace_id()
-                .help(&format!("please check if the user ID is correct or refer to our documentation at {}#errors for more information", API_DOCUMENT_URL))
-                .doc_url()
-        }
+pub async fn change_username(
+    Extension(auth): Extension<AuthUser>,
+    Path((version, id)): Path<(String, i64)>,
+    State(state): State<SharedState>,
+    Json(payload): Json<ChangeUsernameRequest>,
+) -> Result<impl IntoResponse, APIError> {
+    let update = UserUpdate {
+        username: Some(payload.username),
+        ..Default::default()
+    };
+
+    if auth.user_id != id {
+        return Err(APIError::from(AuthError::MissingAppropriatePermission));
     }
+
+    update_user_field(version, id, state, update).await
+}
+
+pub async fn add_or_update_profile_handler(
+    Extension(auth): Extension<AuthUser>,
+    Path((_version, id)): Path<(String, i64)>,
+    State(state): State<SharedState>,
+    multipart: Multipart,
+) -> Result<impl IntoResponse, APIError> {
+    let options = MediaOptions {
+        folder: "profile".into(),
+        max_size: 8 * 1024 * 1024, // 8MB, for profile picture
+        allowed_types: vec![AllowedMediaType::Jpeg, AllowedMediaType::Png],
+        image_transform: Some(ImageTransform::Crop {
+            max_width: 512,
+            max_height: 512,
+            ratio: None,
+        }),
+    };
+
+    if auth.user_id != id {
+        return Err(APIError::from(AuthError::MissingAppropriatePermission));
+    }
+
+    let mut tx = state.db_pool.begin().await?;
+    let user = user_repo::get_by_id(&mut tx, id).await?;
+
+    let old_profile_path = user.profile_picture_url;
+
+    let relative_path = state
+        .media_service
+        .save_media(multipart, options, old_profile_path)
+        .await?;
+
+    let user_image_path = UserUpdate {
+        profile_picture_url: Some(relative_path.clone()),
+        ..Default::default()
+    };
+
+    user_repo::update(&mut tx, user_image_path, id).await?;
+    Ok((StatusCode::OK, relative_path))
 }
