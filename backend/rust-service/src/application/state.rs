@@ -3,7 +3,7 @@ use std::sync::Arc;
 use deadpool_redis::Pool;
 
 use crate::{
-    application::{config::Config, service::snowflake_service::SnowflakeGenerator},
+    application::{config::Config, service::{media_service::MediaService, snowflake_service::SnowflakeGenerator}},
     infrastructure::database::DatabasePool,
 };
 
@@ -15,4 +15,5 @@ pub struct AppState {
     pub db_pool: DatabasePool,
     pub redis: Pool,
     pub snowflake_generator: SnowflakeGenerator,
+    pub media_service: MediaService
 }
