@@ -22,6 +22,7 @@ const frameworks = [
 import Form from 'next/form';
 import NotificationComponent from '@components/features/settings/notification/notificationComponent';
 import { usePathname } from 'next/navigation';
+import { Calendar } from '@components/ui/Nebula/calender';
 
 const TestPage: NextPageWithLayout = () => {
     const anchor = useComboboxAnchor()
@@ -491,8 +492,8 @@ const TestPage: NextPageWithLayout = () => {
             hasButton = {hasButton}
             timestamp={new Date('2025-01-01T10:00:00Z')}
             />
+        <Calendar/>
         </div>
-
     </div>
   );
 };

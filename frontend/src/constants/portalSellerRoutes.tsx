@@ -1,4 +1,5 @@
 import CancelRefunedReturn from "@components/features/seller/cancelProduct";
+import MassShipPage from "@components/features/seller/massShip";
 import myOrder from "@components/features/seller/myOrder";
 import MyProduct from "@components/features/seller/myProduct";
 
@@ -16,7 +17,7 @@ export const portalSellerAllowedList: Record<string, {
         component: myOrder 
     },
     "/order/mass_shipping":{
-        component: () => <p>mass shipping</p>
+        component: MassShipPage
     },
     "/order/setting":{
         component: () => <p>shipping setting</p>
