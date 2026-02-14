@@ -1,47 +1,57 @@
-import { Button, DropdownMenu, DropdownMenuTrigger, Field, Input } from "@components/ui/NebulaUI";
+import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, Field, FieldDescription, FieldLabel, FieldSeparator, Input } from "@components/ui/NebulaUI";
 import s from "@styles/layouts/seller/myorder.module.scss"
 import React from "react";
+import { OrderSearchSort, OrderShippingSort } from "./order/orderActionPopup";
+import { SellerHeader, SellerLayout, SellerPanel, SellerPanelHeader, SellerContent, SellerToolbarRow } from "@components/layouts/sellerPageLayout";
+import OrderRows from "./order/orderRow";
 
 export default function myOrder() {
     return(
-        <>
-            <Field className={s.myOrderPage}>
-                <Field className={s.header}>
-                    <h2>My Orders</h2>
-                </Field>
+            <SellerLayout>
+                <SellerHeader>
+                    My Orders
+                </SellerHeader>
 
-                <Field orientation={'horizontal'}>
-                    <div className={s.sortByStatus}>
+                <SellerContent>
+                    <SellerToolbarRow>
                         <Button variant={'outline'}>All</Button>
                         <Button variant={'outline'}>Unpaid</Button>
                         <Button variant={'outline'}>To ship</Button>
                         <Button variant={'outline'}>Shipping</Button>
                         <Button variant={'outline'}>Completed</Button>
                         <Button variant={'outline'}>Return/Refund/Cancel</Button>
-                    </div>
-                </Field>
+                    </SellerToolbarRow>
 
-                    <Field orientation={'horizontal'} className={s.orderContainer}>
-                        <Field orientation={'horizontal'}>
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <Button>OrderID</Button>
-                                </DropdownMenuTrigger>
-                            </DropdownMenu>
+                    <SellerToolbarRow>
+                        <OrderSearchSort/>
+                        <OrderShippingSort/>
+                    </SellerToolbarRow>
+                </SellerContent>
 
-                            <Input  type="text" placeholder="Enter ID here" />
-                        </Field>
+                {/* Order component */}
+                <SellerPanel>
+                    <SellerPanelHeader>
+                        <h4>1 Orders</h4>
+                    </SellerPanelHeader>
 
-                        <Field orientation={'horizontal'}>
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <Button>Shipping Type</Button>
-                                </DropdownMenuTrigger>
+                    <FieldSeparator/>
+                    <Field>
+                        <table className={s.productTable}>
+                          <thead>
+                            <tr className={s.tableHead}>
+                              <th style={{width:"35%"}}>Product(s)</th>
+                              <th style={{width:"10%"}}>Total Buyer Payment</th>
+                              <th style={{width:"25%"}}>Status</th>
+                              <th style={{width:"10%"}}>Shipping Channel</th>
+                              <th style={{width:"20%"}}>Action</th>
+                            </tr>
+                          </thead>
                             
-                            </DropdownMenu>
-                        </Field>
+                        <OrderRows/>
+                        <OrderRows/>
+                    </table>
                 </Field>
-            </Field>
-        </>
+            </SellerPanel>
+        </SellerLayout>
     )
 }
