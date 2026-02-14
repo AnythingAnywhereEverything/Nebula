@@ -1,6 +1,6 @@
 //authenticcation api call
 
-import { clearToken, getToken } from "@/handler/token_handler";
+import { getToken } from "@/handler/token_handler";
 import { useRouter } from "next/router";
 
 interface RegisterResponse {
@@ -60,6 +60,5 @@ export async function logout(router: ReturnType<typeof useRouter>) {
 
     if (!res.ok) throw new Error("Logout failed");
 
-    clearToken();
     router.push("/auth/signin");
 }

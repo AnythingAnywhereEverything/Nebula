@@ -9,6 +9,9 @@ export function setToken(token: string) {
 export function setCacheUserId(userId: string) {
     localStorage.setItem("userId", userId);
 }
+export function clearCacheUserId() {
+    localStorage.removeItem("userId");
+}
 
 export function getCacheUserId(): string | null {
     return localStorage.getItem("userId");
