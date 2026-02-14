@@ -1,5 +1,5 @@
-import { logout } from "@/api/auth";
-import { get_user } from "@/api/user";
+import { useAuthService } from "@/hooks/useAuthService";
+import { useUser } from "@/hooks/useUser";
 import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, Field, FieldDescription, FieldLabel, Label } from "@components/ui/NebulaUI";
 
 import s from "@styles/features/profilebadge.module.scss"
@@ -14,22 +14,17 @@ export function ProfileBadge() {
     const [mounted, setMounted] = useState(false);
 
     const router = useRouter();
-    const [userData, setUserData] = useState<{display_name: string, username: string} | null>(null);
+
+    const { data, isLoading } = useUser();
+    const { logout } = useAuthService();
+    
 
     useEffect(() => 
         {setMounted(true)},
     []);
 
-    useEffect(() => {
-        const user = get_user().then(data => {
-            setUserData({
-                display_name: data.display_name,
-                username: "@" + data.username,
-            });
-        }).catch(() => {
-            setUserData(null);
-        });
-    }, []);
+    const displayName = data?.display_name ?? "Guest";
+    const username = data ? "@" + data.username : "@guest";
     
     if (!mounted || !resolvedTheme) return null;
     
@@ -41,8 +36,8 @@ export function ProfileBadge() {
                         <img src="https://placehold.co/400" alt="" />
                     </div>
                     <div>
-                        <FieldLabel>{userData?.display_name || "Guest"}</FieldLabel>
-                        <FieldDescription>{userData?.username || "@guest"}</FieldDescription>
+                        <FieldLabel>{isLoading ? "Loading..." : displayName}</FieldLabel>
+                        <FieldDescription>{isLoading ? "..." : username}</FieldDescription>
                     </div>
                 </div>
             </DropdownMenuTrigger>

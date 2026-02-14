@@ -6,10 +6,10 @@ import Head from "next/head";
 import { Field, FieldLabel, FieldDescription, FieldGroup, FieldLegend, FieldSet, FieldTitle, Input, InputGroup, InputGroupAddon, Button, InputGroupInput, Icon, FieldError, FieldSeparator } from "@components/ui/NebulaUI";
 import Link from "next/link";
 import Form from "next/form";
-import { login } from "@/api/auth";
 import { useRouter } from "next/router";
 import GoogleAuthButton from "@components/ui/GoogleLoginBtn";
 import { setCacheUserId, setToken } from "@/handler/token_handler";
+import { useAuthService } from "@/hooks/useAuthService";
 
 const SignIn: NextPageWithLayout = () => {
 
@@ -17,6 +17,8 @@ const SignIn: NextPageWithLayout = () => {
     const [error, setError] = useState<string | null>(null);
 
     const router = useRouter();
+    
+    const { login } = useAuthService();
     
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {

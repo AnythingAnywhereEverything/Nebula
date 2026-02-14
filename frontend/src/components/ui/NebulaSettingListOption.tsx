@@ -18,7 +18,7 @@ const NebulaSettingListItem: React.FC<NebulaSettingListItemProps> = ({ title, ma
     console.log(pathname)
 
     // check if any sublink is active
-    const activeSubLink = sub_lists?.find(sub => pathname === `/user${sub.link}`);
+    const activeSubLink = sub_lists?.find(sub => pathname.startsWith(`/user${sub.link}`));
 
     const dropdownClass = [
         style.settingDropDown,
