@@ -1,31 +1,38 @@
 use chrono::Utc;
-use sqlx::{Transaction, query_as};
+use sqlx::{QueryBuilder, Transaction, query_as};
 use uuid::Uuid;
-use sqlx::{Executor, Postgres};
+use sqlx::Postgres;
 
 use crate::{
     application::{repository::RepositoryResult, state::SharedState},
-    domain::models::user::User,
+    domain::models::user::{NewUser, User, UserUpdate},
 };
 
-pub async fn list(state: &SharedState) -> RepositoryResult<Vec<User>> {
-    let users = query_as::<_, User>("SELECT * FROM users")
+/// List users with pagination
+pub async fn list(state: &SharedState, limit: i64, offset: i64) -> RepositoryResult<Vec<User>> {
+    let users = query_as::<_, User>("SELECT * FROM users LIMIT $1 OFFSET $2")
+        .bind(limit)
+        .bind(offset)
         .fetch_all(&state.db_pool)
         .await?;
-
     Ok(users)
 }
 
-pub async fn add(user: User, state: &SharedState) -> RepositoryResult<User> {
-    let time_now = Utc::now().naive_utc();
+/// Add a new user, return the created user with id
+pub async fn add(
+    tx: &mut Transaction<'_, Postgres>,
+    user: NewUser
+) -> RepositoryResult<User> {
     tracing::trace!("user: {:#?}", user);
+    let time_now = Utc::now().naive_utc();
+
     let user = sqlx::query_as::<_, User>(
         r#"INSERT INTO users (id,
          display_name,
          username,
          email,
          password_hash,
-         active,
+         is_active,
          created_at,
          updated_at)
          VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
@@ -39,7 +46,7 @@ pub async fn add(user: User, state: &SharedState) -> RepositoryResult<User> {
     .bind(true)
     .bind(time_now)
     .bind(time_now)
-    .fetch_one(&state.db_pool)
+    .fetch_one(tx.as_mut())
     .await?;
 
     Ok(user)
@@ -50,50 +57,86 @@ pub async fn is_exist(username: &str, state: &SharedState) -> RepositoryResult<b
         .bind(username)
         .fetch_one(&state.db_pool)
         .await?;
-
     Ok(count > 0)
 }
 
-pub async fn get_by_id(id: i64, state: &SharedState) -> RepositoryResult<User> {
+pub async fn get_by_id(
+    tx: &mut Transaction<'_, Postgres>,
+    id: i64) -> RepositoryResult<User> {
     let user = sqlx::query_as::<_, User>("SELECT * FROM users WHERE id = $1")
         .bind(id)
-        .fetch_one(&state.db_pool)
+        .fetch_one(tx.as_mut())
         .await?;
     Ok(user)
 }
 
-pub async fn get_by_username_or_email(username_or_email: &str, state: &SharedState) -> RepositoryResult<User> {
-    let user = sqlx::query_as::<_, User>("SELECT * FROM users WHERE username = $1 OR email = $2")
+/// Get user by username or email, return error if not found
+/// Will be replaced 
+pub async fn get_by_username_or_email(
+    tx: &mut Transaction<'_, Postgres>,
+    username_or_email: &str
+) -> RepositoryResult<User> {
+    let user: User = sqlx::query_as::<_, User>("SELECT * FROM users WHERE username = $1 OR email = $2")
         .bind(username_or_email)
         .bind(username_or_email)
-        .fetch_one(&state.db_pool)
+        .fetch_one(tx.as_mut())
         .await?;
-
     Ok(user)
 }
 
-pub async fn update(user: User, state: &SharedState) -> RepositoryResult<User> {
+pub async fn update(
+    tx: &mut Transaction<'_, Postgres>,
+    user: UserUpdate,
+    target_user_id: i64,
+) -> RepositoryResult<User> {
     tracing::trace!("user: {:#?}", user);
     let time_now = Utc::now().naive_utc();
-    let user = sqlx::query_as::<_, User>(
-        r#"UPDATE users
-         SET 
-         username = $1,
-         email = $2,
-         password_hash = $3,
-         active = $5,
-         updated_at = $6
-         WHERE id = $7
-         RETURNING users.*"#,
-    )
-    .bind(user.username)
-    .bind(user.email)
-    .bind(user.password_hash)
-    .bind(user.active)
-    .bind(time_now)
-    .bind(user.id)
-    .fetch_one(&state.db_pool)
-    .await?;
+
+    let mut qb = QueryBuilder::<Postgres>::new(
+        "UPDATE users SET "
+    );
+
+    let mut first = true;
+
+    macro_rules! push_field {
+        ($opt:expr, $name:expr) => {
+            if let Some(value) = $opt {
+                if !first {
+                    qb.push(", ");
+                }
+                qb.push($name);
+                qb.push(" = ");
+                qb.push_bind(value);
+                first = false;
+            }
+        };
+    }
+
+    push_field!(user.display_name, "display_name");
+    push_field!(user.username, "username");
+    push_field!(user.email, "email");
+    push_field!(user.phone_number, "phone_number");
+    push_field!(user.password_hash, "password_hash");
+    push_field!(user.profile_picture_url, "profile_picture_url");
+    push_field!(user.is_active, "is_active");
+    push_field!(user.date_of_birth, "date_of_birth");
+
+    // Always update updated_at
+    if !first {
+        qb.push(", ");
+    }
+    qb.push("updated_at = ");
+    qb.push_bind(time_now);
+
+    qb.push(" WHERE id = ");
+    qb.push_bind(target_user_id);
+
+    qb.push(" RETURNING *");
+
+    let user = qb
+        .build_query_as::<User>()
+        .fetch_one(tx.as_mut())
+        .await?;
 
     Ok(user)
 }
@@ -105,64 +148,4 @@ pub async fn delete(id: Uuid, state: &SharedState) -> RepositoryResult<bool> {
         .await?;
 
     Ok(query_result.rows_affected() == 1)
-}
-
-
-pub async fn get_by_email<'e, E>(
-    executor: E,
-    email: &str,
-) -> Result<Option<i64>, sqlx::Error>
-where
-    E: Executor<'e, Database = Postgres>,
-{
-    sqlx::query_scalar::<_, i64>(
-        r#"
-        SELECT id
-        FROM users
-        WHERE email = $1
-        "#,
-    )
-    .bind(email)
-    .fetch_optional(executor)
-    .await
-}
-
-pub async fn get_id_by_email(
-    tx: &mut Transaction<'_, Postgres>,
-    email: &str,
-) -> Result<Option<i64>, sqlx::Error>{
-    sqlx::query_scalar::<_, i64>(
-        r#"
-        SELECT id
-        FROM users
-        WHERE email = $1
-        "#,
-    )
-    .bind(email)
-    .fetch_optional(tx.as_mut())
-    .await
-}
-
-pub async fn insert_oauth_user(
-    tx: &mut Transaction<'_, Postgres>,
-    id: i64,
-    username: &str,
-    display_name: &str,
-    email: &str,
-) -> Result<(), sqlx::Error>{
-    sqlx::query(
-        r#"
-        INSERT INTO users
-        (id, username, display_name, email, password_hash, active, email_verified, created_at, updated_at)
-        VALUES ($1, $2, $3, $4, NULL, TRUE, TRUE, NOW(), NOW())
-        "#,
-    )
-    .bind(id)
-    .bind(username)
-    .bind(display_name)
-    .bind(email)
-    .execute(tx.as_mut())
-    .await?;
-
-    Ok(())
 }

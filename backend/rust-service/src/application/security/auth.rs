@@ -1,17 +1,17 @@
+use hyper::StatusCode;
 use serde::Serialize;
 use std::time::{SystemTimeError};
 use thiserror::Error;
 use uuid::Uuid;
 
 use crate::{
-    application::{
+    api::{APIError, APIErrorCode, APIErrorEntry, APIErrorKind}, application::{
         config::Config,
-        repository::{oauth_repo, session_repo, user_repo},
+        repository::{oauth_repo, session_repo::{self, validate_session}, user_repo},
         security::{argon, jwt::*, session},
         service::{jwt_service, snowflake_service, username_service::{generate_base_username, generate_username}},
         state::SharedState,
-    },
-    domain::models::user::User, infrastructure::database::Database,
+    }, domain::models::user::{NewUser, User}, infrastructure::database::Database
 };
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize)]
@@ -27,7 +27,7 @@ pub struct JwtTokens {
     pub refresh_token: String,
 }
 
-pub async fn register_oauth(
+pub async fn login_oauth(
     state: &SharedState,
     provider: &str,
     provider_user_id: &str,
@@ -43,38 +43,37 @@ pub async fn register_oauth(
         return Ok(user_id);
     }
 
-    let user_id = if let Some(existing_user_id) =
-        user_repo::get_id_by_email(&mut tx, email).await?
+    let user_id: i64 = if let Ok(existing_user) =
+        user_repo::get_by_username_or_email(&mut tx, email).await
     {
-        existing_user_id
+        existing_user.id
     } else {
         let new_user_id: i64 = state.snowflake_generator.generate_id()?;
-
         let username = generate_base_username(email);
 
-        let result = user_repo::insert_oauth_user(
-            &mut tx,
-            new_user_id,
-            &username,
-            display_name,
-            email,
-        )
-        .await;
+        let user = NewUser {
+            id: new_user_id,
+            display_name: display_name.to_string(),
+            email: email.to_string(),
+            username: username.clone(),
+            password_hash: None,
+        };
+
+        let result = user_repo::add(&mut tx, user).await;
 
         match result {
             Ok(_) => new_user_id,
             Err(e) if Database::is_unique_violation(&e) => {
                 let fallback = generate_username(email, new_user_id);
 
-                user_repo::insert_oauth_user(
-                    &mut tx,
-                    new_user_id,
-                    &fallback,
-                    &display_name,
-                    email,
-                )
-                .await?;
-
+                let user = NewUser {
+                    id: new_user_id,
+                    display_name: display_name.to_string(),
+                    email: email.to_string(),
+                    username: fallback.clone(),
+                    password_hash: None,
+                };
+                user_repo::add(&mut tx, user).await?;
                 new_user_id
             }
             Err(e) => return Err(e.into()),
@@ -99,6 +98,20 @@ pub async fn register_oauth(
     Ok(user_id)
 }
 
+pub async fn validate_user_permission(
+    token: &str,
+    state: &SharedState,
+    id: i64
+) -> Result<(), AuthError> {
+    let token_parsed = session::parse(&token)?;
+    let mut tx = state.db_pool.begin().await?;
+    
+    validate_session(&mut tx, &state.redis, token_parsed.user_id, token_parsed.created_time, 60 * 60).await?;
+    if token_parsed.user_id != id {
+        return Err(AuthError::MissingAppropriatePermission);
+    }
+    Ok(())
+}
 
 pub async fn logout(token: &str, state: SharedState) -> Result<(), AuthError> {
     let mut tx = state.db_pool.begin().await?;
@@ -114,6 +127,8 @@ pub async fn register(
     state: SharedState,
 ) -> Result<(), AuthError> {
     // Check if user exist or not
+    let mut tx = state.db_pool.begin().await?;
+
     match user_repo::is_exist(&username, &state).await? {
         true => {
             // User already exists
@@ -125,20 +140,18 @@ pub async fn register(
 
             let user_id = state.snowflake_generator.generate_id()?;
 
-            let user = User {
+            let user = NewUser {
                 id: user_id,
                 display_name: display_name,
                 email: email,
                 password_hash: Some(password_hash),
                 username: username,
-                active: true,
-                created_at: None,
-                updated_at: None,
             };
-            // Await the future so it is executed and propagate any error
-            user_repo::add(user, &state).await?;
+            user_repo::add(&mut tx, user).await?;
         }
     };
+
+    tx.commit().await?;
 
     Ok(())
 }
@@ -185,8 +198,10 @@ pub async fn refresh(
         revoke_refresh_token(&refresh_claims, &state).await?;
     }
 
+    let mut tx = state.db_pool.begin().await?;
+
     let user_id = refresh_claims.sub.parse().unwrap();
-    let user = user_repo::get_by_id(user_id, &state).await?;
+    let user = user_repo::get_by_id(&mut tx, user_id).await?;
     let tokens = generate_jwt(user, &state.config);
     Ok(tokens)
 }
@@ -294,6 +309,8 @@ pub enum AuthError {
     UnsupportedOAuthProvider,
     #[error("invalid google access token")]
     InvalidGoogleAccessToken,
+    #[error("does not have an appropriate permission")]
+    MissingAppropriatePermission,
     #[error("email not verified")]
     EmailNotVerified,
     #[error("wrong credentials")]
@@ -320,4 +337,80 @@ pub enum AuthError {
     SQLxError(#[from] sqlx::Error),
     #[error(transparent)]
     SessionError(#[from] session::SessionError),
+}
+
+
+impl From<AuthError> for APIError {
+    fn from(auth_error: AuthError) -> Self {
+        let (status_code, code) = match auth_error {
+            AuthError::SessionError(_) => (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                APIErrorCode::SessionError,
+            ),
+            AuthError::EmailNotVerified => (
+                StatusCode::UNAUTHORIZED,
+                APIErrorCode::AuthenticationEmailNotVerified,
+            ),
+            AuthError::InvalidGoogleAccessToken => (
+                StatusCode::UNAUTHORIZED,
+                APIErrorCode::AuthenticationInvalidGoogleAccessToken,
+            ),
+            AuthError::UnsupportedOAuthProvider => (
+                StatusCode::BAD_REQUEST,
+                APIErrorCode::AuthenticationUnsupportedOAuthProvider,
+            ),
+            AuthError::WrongCredentials => (
+                StatusCode::UNAUTHORIZED,
+                APIErrorCode::AuthenticationWrongCredentials,
+            ),
+            AuthError::MissingCredentials => (
+                StatusCode::BAD_REQUEST,
+                APIErrorCode::AuthenticationMissingCredentials,
+            ),
+            AuthError::TokenCreationError => (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                APIErrorCode::AuthenticationTokenCreationError,
+            ),
+            AuthError::InvalidToken => (
+                StatusCode::BAD_REQUEST,
+                APIErrorCode::AuthenticationInvalidToken,
+            ),
+            AuthError::MissingAppropriatePermission => (
+                StatusCode::UNAUTHORIZED,
+                APIErrorCode::AuthenticationMissingAppropriatePermission
+            ),
+            AuthError::Forbidden => (StatusCode::FORBIDDEN, APIErrorCode::AuthenticationForbidden),
+            AuthError::RevokedTokensInactive => (
+                StatusCode::BAD_REQUEST,
+                APIErrorCode::AuthenticationRevokedTokensInactive,
+            ),
+            AuthError::RedisError(_) => {
+                (StatusCode::INTERNAL_SERVER_ERROR, APIErrorCode::RedisError)
+            }
+            AuthError::SQLxError(_) => (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                APIErrorCode::DatabaseError,
+            ),
+            AuthError::SnowflakeError(_) => (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                APIErrorCode::SnowflakeError,
+            ),
+            AuthError::SystemTimeError(_) => (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                APIErrorCode::AuthenticationTokenCreationError,
+            ),
+            AuthError::Argon2Error(_) => {
+                (StatusCode::INTERNAL_SERVER_ERROR, APIErrorCode::Argon2Error)
+            }
+        };
+
+        let error = APIErrorEntry::new(&auth_error.to_string())
+            .code(code)
+            .kind(APIErrorKind::AuthenticationError);
+
+        Self {
+            status: status_code.as_u16(),
+            errors: vec![error],
+        }
+    }
 }

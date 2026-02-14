@@ -1,5 +1,5 @@
 
-use axum::{Json, extract::{State}, http::StatusCode, response::IntoResponse};
+use axum::{Json, extract::{State}, response::IntoResponse};
 use axum_client_ip::ClientIp;
 use hyper::HeaderMap;
 use serde::{Deserialize, Serialize};
@@ -7,12 +7,12 @@ use serde_json::json;
 use sqlx::types::Uuid;
 
 use crate::{
-    api::{APIError, APIErrorCode, APIErrorEntry, APIErrorKind, version::APIVersion},
+    api::{APIError, version::APIVersion},
     application::{
         repository::{session_repo::validate_session, user_repo}, security::{
-            argon, auth::{self, AuthError, AuthToken}, oauth::google, session
+            argon, auth::{self, AuthError, AuthToken}, oauth::google::fetch_google_userinfo, session
         }, state::SharedState
-    },
+    }, domain::models::oauth_account::GoogleUserInfo,
 };
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -47,7 +47,7 @@ pub struct OAuthRegisterResponse {
 }
 
 #[tracing::instrument(level = tracing::Level::TRACE, name = "oauth", skip_all, fields(username=payload.provider))]
-pub async fn oauth_register_handler(
+pub async fn oauth_login_handler(
     api_version: APIVersion,
     State(state): State<SharedState>,
     ClientIp(ip): ClientIp,
@@ -60,7 +60,7 @@ pub async fn oauth_register_handler(
         return Err(AuthError::UnsupportedOAuthProvider)?;
     }
 
-    let userinfo = google::fetch_google_userinfo(&payload.access_token)
+    let userinfo: GoogleUserInfo = fetch_google_userinfo(&payload.access_token)
         .await
         .map_err(|_| AuthError::InvalidGoogleAccessToken)?;
 
@@ -76,17 +76,15 @@ pub async fn oauth_register_handler(
             userinfo.family_name.unwrap_or_default()
         ));
 
-    let user_id: i64 = auth::register_oauth(
+    let user_id: i64 = auth::login_oauth(
         &state,
         "google",
         &userinfo.sub,
         &userinfo.email,
         &full_name,
-    )
-    .await?;
+    ).await?;
 
-    let tokens: AuthToken = session::new(user_id)
-        .await?;
+    let tokens: AuthToken = session::new(user_id).await?;
 
     let user_agent = headers
         .get("user-agent")
@@ -128,10 +126,11 @@ pub async fn validate_handler(
 
     //validate only
     let token_parsed = session::parse(token)?;
-    validate_session(&state.db_pool, &state.redis, token_parsed.user_id, token_parsed.created_time, 60*60).await?;
+    let mut tx = state.db_pool.begin().await?;
 
-    let user = user_repo::get_by_id(token_parsed.user_id, &state)
-        .await?;
+    validate_session(&mut tx, &state.redis, token_parsed.user_id, token_parsed.created_time, 60 * 60).await?;
+
+    let user = user_repo::get_by_id(&mut tx, token_parsed.user_id).await?;
 
     let response = Json(json!({
         "user": user,
@@ -151,11 +150,13 @@ pub async fn login_handler(
     Json(login): Json<LoginUser>,
 ) -> Result<impl IntoResponse, APIError> {
     tracing::trace!("api version: {}", api_version);
-    if let Ok(user) = user_repo::get_by_username_or_email(&login.username_or_email, &state).await {
+    let mut tx = state.db_pool.begin().await?;
+
+    if let Ok(user) = user_repo::get_by_username_or_email(&mut tx, &login.username_or_email).await {
         let password_valid = argon::verify(login.password.as_bytes(), &user.password_hash.unwrap_or_default())
             .expect("Password verification failed");
 
-        if user.active && password_valid {
+        if user.is_active && password_valid {
             tracing::trace!("access granted, user: {}", user.id);
             let tokens: AuthToken = session::new(user.id).await?;
             let response = Json(json!(
@@ -221,75 +222,4 @@ pub async fn logout_handler(
         .unwrap_or("");
     auth::logout(token, state).await?;
     Ok(())
-}
-
-impl From<AuthError> for APIError {
-    fn from(auth_error: AuthError) -> Self {
-        let (status_code, code) = match auth_error {
-            AuthError::SessionError(_) => (
-                StatusCode::INTERNAL_SERVER_ERROR,
-                APIErrorCode::SessionError,
-            ),
-            AuthError::EmailNotVerified => (
-                StatusCode::UNAUTHORIZED,
-                APIErrorCode::AuthenticationEmailNotVerified,
-            ),
-            AuthError::InvalidGoogleAccessToken => (
-                StatusCode::UNAUTHORIZED,
-                APIErrorCode::AuthenticationInvalidGoogleAccessToken,
-            ),
-            AuthError::UnsupportedOAuthProvider => (
-                StatusCode::BAD_REQUEST,
-                APIErrorCode::AuthenticationUnsupportedOAuthProvider,
-            ),
-            AuthError::WrongCredentials => (
-                StatusCode::UNAUTHORIZED,
-                APIErrorCode::AuthenticationWrongCredentials,
-            ),
-            AuthError::MissingCredentials => (
-                StatusCode::BAD_REQUEST,
-                APIErrorCode::AuthenticationMissingCredentials,
-            ),
-            AuthError::TokenCreationError => (
-                StatusCode::INTERNAL_SERVER_ERROR,
-                APIErrorCode::AuthenticationTokenCreationError,
-            ),
-            AuthError::InvalidToken => (
-                StatusCode::BAD_REQUEST,
-                APIErrorCode::AuthenticationInvalidToken,
-            ),
-            AuthError::Forbidden => (StatusCode::FORBIDDEN, APIErrorCode::AuthenticationForbidden),
-            AuthError::RevokedTokensInactive => (
-                StatusCode::BAD_REQUEST,
-                APIErrorCode::AuthenticationRevokedTokensInactive,
-            ),
-            AuthError::RedisError(_) => {
-                (StatusCode::INTERNAL_SERVER_ERROR, APIErrorCode::RedisError)
-            }
-            AuthError::SQLxError(_) => (
-                StatusCode::INTERNAL_SERVER_ERROR,
-                APIErrorCode::DatabaseError,
-            ),
-            AuthError::SnowflakeError(_) => (
-                StatusCode::INTERNAL_SERVER_ERROR,
-                APIErrorCode::SnowflakeError,
-            ),
-            AuthError::SystemTimeError(_) => (
-                StatusCode::INTERNAL_SERVER_ERROR,
-                APIErrorCode::AuthenticationTokenCreationError,
-            ),
-            AuthError::Argon2Error(_) => {
-                (StatusCode::INTERNAL_SERVER_ERROR, APIErrorCode::Argon2Error)
-            }
-        };
-
-        let error = APIErrorEntry::new(&auth_error.to_string())
-            .code(code)
-            .kind(APIErrorKind::AuthenticationError);
-
-        Self {
-            status: status_code.as_u16(),
-            errors: vec![error],
-        }
-    }
 }

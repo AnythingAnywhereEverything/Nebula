@@ -1,6 +1,6 @@
 use chrono::{TimeZone, Utc};
 use redis::AsyncCommands;
-use sqlx::{PgPool, Postgres, Transaction};
+use sqlx::{Postgres, Transaction};
 
 use crate::application::security::{argon, auth::AuthToken, session::{self, SessionError}};
 
@@ -125,11 +125,11 @@ pub async fn delete_session_by_token(
 
 #[tracing::instrument(
     name = "Validate session token",
-    skip(pool, redis),
+    skip(tx, redis),
     fields(user_id = user_id, created_time = created_time)
 )]
 pub async fn validate_session(
-    pool: &PgPool,
+    tx: &mut Transaction<'_, Postgres>,
     redis: &deadpool_redis::Pool,
     user_id: i64,
     created_time: i64,
@@ -138,9 +138,9 @@ pub async fn validate_session(
 
     let mut conn = redis.get().await?;
     let key = format!("session_active:{}:{}", user_id, created_time);
-    tracing::info!("Session key {}", key);
+    tracing::trace!("Session key {}", key);
     let exists: bool = conn.exists(key).await?;
-    tracing::info!("Session exists in Redis: {}", exists);
+    tracing::trace!("Session exists in Redis: {}", exists);
 
     if exists {
         extend_session(redis, user_id, created_time, ttl_seconds).await?;
@@ -158,7 +158,7 @@ pub async fn validate_session(
     )
     .bind(user_id)
     .bind(date_time)
-    .fetch_optional(pool)
+    .fetch_optional(tx.as_mut())
     .await?;
 
     if session_exists.is_none() {
