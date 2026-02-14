@@ -1,104 +1,10 @@
 use std::fmt::{Display, Formatter, Result};
 
 use axum::{
-    Json,
-    http::StatusCode,
-    response::{IntoResponse, Response},
+    Json, extract::multipart::MultipartError, http::StatusCode, response::{IntoResponse, Response}
 };
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-
-use crate::application::security::session::SessionError;
-
-
-pub const API_DOCUMENT_URL: &str =
-    "https://github.com/sheroz/axum-rest-api-sample/blob/main/docs/api-docs.md";
-
-// API error response samples:
-//
-// {
-//   "status": 404,
-//   "errors": [
-//     {
-//         "code": "user_not_found",
-//         "kind": "resource_not_found",
-//         "message": "user not found: 12345",
-//         "description": "user with the ID '12345' does not exist in our records",
-//         "detail": { "user_id": "12345" },
-//         "reason": "must be an existing user",
-//         "instance": "/api/v1/users/12345",
-//         "trace_id": "3d2b4f2d00694354a00522fe3bb86158",
-//         "timestamp": "2024-01-19T16:58:34.123+0000",
-//         "help": "please check if the user ID is correct or refer to our documentation at https://github.com/sheroz/axum-rest-api-sample/blob/main/docs/api-docs.md#errors for more information",
-//         "doc_url": "https://github.com/sheroz/axum-rest-api-sample/blob/main/docs/api-docs.md"
-//     }
-//   ]
-// }
-//
-// ---
-//
-// {
-//   "status": 422,
-//   "errors": [
-//     {
-//         "code": "transfer_insufficient_funds",
-//         "kind": "validation_error",
-//         "message": "source account does not have sufficient funds for the transfer",
-//         "reason": "source account balance must be sufficient to cover the transfer amount",
-//         "instance": "/api/v1/transactions/transfer",
-//         "trace_id": "fbb9fdf5394d4abe8e42b49c3246310b",
-//         "timestamp": "2024-01-19T16:58:35.225+0000",
-//         "help": "please check the source account balance or refer to our documentation at https://github.com/sheroz/axum-rest-api-sample/blob/main/docs/api-docs.md#errors for more information",
-//         "doc_url": "https://github.com/sheroz/axum-rest-api-sample/blob/main/docs/api-docs.md"
-//     },
-//     {
-//         "code": "transfer_destination_account_not_found",
-//         "kind": "validation_error",
-//         "message": "destination account not found: d424cfe9-c042-41db-9a8e-8da5715fea10",
-//         "detail": { "destination_account_id": "d424cfe9-c042-41db-9a8e-8da5715fea10" },
-//         "reason": "must be an existing account",
-//         "instance": "/api/v1/transactions/transfer",
-//         "trace_id": "8a250eaa650943b085934771fb35ba54",
-//         "timestamp": "2024-01-19T16:59:03.124+0000",
-//         "help": "please check if the destination account ID is correct or refer to our documentation at https://github.com/sheroz/axum-rest-api-sample/blob/main/docs/api-docs.md#errors for more information.",
-//         "doc_url": "https://github.com/sheroz/axum-rest-api-sample/blob/main/docs/api-docs.md"
-//     },
-//   ]
-// }
-//
-// ---
-//
-// (Users endpoint can be extended to handle these validations)
-//
-// {
-//   "status": 422,
-//   "errors": [
-//     {
-//         "code": "invalid_birthdate",
-//         "kind": "validation_error",
-//         "message": "user birthdate is not correct",
-//         "description": "validation error in your request",
-//         "detail": { "birthdate": "2050.02.30" },
-//         "reason": "must be a valid calendar date in the past",
-//         "instance": "/api/v1/users/12345",
-//         "trace_id": "8a250eaa650943b085934771fb35ba54",
-//         "timestamp": "2024-01-19T16:59:03.124+0000",
-//         "help": "please check if the user birthdate is correct or refer to our documentation at https://github.com/sheroz/axum-rest-api-sample/blob/main/docs/api-docs.md#errors for more information.",
-//         "doc_url": "https://github.com/sheroz/axum-rest-api-sample/blob/main/docs/api-docs.md"
-//     },
-//     {
-//         "code": "invalid_role",
-//         "kind": "validation_error",
-//         "message": "role not valid",
-//         "description": "validation error in your request",
-//         "detail": { role: "superadmin" },
-//         "reason": "allowed roles: ['customer', 'guest']",
-//         "instance": "/api/v1/users/12345",
-//         "trace_id": "e023ebc3ab3e4c02b08247d9c5f03aa8",
-//         "timestamp": "2024-01-19T16:59:03.124+0000",
-//         "help": "please check if the user role is correct or refer to our documentation at https://github.com/sheroz/axum-rest-api-sample/blob/main/docs/api-docs.md#errors for more information",
-//         "doc_url": "https://github.com/sheroz/axum-rest-api-sample/blob/main/docs/api-docs.md"
-//     },
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct APIError {
@@ -117,6 +23,7 @@ impl Display for APIError {
 #[serde(rename_all = "snake_case")]
 pub enum APIErrorCode {
     AuthenticationWrongCredentials,
+    AuthenticationMissingAppropriatePermission,
     AuthenticationMissingCredentials,
     AuthenticationTokenCreationError,
     AuthenticationInvalidToken,
@@ -137,7 +44,10 @@ pub enum APIErrorCode {
     RedisError,
     SnowflakeError,
     Argon2Error,
-    SessionError
+    SessionError,
+    UserError,
+    MultipartError,
+    SystemError
 }
 
 impl Display for APIErrorCode {
@@ -158,7 +68,10 @@ pub enum APIErrorKind {
     ValidationError,
     DatabaseError,
     RedisError,
-    SystemError
+    SystemError,
+    UserError,
+    MultipartError,
+    SnowflakeError
 }
 
 impl Display for APIErrorKind {
@@ -246,11 +159,6 @@ impl APIErrorEntry {
         self.help = Some(help.to_owned());
         self
     }
-
-    pub fn doc_url(mut self) -> Self {
-        self.doc_url = Some(API_DOCUMENT_URL.to_owned());
-        self
-    }
 }
 
 impl From<StatusCode> for APIErrorEntry {
@@ -304,6 +212,60 @@ impl From<redis::RedisError> for APIErrorEntry {
     }
 }
 
+impl From<MultipartError> for APIErrorEntry {
+    fn from(e: MultipartError) -> Self {
+        if cfg!(debug_assertions) {
+            let msg = e.to_string();
+
+            Self::new(&msg)
+                .code(APIErrorCode::MultipartError)
+                .kind(APIErrorKind::MultipartError)
+                .description(&format!("Multipart error: {}", msg))
+                .trace_id()
+        } else {
+            let error_entry =
+                Self::from(StatusCode::INTERNAL_SERVER_ERROR).trace_id();
+
+            if let Some(trace_id) = error_entry.trace_id.as_deref() {
+                tracing::error!(
+                    "Multipart error: {}, trace id: {}",
+                    e,
+                    trace_id
+                );
+            }
+
+            error_entry
+        }
+    }
+}
+
+impl From<std::io::Error> for APIErrorEntry {
+    fn from(e: std::io::Error) -> Self {
+        if cfg!(debug_assertions) {
+            let msg = e.to_string();
+
+            Self::new(&msg)
+                .code(APIErrorCode::SystemError)
+                .kind(APIErrorKind::SystemError)
+                .description(&format!("Multipart error: {}", msg))
+                .trace_id()
+        } else {
+            let error_entry =
+                Self::from(StatusCode::INTERNAL_SERVER_ERROR).trace_id();
+
+            if let Some(trace_id) = error_entry.trace_id.as_deref() {
+                tracing::error!(
+                    "Multipart error: {}, trace id: {}",
+                    e,
+                    trace_id
+                );
+            }
+
+            error_entry
+        }
+    }
+}
+
 impl From<(StatusCode, Vec<APIErrorEntry>)> for APIError {
     fn from(error_from: (StatusCode, Vec<APIErrorEntry>)) -> Self {
         let (status_code, errors) = error_from;
@@ -346,6 +308,24 @@ impl From<sqlx::Error> for APIError {
     }
 }
 
+impl From<MultipartError> for APIError {
+    fn from(error: MultipartError) -> Self {
+        Self {
+            status: StatusCode::BAD_REQUEST.as_u16(),
+            errors: vec![APIErrorEntry::from(error)],
+        }
+    }
+}
+
+impl From<std::io::Error> for APIError {
+    fn from(error: std::io::Error) -> Self {
+        Self {
+            status: StatusCode::INTERNAL_SERVER_ERROR.as_u16(),
+            errors: vec![APIErrorEntry::from(error)],
+        }
+    }
+}
+
 impl From<redis::RedisError> for APIError {
     fn from(error: redis::RedisError) -> Self {
         Self {
@@ -364,18 +344,4 @@ impl IntoResponse for APIError {
     }
 }
 
-impl From<SessionError> for APIError {
-    fn from(session_error: SessionError) -> Self {
-        let api_error_entry = APIErrorEntry::from(session_error);
-        let status_code = match api_error_entry.code.as_deref() {
-            Some("authentication_wrong_credentials") => StatusCode::UNAUTHORIZED,
-            Some("authentication_missing_credentials") => StatusCode::BAD_REQUEST,
-            Some("authentication_forbidden") => StatusCode::FORBIDDEN,
-            _ => StatusCode::INTERNAL_SERVER_ERROR,
-        };
-        Self {
-            status: status_code.as_u16(),
-            errors: vec![api_error_entry],
-        }
-    }
-}
+

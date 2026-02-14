@@ -1,9 +1,10 @@
 use base64::{Engine as _, engine::general_purpose};
 use chrono::Utc;
+use hyper::StatusCode;
 use rand::{Rng, distr::Alphanumeric};
 use thiserror::Error;
 
-use crate::{api::{APIErrorCode, APIErrorEntry, APIErrorKind}, application::security::auth::AuthToken};
+use crate::{api::{APIError, APIErrorCode, APIErrorEntry, APIErrorKind}, application::security::auth::AuthToken};
 
 #[derive(Debug)]
 pub struct SessionToken {
@@ -107,38 +108,29 @@ pub enum SessionError {
     PoolError(#[from] deadpool_redis::PoolError),
 }
 
-impl From<SessionError> for APIErrorEntry {
+impl From<SessionError> for APIError {
     fn from(session_error: SessionError) -> Self {
-        let message = session_error.to_string();
-        match session_error {
-            SessionError::WrongCredentials => Self::new(&message)
-                .code(APIErrorCode::AuthenticationWrongCredentials)
-                .kind(APIErrorKind::AuthenticationError)
-                .trace_id(),
-            SessionError::MissingCredentials => Self::new(&message)
-                .code(APIErrorCode::AuthenticationMissingCredentials)
-                .kind(APIErrorKind::AuthenticationError)
-                .trace_id(),
-            SessionError::SessionCreationError => Self::new(&message)
-                .code(APIErrorCode::SessionError)
-                .kind(APIErrorKind::AuthenticationError)
-                .trace_id(),
-            SessionError::InvalidSession => Self::new(&message)
-                .code(APIErrorCode::SessionError)
-                .kind(APIErrorKind::AuthenticationError)
-                .trace_id(),
-            SessionError::Forbidden => Self::new(&message)
-                .code(APIErrorCode::AuthenticationForbidden)
-                .kind(APIErrorKind::AuthenticationError)
-                .trace_id(),
-            SessionError::RedisError(_) | SessionError::SQLxError(_) => Self::new(&message)
-                .code(APIErrorCode::SessionError)
-                .kind(APIErrorKind::SystemError)
-                .trace_id(),
-            SessionError::HashError(_) | SessionError::ParseError(_) | SessionError::PoolError(_) => Self::new(&message)
-                .code(APIErrorCode::SessionError)
-                .kind(APIErrorKind::SystemError)
-                .trace_id(),
+        let (status_code, code) = match session_error {
+            SessionError::WrongCredentials => (
+                StatusCode::UNAUTHORIZED,
+                APIErrorCode::AuthenticationWrongCredentials
+            ),
+            SessionError::Forbidden => (
+                StatusCode::FORBIDDEN,
+                APIErrorCode::AuthenticationForbidden
+            ),
+            _ => (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                APIErrorCode::SystemError
+            )
+        };
+        let error = APIErrorEntry::new(&session_error.to_string())
+            .code(code)
+            .kind(APIErrorKind::AuthenticationError);
+
+        Self {
+            status: status_code.as_u16(),
+            errors: vec![error],
         }
     }
 }
