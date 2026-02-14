@@ -48,7 +48,8 @@ pub async fn start(state: SharedState) {
     //      .allow_headers([AUTHORIZATION, ACCEPT, CONTENT_TYPE]);
 
     // Build the router.
-    let router = Router::new()
+    let router = {
+        let base = Router::new()
         .route("/", get(root_handler))
         .route("/head", get(head_request_handler))
         .route("/any", any(any_request_handler))
@@ -57,14 +58,21 @@ pub async fn start(state: SharedState) {
         // Nesting authentication routes.
         .nest("/{version}/auth", auth_routes::routes())
         // Nesting user routes.
-        .nest("/{version}/users", user_routes::routes())
-        .nest("/{version}/dev", dev_routes::routes())
-        // Add a fallback service for handling routes to unknown paths.
+        .nest("/{version}/users", user_routes::routes(Arc::clone(&state)))        // Add a fallback service for handling routes to unknown paths.
         .fallback(error_404_handler)
-        .with_state(Arc::clone(&state))
         .layer(cors_layer)
         .layer(ClientIpSource::RightmostXForwardedFor.into_extension())
         .layer(middleware::from_fn(logging_middleware));
+
+        if state.config.is_production {
+            tracing::info!("starting in production mode");
+            base.with_state(Arc::clone(&state))
+        } else {
+            tracing::info!("starting in development mode");
+            base.nest("/dev", dev_routes::routes())
+            .with_state(Arc::clone(&state))
+        }
+    };
 
     // Build the listener.
     let addr = state.config.service_socket_addr();

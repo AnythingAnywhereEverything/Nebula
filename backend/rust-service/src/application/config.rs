@@ -29,6 +29,11 @@ pub struct Config {
     pub jwt_expire_refresh_token_seconds: i64,
     pub jwt_validation_leeway_seconds: i64,
     pub jwt_enable_revoked_tokens: bool,
+
+    // Production configuration.
+    pub is_production: bool,
+    pub media_root: String,
+
     // Server Worker ID.
     pub server_worker_id: u64,
 }
@@ -118,6 +123,8 @@ pub fn load() -> Config {
         jwt_validation_leeway_seconds: env_parse("JWT_VALIDATION_LEEWAY_SECONDS"),
         jwt_enable_revoked_tokens: env_parse("JWT_ENABLE_REVOKED_TOKENS"),
         server_worker_id: env_parse("WORKER_ID"),
+        is_production: env_parse("PRODUCTION"),
+        media_root: env_parse("MEDIA_ROOT"),
     };
 
     tracing::trace!("configuration: {:#?}", config);
