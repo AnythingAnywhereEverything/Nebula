@@ -1,0 +1,8 @@
+
+.daypicker{
+    background-color: var(--background);
+    padding: calc(var(--spacing) * 2);
+    --cell-radius: var(--radius-medium);
+    --cell-size: calc(var(--spacing) * 7);
+    
+}
