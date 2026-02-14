@@ -1,12 +1,11 @@
 import { LayoutProps } from '@/types/global';
 import { Navbar } from '../navbarWraper';
-import { ThemeProvider } from 'next-themes';
 
 import s from "@styles/sidebar.module.scss"
 
 const PortalLayout: React.FC<LayoutProps> = ({ children, Sidebar }) => {
     return (
-        <ThemeProvider themes={["light", "dark", "midnight"]} attribute={"data-theme"}>
+        <>
             <Navbar type='portal' />
             <main className={s.sidebarProvider}>
                 {Sidebar && <Sidebar/>}
@@ -14,7 +13,7 @@ const PortalLayout: React.FC<LayoutProps> = ({ children, Sidebar }) => {
                     {children}
                 </div>
             </main>
-        </ThemeProvider>
+        </>
     );
 };
 
