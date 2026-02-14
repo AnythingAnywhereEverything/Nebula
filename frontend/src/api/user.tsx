@@ -7,17 +7,49 @@ interface UserResponse {
   email: string;
   active: boolean;
   created_at: string;
-  updated_at: string;
 }
 
-export async function get_user(): Promise<UserResponse> {
+export async function getUser(): Promise<UserResponse> {
   const token = getToken();
   const userId = getCacheUserId();
   if (!token) throw new Error("No token found");
 
   const res = await fetchWithAuth(`/api/v2/users/${userId}`); // proxied to backend via nginx
-  if (!res.ok) throw new Error("Ping failed");
+  if (!res.ok) throw new Error("Failed to get user data");
   const data = await res.json();
-  console.log("User data response:", data);
   return data;
 }
+
+export const updateDisplayName = async (display_name: string) => {
+  const token = getToken();
+  const userId = getCacheUserId();
+  if (!token) throw new Error("No token found");
+
+  const res = await fetchWithAuth(`/api/v2/users/${userId}/display_name`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ display_name }),
+  });
+  
+  if (!res.ok) throw new Error("Failed to update display name");
+  return res.json();
+};
+
+export const updateUsername = async (username: string) => {
+  const token = getToken();
+  const userId = getCacheUserId();
+  if (!token) throw new Error("No token found");
+
+  const res = await fetchWithAuth(`/api/v2/users/${userId}/username`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ username }),
+  });
+
+  if (!res.ok) throw new Error("Failed to update Username");
+  return res.json();
+};
