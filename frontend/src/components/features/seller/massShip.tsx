@@ -10,9 +10,8 @@ export default function MassShipPage (){
                     Ship My Orders
                 </SellerHeader>
         
-                <Field orientation={'horizontal'}>
-                    <FieldGroup>
-                        
+                <Field orientation={'horizontal'} style={{alignItems:"stretch"}}>
+                    <Field>
                         <SellerContent>
                             <SellerToolbarRow>
                                 <Button>Order to Ship</Button>
@@ -52,9 +51,9 @@ export default function MassShipPage (){
                                 </FieldGroup>
                             </SellerToolbarRow>
                         </SellerContent>
-                    </FieldGroup>
+                    </Field>
 
-                    <FieldGroup style={{width: "40%"}}>
+                    <FieldGroup style={{width: "400px"}}>
                         <SellerContent>
                             <h4>Mass Ship</h4>
                             
