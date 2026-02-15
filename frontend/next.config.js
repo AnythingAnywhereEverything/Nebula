@@ -2,6 +2,10 @@
 
 const path = require("path");
 
+const isDocker = process.env.DOCKER === "true";
+
+const CDN_HOST = isDocker ? "nginx" : "localhost";
+
 const nextConfig = {
   sassOptions: {
     includePaths: [path.join(__dirname, "styles")],
@@ -10,31 +14,23 @@ const nextConfig = {
 
   images: {
     remotePatterns: [
-      // {
-      //   protocol: "http",
-      //   hostname: "localhost",
-      //   port: "",
-      //   pathname: "/cdn/**",
-      // },
       {
         protocol: "http",
-        hostname: "nginx",
+        hostname: CDN_HOST,
         port: "",
         pathname: "/cdn/**",
       },
     ],
-    // dangerouslyAllowLocalIP: true, // NOTE: For development only
+    
+    // Only allow private IP when NOT in Docker
+    ...(isDocker ? {} : { dangerouslyAllowLocalIP: true }),
   },
 
   async rewrites() {
     return [
-      // {
-      //   source: "/cdn/:path*",
-      //   destination: "http://localhost/cdn/:path*",
-      // },
       {
         source: "/cdn/:path*",
-        destination: "http://nginx/cdn/:path*",
+        destination: `http://${CDN_HOST}/cdn/:path*`,
       },
     ];
   },

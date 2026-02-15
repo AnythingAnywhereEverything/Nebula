@@ -17,6 +17,9 @@ RUN corepack enable
 ARG NEXT_PUBLIC_GOOGLE_CLIENT_ID
 ENV NEXT_PUBLIC_GOOGLE_CLIENT_ID=$NEXT_PUBLIC_GOOGLE_CLIENT_ID
 
+ARG DOCKER
+ENV DOCKER=$DOCKER
+
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN pnpm run build

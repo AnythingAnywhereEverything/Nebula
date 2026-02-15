@@ -38,6 +38,7 @@ services:
       dockerfile: Dockerfile.nextjs
       args:
         NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${NEXT_PUBLIC_GOOGLE_CLIENT_ID}
+        DOCKER: "true"
     ports:
       - "5175:5175"
 
