@@ -3,7 +3,7 @@ use std::{collections::HashMap, sync::Arc, time::SystemTime};
 use axum::{
     Json, Router,
     body::Body,
-    extract::{Query, Request},
+    extract::{DefaultBodyLimit, Query, Request},
     http::{HeaderMap, Method, StatusCode},
     middleware::{self, Next},
     response::{IntoResponse, Response},
@@ -62,7 +62,8 @@ pub async fn start(state: SharedState) {
         .fallback(error_404_handler)
         .layer(cors_layer)
         .layer(ClientIpSource::RightmostXForwardedFor.into_extension())
-        .layer(middleware::from_fn(logging_middleware));
+        .layer(middleware::from_fn(logging_middleware))
+        .layer(DefaultBodyLimit::disable());
 
         if state.config.is_production {
             tracing::info!("starting in production mode");
