@@ -1,15 +1,28 @@
+import { useUser } from '@/hooks/useUser';
 import NebulaSettingListItem from '@components/ui/NebulaSettingListOption';
 import { Button, Field, FieldDescription, FieldLegend, Icon } from '@components/ui/NebulaUI';
 import style from '@styles/features/profile/usersettingoption.module.scss';
+import Image from 'next/image';
 import Link from 'next/link';
 
 const UserSettingsOptions: React.FC = () => {
+
+    const { data } = useUser();
+
     return (
         <div className={style.userSettingsOptionsContainer}>
             <Button variant={"ghost"} asChild className={style.profile}>
                 <Link href={"/user/account/profile"}>
                     <div className={style.profilePicture}>
-                        <img src="https://placehold.co/400x800" alt='PlaceHolder'/>
+                        <Image src={(data?.profile_picture_url
+                            ? `/cdn/${data.profile_picture_url}`
+                            : "/default/default_profile.jpg")
+                        }
+                        alt="Profile"
+                        fill
+                        priority
+                        sizes="400px"
+                        />
                     </div>
 
                     <Field className={style.profileName}>

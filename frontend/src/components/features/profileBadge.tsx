@@ -4,6 +4,7 @@ import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownM
 
 import s from "@styles/features/profilebadge.module.scss"
 import { useTheme } from "next-themes";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { use, useEffect, useState } from "react";
@@ -33,7 +34,16 @@ export function ProfileBadge() {
             <DropdownMenuTrigger asChild>
                 <div className={s.container}>
                     <div className={s.avatar}>
-                        <img src="https://placehold.co/400" alt="" />
+                        <Image 
+                            src={(data?.profile_picture_url
+                                    ? `/cdn/${data.profile_picture_url}`
+                                    : "/default/default_profile.jpg")
+                                }
+                            alt="Profile"
+                            fill
+                            priority
+                            sizes="400px"
+                            />
                     </div>
                     <div>
                         <FieldLabel>{isLoading ? "Loading..." : displayName}</FieldLabel>

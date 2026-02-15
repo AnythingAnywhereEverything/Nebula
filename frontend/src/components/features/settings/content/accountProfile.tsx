@@ -1,20 +1,72 @@
-import { updateDisplayName } from "@/api/user";
 import { useUser } from "@/hooks/useUser";
 import { useUserService } from "@/hooks/useUserService";
 import { Button, Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, Field, FieldDescription, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSeparator, Icon, Input, Separator } from "@components/ui/NebulaUI";
 import style from "@styles/layouts/usersetting.module.scss";
 import Form from "next/form";
+import Image from "next/image";
 import { useState } from "react";
 
 const AccountProfile: React.FC = () => {
 
     const { data, isLoading } = useUser();
 
-    const { updateDisplayName, updateUsername} = useUserService();
+    const [preview, setPreview] = useState<string | null>(null);
+    const [error, setError] = useState<string | null>(null);
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [loading, setLoading] = useState(false);
+
+    const { updateDisplayName, updateUsername, updateProfilePicture } = useUserService();
 
     const displayName = data?.display_name ?? "Unknown";
     const username = data?.username ?? "Unknown";
     
+    const handleFileChange = (
+        e: React.ChangeEvent<HTMLInputElement>
+    ) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setError(null);
+
+        if (file.size > 8 * 1024 * 1024) {
+        setError("File too large. Maximum size is 8MB.");
+        return;
+        }
+
+        if (!["image/png", "image/jpeg"].includes(file.type)) {
+        setError("Only PNG and JPEG images are allowed.");
+        return;
+        }
+
+        const objectUrl = URL.createObjectURL(file);
+
+        setPreview(objectUrl);
+        setSelectedFile(file);
+    };
+
+    const handleSubmit = async () => {
+        if (!selectedFile) return;
+
+        try {
+            setLoading(true);
+            await updateProfilePicture.mutateAsync(selectedFile);
+            setSelectedFile(null);
+        } catch (err: any) {
+            setError(err?.message || "Upload failed.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleCancel = () => {
+        setPreview(null);
+        setSelectedFile(null);
+        setError(null);
+    };
+
+    const hasPendingChange = !!selectedFile;
+
+
     return (
     <Form action="#" className={style.profileForm}>
         <Field orientation={"horizontal"}>
@@ -102,20 +154,58 @@ const AccountProfile: React.FC = () => {
             <Separator orientation="vertical" />
             <FieldGroup className={style.avatarContainer}>
                 <FieldLabel htmlFor="profile" className={style.avatar}>
-                    <img src="https://placehold.co/400" alt='PlaceHolder'/>
+                    <Image
+                        src={
+                        preview ??
+                        (data?.profile_picture_url
+                            ? `/cdn/${data.profile_picture_url}`
+                            : "/default/default_profile.jpg")
+                        }
+                        alt="Profile"
+                        fill
+                        priority
+                        sizes="400px"
+                    />
                 </FieldLabel>
-                <Button variant={"outline"} asChild>
+
+                {!hasPendingChange && (
+                    <Button variant="outline" asChild>
                     <FieldLabel htmlFor="profile">
-                        Upload
+                        Change
                     </FieldLabel>
-                </Button>
-                <FieldDescription>
-                    File size: maximum 8 MB
-                </FieldDescription>
-                <FieldDescription>
-                    File extension: .png, .jpeg
-                </FieldDescription>
-                <Input type="file" id="profile" name="profile" hidden/>
+                    </Button>
+                )}
+
+                {hasPendingChange && (
+                    <div className={style.actions}>
+                    <Button onClick={handleSubmit} disabled={loading}>
+                        {loading ? "Saving..." : "Save"}
+                    </Button>
+
+                    <Button
+                        variant="ghost"
+                        onClick={handleCancel}
+                        disabled={loading}
+                    >
+                        Cancel
+                    </Button>
+                    </div>
+                )}
+
+                {error && (
+                    <FieldDescription className={style.error}>
+                    {error}
+                    </FieldDescription>
+                )}
+
+                <Input
+                    type="file"
+                    id="profile"
+                    name="file"
+                    accept="image/png, image/jpeg"
+                    hidden
+                    onChange={handleFileChange}
+                />
             </FieldGroup>
         </Field>
         <Button variant={"oppose"} size={"sm"} style={{width:"calc(var(--spacing)*32)"}}>Save</Button>

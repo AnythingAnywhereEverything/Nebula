@@ -28,6 +28,7 @@
         width: calc(var(--spacing) * 9);
         overflow: hidden;
         flex-shrink: 0;
+        position: relative;
 
         img {
             object-fit: cover;

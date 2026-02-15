@@ -98,7 +98,8 @@ impl MediaService {
                 let mut height = image.get_height();
 
                 // Decompression bomb protection
-                if width * height > 20_000_000 {
+                let pixels = width as i64 * height as i64;
+                if pixels > 25_000_000 {
                     return Err(MediaServiceError::InvalidMediaType);
                 }
 
@@ -230,13 +231,20 @@ pub enum MediaServiceError {
 }
 
 impl From<MediaServiceError> for APIError {
-    fn from(media_error: MediaServiceError) -> Self {
-        let error = APIErrorEntry::new(&media_error.to_string())
+    fn from(err: MediaServiceError) -> Self {
+        let status = match err {
+            MediaServiceError::InvalidMediaType => StatusCode::UNSUPPORTED_MEDIA_TYPE,
+            MediaServiceError::SizeTooLarge => StatusCode::PAYLOAD_TOO_LARGE,
+            MediaServiceError::MediaMissing => StatusCode::BAD_REQUEST,
+            _ => StatusCode::INTERNAL_SERVER_ERROR,
+        };
+
+        let error = APIErrorEntry::new(&err.to_string())
             .code(APIErrorCode::SystemError)
             .kind(APIErrorKind::SystemError);
 
         Self {
-            status: StatusCode::INTERNAL_SERVER_ERROR.as_u16(),
+            status: status.as_u16(),
             errors: vec![error],
         }
     }

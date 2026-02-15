@@ -4,6 +4,7 @@ interface UserResponse {
   id: string;
   username: string;
   display_name: string;
+  profile_picture_url: string;
   email: string;
   active: boolean;
   created_at: string;
@@ -59,6 +60,34 @@ export const updateUsername = async (username: string) => {
       data?.errors?.[0]?.message || "Failed to update Username";
     throw new Error(errorMessage);
   }
+
+  return data;
+};
+
+export const updateProfilePicture = async (file: File) => {
+  const token = getToken();
+  const userId = getCacheUserId();
+  if (!token) throw new Error("No token found");
+
+  const formData = new FormData();
+  formData.append("file", file); // key must match backend field name
+
+  for (const [key, value] of formData.entries()) {
+    console.log(key, value);
+  }
+  const res = await fetchWithAuth(`/api/v2/users/${userId}/profile_image`, {
+    method: "PATCH",
+    body: formData,
+  });
+  const data = await res.json();
+
+  if (!res.ok) {
+    const errorMessage =
+      data?.errors?.[0]?.message || "Failed to update profile image";
+    throw new Error(errorMessage);
+  }
+
+  console.log(data)
 
   return data;
 };

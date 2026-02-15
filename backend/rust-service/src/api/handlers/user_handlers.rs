@@ -16,7 +16,6 @@ use axum::{
     Extension,
     Json,
     extract::{Multipart, Path, State},
-    http::StatusCode,
     response::IntoResponse, // response::IntoResponse,
 };
 use serde::Deserialize;
@@ -174,6 +173,11 @@ pub async fn add_or_update_profile_handler(
         ..Default::default()
     };
 
-    user_repo::update(&mut tx, user_image_path, id).await?;
-    Ok((StatusCode::OK, relative_path))
+    let updated_user = user_repo::update(&mut tx, user_image_path, id).await?;
+
+    tx.commit().await?;
+
+    tracing::trace!("Uploaded profile to : /cdn/{0}", relative_path );
+
+    Ok(Json(UserResponse::from(updated_user)))
 }

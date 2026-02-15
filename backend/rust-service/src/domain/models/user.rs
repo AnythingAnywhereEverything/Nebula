@@ -53,6 +53,7 @@ pub struct UserResponse {
     pub email: Option<String>,
     pub active: bool,
     pub created_at: Option<NaiveDateTime>,
+    pub profile_picture_url: Option<String>,
 }
 
 impl From<User> for UserResponse {
@@ -63,7 +64,8 @@ impl From<User> for UserResponse {
             display_name: Some(user.display_name),
             email: Some(user.email),
             active: user.is_active,
-            created_at: user.created_at
+            created_at: user.created_at,
+            profile_picture_url: user.profile_picture_url
         }
     }
 }
