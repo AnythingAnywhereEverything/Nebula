@@ -32,7 +32,10 @@ pub enum APIErrorCode {
     AuthenticationInvalidGoogleAccessToken,
     AuthenticationUnsupportedOAuthProvider,
     AuthenticationForbidden,
+
     UserNotFound,
+    UsernameAlreadyTaken,
+
     TransactionNotFound,
     TransferInsufficientFunds,
     TransferSourceAccountNotFound,
@@ -71,7 +74,8 @@ pub enum APIErrorKind {
     SystemError,
     UserError,
     MultipartError,
-    SnowflakeError
+    SnowflakeError,
+    UserProfileError
 }
 
 impl Display for APIErrorKind {

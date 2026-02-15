@@ -12,8 +12,8 @@ const AccountProfile: React.FC = () => {
 
     const { updateDisplayName, updateUsername} = useUserService();
 
-    const displayName = data?.display_name ?? "Guest";
-    const username = data?.username ?? "ERROR";
+    const displayName = data?.display_name ?? "Unknown";
+    const username = data?.username ?? "Unknown";
     
     return (
     <Form action="#" className={style.profileForm}>
@@ -47,11 +47,11 @@ const AccountProfile: React.FC = () => {
                         </FieldDescription>
                     </Field>
                     <EditFieldDialog
-                        title="Change Display Name"
-                        description="You can only change your display name once a week"
+                        title="Change Username"
+                        description="You can only change your username name once a month"
                         defaultValue={username}
                         maxLength={20}
-                        error={updateUsername.isError ? "This user is already exist" : undefined}
+                        error={updateUsername.error?.message}
                         onSave={updateUsername.mutateAsync}
                     />
                 </Field>

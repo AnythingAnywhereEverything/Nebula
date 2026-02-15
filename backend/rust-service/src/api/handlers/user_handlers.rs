@@ -5,7 +5,7 @@ use crate::{
         version::{self, APIVersion},
     },
     application::{
-        repository::user_repo,
+        repository::user_repo::{self, UserRepoError},
         security::auth::AuthError,
         service::media_service::{AllowedMediaType, ImageTransform, MediaOptions},
         state::SharedState,
@@ -43,17 +43,26 @@ pub async fn get_user_handler(
 // ------------------------------------
 
 // Helper!!! YIPPEE
-async fn update_user_field(
+async fn update_user_field<F>(
     version: String,
     id: i64,
     state: SharedState,
     update: UserUpdate,
-) -> Result<impl IntoResponse, APIError> {
+    map_error: F,
+) -> Result<impl IntoResponse, APIError>
+where
+    F: Fn(sqlx::Error) -> APIError,
+{
     let api_version: APIVersion = version::parse_version(&version)?;
     tracing::trace!("api version: {}", api_version);
 
     let mut tx = state.db_pool.begin().await?;
-    let updated_user = user_repo::update(&mut tx, update, id).await?;
+
+    let updated_user = match user_repo::update(&mut tx, update, id).await {
+        Ok(user) => user,
+        Err(e) => return Err(map_error(e)),
+    };
+
     tx.commit().await?;
 
     Ok(Json(UserResponse::from(updated_user)))
@@ -83,7 +92,13 @@ pub async fn change_display_name(
         return Err(APIError::from(AuthError::MissingAppropriatePermission));
     }
 
-    update_user_field(version, id, state, update).await
+    update_user_field(
+        version,
+        id,
+        state,
+        update,
+        |_| APIError::from(UserRepoError::UserInternalServerError)
+    ).await
 }
 
 pub async fn change_username(
@@ -92,16 +107,35 @@ pub async fn change_username(
     State(state): State<SharedState>,
     Json(payload): Json<ChangeUsernameRequest>,
 ) -> Result<impl IntoResponse, APIError> {
-    let update = UserUpdate {
-        username: Some(payload.username),
-        ..Default::default()
-    };
-
     if auth.user_id != id {
         return Err(APIError::from(AuthError::MissingAppropriatePermission));
     }
 
-    update_user_field(version, id, state, update).await
+    let username = payload.username.clone();
+
+    let update = UserUpdate {
+        username: Some(username.clone()),
+        ..Default::default()
+    };
+
+    update_user_field(
+        version,
+        id,
+        state,
+        update,
+        move |e| {
+            if let sqlx::Error::Database(db_err) = &e {
+                if db_err.code().as_deref() == Some("23505")
+                    && db_err.constraint() == Some("users_username_key")
+                {
+                    return APIError::from(
+                        UserRepoError::UsernameAlreadyTaken(username.clone()),
+                    );
+                }
+            }
+            APIError::from(UserRepoError::UserInternalServerError)
+        },
+    ).await
 }
 
 pub async fn add_or_update_profile_handler(

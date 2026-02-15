@@ -1,11 +1,12 @@
 use chrono::Utc;
+use hyper::StatusCode;
 use sqlx::{QueryBuilder, Transaction, query_as};
+use thiserror::Error;
 use uuid::Uuid;
 use sqlx::Postgres;
 
 use crate::{
-    application::{repository::RepositoryResult, state::SharedState},
-    domain::models::user::{NewUser, User, UserUpdate},
+    api::{APIError, APIErrorCode, APIErrorEntry, APIErrorKind}, application::{repository::RepositoryResult, state::SharedState}, domain::models::user::{NewUser, User, UserUpdate}
 };
 
 /// List users with pagination
@@ -148,4 +149,36 @@ pub async fn delete(id: Uuid, state: &SharedState) -> RepositoryResult<bool> {
         .await?;
 
     Ok(query_result.rows_affected() == 1)
+}
+
+#[derive(Debug, Error)]
+pub enum UserRepoError {
+    #[error("Internal server error.")]
+    UserInternalServerError,
+    #[error("Username {0} is already taken.")]
+    UsernameAlreadyTaken(String)
+}
+
+impl From<UserRepoError> for APIError {
+    fn from(user_repo_error: UserRepoError) -> Self {
+        let (status_code, code) = match user_repo_error {
+            UserRepoError::UsernameAlreadyTaken(_) => (
+                StatusCode::CONFLICT,
+                APIErrorCode::UsernameAlreadyTaken,
+            ),
+            _ => (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                APIErrorCode::SystemError
+            )
+        };
+
+        let error = APIErrorEntry::new(&user_repo_error.to_string())
+            .code(code)
+            .kind(APIErrorKind::UserProfileError);
+
+        Self {
+            status: status_code.as_u16(),
+            errors: vec![error],
+        }
+    }
 }
