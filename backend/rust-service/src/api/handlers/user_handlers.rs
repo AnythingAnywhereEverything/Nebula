@@ -150,7 +150,7 @@ pub async fn add_or_update_profile_handler(
         image_transform: Some(ImageTransform::Crop {
             max_width: 512,
             max_height: 512,
-            ratio: None,
+            ratio: Some((1,1)),
         }),
     };
 
