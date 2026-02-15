@@ -1,4 +1,5 @@
 import { useUser } from '@/hooks/useUser';
+import Avatar from '@components/ui/Nebula/avatar';
 import NebulaSettingListItem from '@components/ui/NebulaSettingListOption';
 import { Button, Field, FieldDescription, FieldLegend, Icon } from '@components/ui/NebulaUI';
 import style from '@styles/features/profile/usersettingoption.module.scss';
@@ -13,17 +14,7 @@ const UserSettingsOptions: React.FC = () => {
         <div className={style.userSettingsOptionsContainer}>
             <Button variant={"ghost"} asChild className={style.profile}>
                 <Link href={"/user/account/profile"}>
-                    <div className={style.profilePicture}>
-                        <Image src={(data?.profile_picture_url
-                            ? `/cdn/${data.profile_picture_url}`
-                            : "/default/default_profile.jpg")
-                        }
-                        alt="Profile"
-                        fill
-                        priority
-                        sizes="400px"
-                        />
-                    </div>
+                    <Avatar src={data?.profile_picture_url} fill className={style.profilePicture}/>
 
                     <Field className={style.profileName}>
                         <FieldLegend style={{textAlign: "start"}}>Username</FieldLegend>

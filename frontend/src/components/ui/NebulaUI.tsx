@@ -22,3 +22,5 @@ export * from "./Nebula/field"
 
 export * from "./Nebula/tooltip"
 export * from "./Nebula/combobox"
+
+export * from "./Nebula/avatar"

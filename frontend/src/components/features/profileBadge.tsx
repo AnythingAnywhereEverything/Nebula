@@ -1,5 +1,6 @@
 import { useAuthService } from "@/hooks/useAuthService";
 import { useUser } from "@/hooks/useUser";
+import Avatar from "@components/ui/Nebula/avatar";
 import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, Field, FieldDescription, FieldLabel, Label } from "@components/ui/NebulaUI";
 
 import s from "@styles/features/profilebadge.module.scss"
@@ -33,18 +34,7 @@ export function ProfileBadge() {
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <div className={s.container}>
-                    <div className={s.avatar}>
-                        <Image 
-                            src={(data?.profile_picture_url
-                                    ? `/cdn/${data.profile_picture_url}`
-                                    : "/default/default_profile.jpg")
-                                }
-                            alt="Profile"
-                            fill
-                            priority
-                            sizes="400px"
-                            />
-                    </div>
+                    <Avatar src={data?.profile_picture_url} fill className={s.avatar}/>
                     <div>
                         <FieldLabel>{isLoading ? "Loading..." : displayName}</FieldLabel>
                         <FieldDescription>{isLoading ? "..." : username}</FieldDescription>

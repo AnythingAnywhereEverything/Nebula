@@ -1,6 +1,7 @@
 import { useUser } from "@/hooks/useUser";
 import { useUserService } from "@/hooks/useUserService";
-import { Button, Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, Field, FieldDescription, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSeparator, Icon, Input, Separator } from "@components/ui/NebulaUI";
+import Avatar from "@components/ui/Nebula/avatar";
+import { Button, ButtonGroup, Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, Field, FieldDescription, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSeparator, Icon, Input, Separator } from "@components/ui/NebulaUI";
 import style from "@styles/layouts/usersetting.module.scss";
 import Form from "next/form";
 import Image from "next/image";
@@ -153,43 +154,36 @@ const AccountProfile: React.FC = () => {
             </FieldGroup>
             <Separator orientation="vertical" />
             <FieldGroup className={style.avatarContainer}>
-                <FieldLabel htmlFor="profile" className={style.avatar}>
-                    <Image
-                        src={
-                        preview ??
-                        (data?.profile_picture_url
-                            ? `/cdn/${data.profile_picture_url}`
-                            : "/default/default_profile.jpg")
-                        }
-                        alt="Profile"
-                        fill
-                        priority
-                        sizes="400px"
-                    />
+                <FieldLabel htmlFor="profile">
+                    <Avatar src={preview ?? data?.profile_picture_url} className={style.avatar} fill/>
                 </FieldLabel>
 
                 {!hasPendingChange && (
-                    <Button variant="outline" asChild>
-                    <FieldLabel htmlFor="profile">
-                        Change
-                    </FieldLabel>
+                    <Button variant="outline" size={"sm"} asChild>
+                        <FieldLabel htmlFor="profile">
+                            Change
+                        </FieldLabel>
                     </Button>
                 )}
 
                 {hasPendingChange && (
-                    <div className={style.actions}>
-                    <Button onClick={handleSubmit} disabled={loading}>
-                        {loading ? "Saving..." : "Save"}
-                    </Button>
+                    <ButtonGroup>
+                        <ButtonGroup>
+                            <Button onClick={handleSubmit} disabled={loading}>
+                                {loading ? "Saving..." : "Save"}
+                            </Button>
+                        </ButtonGroup>
 
-                    <Button
-                        variant="ghost"
-                        onClick={handleCancel}
-                        disabled={loading}
-                    >
-                        Cancel
-                    </Button>
-                    </div>
+                        <ButtonGroup>
+                            <Button
+                                variant="outline"
+                                onClick={handleCancel}
+                                disabled={loading}
+                            >
+                                Cancel
+                            </Button>
+                        </ButtonGroup>
+                    </ButtonGroup>
                 )}
 
                 {error && (
