@@ -1,14 +1,14 @@
-// src/api/middleware/auth.rs
-
-use axum::{
-    extract::State,
-    http::{Request},
-    middleware::Next,
-    response::Response,
-};
 use axum::body::Body;
+use axum::{extract::State, http::Request, middleware::Next, response::Response};
 
-use crate::{api::APIError, application::{repository::session_repo::validate_session, security::session, state::SharedState}};
+use crate::{
+    api::APIError,
+    application::{
+        service::{errors::SessionServiceError, session_service::SessionService},
+        state::SharedState,
+    },
+    domain::session::token::SessionToken,
+};
 
 #[derive(Clone, Debug)]
 pub struct AuthUser {
@@ -26,18 +26,10 @@ pub async fn validate_user(
         .and_then(|t| t.to_str().ok())
         .unwrap_or("");
 
-    let parsed = session::parse(token)?;
+    let parsed = SessionToken::parse(token).map_err(SessionServiceError::from)?;
 
-    let mut tx = state.db_pool.begin().await?;
-
-    validate_session(
-        &mut tx,
-        &state.redis,
-        parsed.user_id,
-        parsed.created_time,
-        60 * 60,
-    )
-    .await?;
+    SessionService::validate_session(&state, parsed.user_id, parsed.timestamp, 60 * 60, 60 * 60)
+        .await?;
 
     req.extensions_mut().insert(AuthUser {
         user_id: parsed.user_id,

@@ -9,3 +9,5 @@ pub mod middleware;
 
 pub use error::{APIError, APIErrorCode, APIErrorEntry, APIErrorKind};
 pub use version::APIVersion;
+
+pub mod errors;

@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::application::{
     config::Config,
-    security::{auth::AuthError, roles},
+    security::auth::AuthError,
 };
 
 // [JWT Claims]
@@ -60,7 +60,6 @@ impl From<u8> for JwtTokenType {
 }
 
 pub trait ClaimsMethods {
-    fn validate_role_admin(&self) -> Result<(), AuthError>;
     fn get_sub(&self) -> &str;
     fn get_exp(&self) -> usize;
     fn get_iat(&self) -> usize;
@@ -68,9 +67,6 @@ pub trait ClaimsMethods {
 }
 
 impl ClaimsMethods for AccessClaims {
-    fn validate_role_admin(&self) -> Result<(), AuthError> {
-        roles::is_role_admin("")
-    }
     fn get_sub(&self) -> &str {
         &self.sub
     }
@@ -88,9 +84,6 @@ impl ClaimsMethods for AccessClaims {
     }
 }
 impl ClaimsMethods for RefreshClaims {
-    fn validate_role_admin(&self) -> Result<(), AuthError> {
-        roles::is_role_admin("")
-    }
     fn get_sub(&self) -> &str {
         &self.sub
     }

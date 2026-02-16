@@ -56,7 +56,7 @@ pub async fn start(state: SharedState) {
         .route("/{version}/health", get(health_handler))
         .route("/{version}/version", get(version_handler))
         // Nesting authentication routes.
-        .nest("/{version}/auth", auth_routes::routes())
+        .nest("/{version}/auth", auth_routes::routes(Arc::clone(&state)))
         // Nesting user routes.
         .nest("/{version}/users", user_routes::routes(Arc::clone(&state)))        // Add a fallback service for handling routes to unknown paths.
         .fallback(error_404_handler)

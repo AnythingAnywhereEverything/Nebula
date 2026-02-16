@@ -1,12 +1,11 @@
 use chrono::Utc;
-use hyper::StatusCode;
-use sqlx::{QueryBuilder, Transaction, query_as};
-use thiserror::Error;
-use uuid::Uuid;
 use sqlx::Postgres;
+use sqlx::{QueryBuilder, Transaction, query_as};
+use uuid::Uuid;
 
 use crate::{
-    api::{APIError, APIErrorCode, APIErrorEntry, APIErrorKind}, application::{repository::RepositoryResult, state::SharedState}, domain::models::user::{NewUser, User, UserUpdate}
+    application::{repository::RepositoryResult, state::SharedState},
+    domain::models::user::{NewUser, User, UserUpdate},
 };
 
 /// List users with pagination
@@ -20,10 +19,7 @@ pub async fn list(state: &SharedState, limit: i64, offset: i64) -> RepositoryRes
 }
 
 /// Add a new user, return the created user with id
-pub async fn add(
-    tx: &mut Transaction<'_, Postgres>,
-    user: NewUser
-) -> RepositoryResult<User> {
+pub async fn add(tx: &mut Transaction<'_, Postgres>, user: NewUser) -> RepositoryResult<User> {
     tracing::trace!("user: {:#?}", user);
     let time_now = Utc::now().naive_utc();
 
@@ -53,17 +49,18 @@ pub async fn add(
     Ok(user)
 }
 
-pub async fn is_exist(username: &str, state: &SharedState) -> RepositoryResult<bool> {
+pub async fn is_exist(
+    tx: &mut Transaction<'_, Postgres>,
+    username: &str
+) -> RepositoryResult<bool> {
     let count: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM users WHERE username = $1")
         .bind(username)
-        .fetch_one(&state.db_pool)
+        .fetch_one(tx.as_mut())
         .await?;
     Ok(count > 0)
 }
 
-pub async fn get_by_id(
-    tx: &mut Transaction<'_, Postgres>,
-    id: i64) -> RepositoryResult<User> {
+pub async fn get_by_id(tx: &mut Transaction<'_, Postgres>, id: i64) -> RepositoryResult<User> {
     let user = sqlx::query_as::<_, User>("SELECT * FROM users WHERE id = $1")
         .bind(id)
         .fetch_one(tx.as_mut())
@@ -72,16 +69,17 @@ pub async fn get_by_id(
 }
 
 /// Get user by username or email, return error if not found
-/// Will be replaced 
+/// Will be replaced
 pub async fn get_by_username_or_email(
     tx: &mut Transaction<'_, Postgres>,
-    username_or_email: &str
+    username_or_email: &str,
 ) -> RepositoryResult<User> {
-    let user: User = sqlx::query_as::<_, User>("SELECT * FROM users WHERE username = $1 OR email = $2")
-        .bind(username_or_email)
-        .bind(username_or_email)
-        .fetch_one(tx.as_mut())
-        .await?;
+    let user: User =
+        sqlx::query_as::<_, User>("SELECT * FROM users WHERE username = $1 OR email = $2")
+            .bind(username_or_email)
+            .bind(username_or_email)
+            .fetch_one(tx.as_mut())
+            .await?;
     Ok(user)
 }
 
@@ -93,9 +91,7 @@ pub async fn update(
     tracing::trace!("user: {:#?}", user);
     let time_now = Utc::now().naive_utc();
 
-    let mut qb = QueryBuilder::<Postgres>::new(
-        "UPDATE users SET "
-    );
+    let mut qb = QueryBuilder::<Postgres>::new("UPDATE users SET ");
 
     let mut first = true;
 
@@ -134,10 +130,7 @@ pub async fn update(
 
     qb.push(" RETURNING *");
 
-    let user = qb
-        .build_query_as::<User>()
-        .fetch_one(tx.as_mut())
-        .await?;
+    let user = qb.build_query_as::<User>().fetch_one(tx.as_mut()).await?;
 
     Ok(user)
 }
@@ -149,36 +142,4 @@ pub async fn delete(id: Uuid, state: &SharedState) -> RepositoryResult<bool> {
         .await?;
 
     Ok(query_result.rows_affected() == 1)
-}
-
-#[derive(Debug, Error)]
-pub enum UserRepoError {
-    #[error("Internal server error.")]
-    UserInternalServerError,
-    #[error("Username {0} is already taken.")]
-    UsernameAlreadyTaken(String)
-}
-
-impl From<UserRepoError> for APIError {
-    fn from(user_repo_error: UserRepoError) -> Self {
-        let (status_code, code) = match user_repo_error {
-            UserRepoError::UsernameAlreadyTaken(_) => (
-                StatusCode::CONFLICT,
-                APIErrorCode::UsernameAlreadyTaken,
-            ),
-            _ => (
-                StatusCode::INTERNAL_SERVER_ERROR,
-                APIErrorCode::SystemError
-            )
-        };
-
-        let error = APIErrorEntry::new(&user_repo_error.to_string())
-            .code(code)
-            .kind(APIErrorKind::UserProfileError);
-
-        Self {
-            status: status_code.as_u16(),
-            errors: vec![error],
-        }
-    }
 }

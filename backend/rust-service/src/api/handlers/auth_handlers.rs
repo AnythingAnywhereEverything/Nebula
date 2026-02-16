@@ -1,18 +1,20 @@
-
-use axum::{Json, extract::{State}, response::IntoResponse};
-use axum_client_ip::ClientIp;
+use axum::{Extension, Json, extract::State, response::IntoResponse};
 use hyper::HeaderMap;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
-use sqlx::types::Uuid;
 
 use crate::{
-    api::{APIError, version::APIVersion},
+    api::{APIError, middleware::auth_mw::AuthHeader, version::APIVersion},
     application::{
-        repository::{session_repo::validate_session, user_repo}, security::{
-            argon, auth::{self, AuthError, AuthToken}, oauth::google::fetch_google_userinfo, session
-        }, state::SharedState
-    }, domain::models::oauth_account::GoogleUserInfo,
+        repository::user_repo,
+        security::{
+            auth::AuthError,
+            oauth::google::fetch_google_userinfo,
+        },
+        service::{auth_service::AuthService, errors::SessionServiceError, session_service::SessionService},
+        state::SharedState,
+    },
+    domain::{models::oauth_account::GoogleUserInfo, session::token::SessionToken},
 };
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -28,17 +30,11 @@ pub struct LoginUser {
     password: String,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct RevokeUser {
-    user_id: Uuid,
-}
-
 #[derive(Debug, Deserialize)]
 pub struct OAuthRegisterRequest {
     provider: String,
     access_token: String,
 }
-
 
 #[derive(Debug, Serialize)]
 pub struct OAuthRegisterResponse {
@@ -49,9 +45,8 @@ pub struct OAuthRegisterResponse {
 #[tracing::instrument(level = tracing::Level::TRACE, name = "oauth", skip_all, fields(username=payload.provider))]
 pub async fn oauth_login_handler(
     api_version: APIVersion,
+    Extension(auth): Extension<AuthHeader>,
     State(state): State<SharedState>,
-    ClientIp(ip): ClientIp,
-    headers: HeaderMap,
     Json(payload): Json<OAuthRegisterRequest>,
 ) -> Result<impl IntoResponse, APIError> {
     tracing::trace!("api version: {}", api_version);
@@ -68,40 +63,38 @@ pub async fn oauth_login_handler(
         return Err(AuthError::EmailNotVerified)?;
     }
 
-    let full_name = userinfo
-        .name
-        .unwrap_or_else(|| format!(
+    let full_name = userinfo.name.unwrap_or_else(|| {
+        format!(
             "{} {}",
             userinfo.given_name.unwrap_or_default(),
             userinfo.family_name.unwrap_or_default()
-        ));
+        )
+    });
 
-    let user_id: i64 = auth::login_oauth(
+    let user_id: i64 =
+        AuthService::login_oauth(
+            &state, 
+            "google", 
+            &userinfo.sub, 
+            &userinfo.email, 
+            &full_name
+        ).await?;
+
+    let tokens: SessionToken = SessionToken::new(user_id)
+        .await
+        .map_err(SessionServiceError::from)?;
+
+    SessionService::create_session(
         &state,
-        "google",
-        &userinfo.sub,
-        &userinfo.email,
-        &full_name,
-    ).await?;
-
-    let tokens: AuthToken = session::new(user_id).await?;
-
-    let user_agent = headers
-        .get("user-agent")
-        .and_then(|ua| ua.to_str().ok())
-        .unwrap_or("unknown");
-
-    auth::save_session_token(
         user_id,
-        tokens.clone(),
-        &state,
-        user_agent,
-        &ip.to_string(),
+        &auth.user_agent,
+        &auth.ip_address.to_string(),
+        60 * 60
     ).await?;
 
     let response = OAuthRegisterResponse {
         user_id: user_id.to_string(),
-        token: tokens.package,
+        token: tokens.full_token,
     };
 
     Ok(Json(response))
@@ -124,11 +117,17 @@ pub async fn validate_handler(
         return Err(AuthError::InvalidToken)?;
     }
 
-    //validate only
-    let token_parsed = session::parse(token)?;
-    let mut tx = state.db_pool.begin().await?;
+    let token_parsed = SessionToken::parse(token).map_err(SessionServiceError::from)?;
+    SessionService::validate_session(
+        &state,
+        token_parsed.user_id,
+        token_parsed.timestamp,
+        60 * 60,
+        60 * 60,
+    )
+    .await?;
 
-    validate_session(&mut tx, &state.redis, token_parsed.user_id, token_parsed.created_time, 60 * 60).await?;
+    let mut tx = state.db_pool.begin().await?;
 
     let user = user_repo::get_by_id(&mut tx, token_parsed.user_id).await?;
 
@@ -139,52 +138,23 @@ pub async fn validate_handler(
     Ok(response)
 }
 
-
-
 #[tracing::instrument(level = tracing::Level::TRACE, name = "login", skip_all, fields(username=login.username_or_email))]
 pub async fn login_handler(
     api_version: APIVersion,
+    Extension(auth): Extension<AuthHeader>,
     State(state): State<SharedState>,
-    ClientIp(ip): ClientIp,
-    headers: HeaderMap,
     Json(login): Json<LoginUser>,
 ) -> Result<impl IntoResponse, APIError> {
     tracing::trace!("api version: {}", api_version);
-    let mut tx = state.db_pool.begin().await?;
-
-    if let Ok(user) = user_repo::get_by_username_or_email(&mut tx, &login.username_or_email).await {
-        let password_valid = argon::verify(login.password.as_bytes(), &user.password_hash.unwrap_or_default())
-            .expect("Password verification failed");
-
-        if user.is_active && password_valid {
-            tracing::trace!("access granted, user: {}", user.id);
-            let tokens: AuthToken = session::new(user.id).await?;
-            let response = Json(json!(
-                {
-                    "user_id": user.id.to_string(),
-                    "token" : tokens.package,
-                }
-            ));
-
-            let user_agent = headers
-                .get("user-agent")
-                .and_then(|ua| ua.to_str().ok())
-                .unwrap_or("unknown");
-
-            auth::save_session_token(
-                user.id,
-                tokens,
-                &state,
-                user_agent,
-                &ip.to_string(),
-            )
-            .await?;
-
-            return Ok(response);
-        }
-    }
-    tracing::error!("access denied: {:#?}", login);
-    Err(AuthError::WrongCredentials)?
+    
+    let response = AuthService::login(
+        &state, 
+        &login.username_or_email, 
+        &login.password, 
+        auth
+    ).await?;
+    
+    Ok(Json(json!(response)))
 }
 
 #[tracing::instrument(level = tracing::Level::TRACE, name = "register", skip_all)]
@@ -195,12 +165,12 @@ pub async fn register_handler(
 ) -> Result<impl IntoResponse, APIError> {
     tracing::trace!("api version: {}", api_version);
 
-    auth::register(
+    AuthService::register(
+        &state,
         register.username.clone(), // default display name as username
         register.username,
         register.password,
         register.email,
-        state,
     ).await?;
 
     let response = Json(json!({
@@ -220,6 +190,6 @@ pub async fn logout_handler(
         .get("token")
         .and_then(|token| token.to_str().ok())
         .unwrap_or("");
-    auth::logout(token, state).await?;
+    AuthService::logout(&state, token).await?;
     Ok(())
 }

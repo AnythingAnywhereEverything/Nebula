@@ -36,6 +36,8 @@ pub enum APIErrorCode {
     UserNotFound,
     UsernameAlreadyTaken,
 
+    InvalidUsername,
+
     TransactionNotFound,
     TransferInsufficientFunds,
     TransferSourceAccountNotFound,

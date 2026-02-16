@@ -1,9 +1,6 @@
 use std::sync::Mutex;
 use std::time::{SystemTime, UNIX_EPOCH};
-use hyper::StatusCode;
-use thiserror::Error;
-
-use crate::api::{APIError, APIErrorCode, APIErrorEntry, APIErrorKind};
+use crate::application::service::errors::SnowflakeServiceError;
 
 const CUSTOM_EPOCH: u64 = 1767225600000;
 
@@ -17,15 +14,6 @@ const MAX_SEQUENCE: u64 = (1 << SEQUENCE_BITS) - 1;
 const KIND_SHIFT: u64 = SEQUENCE_BITS;
 const WORKER_ID_SHIFT: u64 = SEQUENCE_BITS + KIND_BITS;
 const TIMESTAMP_SHIFT: u64 = SEQUENCE_BITS + KIND_BITS + WORKER_ID_BITS;
-
-#[derive(Debug, Error)]
-pub enum SnowflakeError {
-    #[error("Worker ID ({0}) exceeds maximum allowed value ({1}).")]
-    InvalidWorkerId(u64, u64),
-
-    #[error("Clock moved backward.")]
-    ClockMoveBackward,
-}
 
 struct State {
     last_timestamp: u64,
@@ -46,9 +34,9 @@ pub struct SnowflakeGenerator {
 }
 
 impl SnowflakeGenerator {
-    pub fn new(worker_id: u64, kind: SnowflakeKind) -> Result<Self, SnowflakeError> {
+    pub fn new(worker_id: u64, kind: SnowflakeKind) -> Result<Self, SnowflakeServiceError> {
         if worker_id > MAX_WORKER_ID {
-            return Err(SnowflakeError::InvalidWorkerId(worker_id, MAX_WORKER_ID));
+            return Err(SnowflakeServiceError::InvalidWorkerId(worker_id, MAX_WORKER_ID));
         }
 
         Ok(Self {
@@ -61,12 +49,12 @@ impl SnowflakeGenerator {
         })
     }
 
-    pub fn generate_id(&self) -> Result<i64, SnowflakeError> {
+    pub fn generate_id(&self) -> Result<i64, SnowflakeServiceError> {
         let mut state = self.state.lock().unwrap();
         let mut current_timestamp = current_time_millis()?;
 
         if current_timestamp < state.last_timestamp {
-            return Err(SnowflakeError::ClockMoveBackward);
+            return Err(SnowflakeServiceError::ClockMoveBackward);
         }
 
         if current_timestamp == state.last_timestamp {
@@ -93,34 +81,10 @@ impl SnowflakeGenerator {
     }
 }
 
-fn current_time_millis() -> Result<u64, SnowflakeError> {
+fn current_time_millis() -> Result<u64, SnowflakeServiceError> {
     let now = SystemTime::now()
         .duration_since(UNIX_EPOCH)
-        .map_err(|_| SnowflakeError::ClockMoveBackward)?
+        .map_err(|_| SnowflakeServiceError::ClockMoveBackward)?
         .as_millis() as u64;
     Ok(now - CUSTOM_EPOCH)
-}
-
-impl From<SnowflakeError> for APIError {
-    fn from(snowflake_error: SnowflakeError) -> Self {
-        let (status_code, code) = match snowflake_error {
-            SnowflakeError::InvalidWorkerId(_, _) => (
-                StatusCode::INTERNAL_SERVER_ERROR,
-                APIErrorCode::SnowflakeError,
-            ),
-            SnowflakeError::ClockMoveBackward => (
-                StatusCode::INTERNAL_SERVER_ERROR,
-                APIErrorCode::SnowflakeError,
-            )
-        };
-
-        let error = APIErrorEntry::new(&snowflake_error.to_string())
-            .code(code)
-            .kind(APIErrorKind::SnowflakeError);
-
-        Self {
-            status: status_code.as_u16(),
-            errors: vec![error],
-        }
-    }
 }

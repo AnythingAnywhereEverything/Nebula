@@ -5,12 +5,18 @@ use crate::{
         version::{self, APIVersion},
     },
     application::{
-        repository::user_repo::{self, UserRepoError},
+        repository::{errors::UserRepoError, user_repo},
         security::auth::AuthError,
-        service::media_service::{AllowedMediaType, ImageTransform, MediaOptions},
+        service::{
+            errors::UserServiceError,
+            media_service::{AllowedMediaType, ImageTransform, MediaOptions},
+        },
         state::SharedState,
     },
-    domain::models::user::{UserResponse, UserUpdate},
+    domain::{
+        models::user::{UserResponse, UserUpdate},
+        user::username::Username,
+    },
 };
 use axum::{
     Extension,
@@ -91,13 +97,10 @@ pub async fn change_display_name(
         return Err(APIError::from(AuthError::MissingAppropriatePermission));
     }
 
-    update_user_field(
-        version,
-        id,
-        state,
-        update,
-        |_| APIError::from(UserRepoError::UserInternalServerError)
-    ).await
+    update_user_field(version, id, state, update, |_| {
+        UserServiceError::from(UserRepoError::UserInternalServerError).into()
+    })
+    .await
 }
 
 pub async fn change_username(
@@ -110,31 +113,27 @@ pub async fn change_username(
         return Err(APIError::from(AuthError::MissingAppropriatePermission));
     }
 
-    let username = payload.username.clone();
+    let username = Username::new(&payload.username).map_err(UserServiceError::from)?;
 
     let update = UserUpdate {
-        username: Some(username.clone()),
+        username: Some(username.as_str().to_string()),
         ..Default::default()
     };
 
-    update_user_field(
-        version,
-        id,
-        state,
-        update,
-        move |e| {
-            if let sqlx::Error::Database(db_err) = &e {
-                if db_err.code().as_deref() == Some("23505")
-                    && db_err.constraint() == Some("users_username_key")
-                {
-                    return APIError::from(
-                        UserRepoError::UsernameAlreadyTaken(username.clone()),
-                    );
-                }
+    update_user_field(version, id, state, update, move |e| {
+        if let sqlx::Error::Database(db_err) = &e {
+            if db_err.code().as_deref() == Some("23505")
+                && db_err.constraint() == Some("users_username_key")
+            {
+                return UserServiceError::from(UserRepoError::UsernameAlreadyTaken(
+                    username.as_str().to_string(),
+                ))
+                .into();
             }
-            APIError::from(UserRepoError::UserInternalServerError)
-        },
-    ).await
+        }
+        UserServiceError::from(UserRepoError::UserInternalServerError).into()
+    })
+    .await
 }
 
 pub async fn add_or_update_profile_handler(
@@ -143,6 +142,8 @@ pub async fn add_or_update_profile_handler(
     State(state): State<SharedState>,
     multipart: Multipart,
 ) -> Result<impl IntoResponse, APIError> {
+    //extension -> auth
+
     let options = MediaOptions {
         folder: "profile".into(),
         max_size: 8 * 1024 * 1024, // 8MB, for profile picture
@@ -150,7 +151,7 @@ pub async fn add_or_update_profile_handler(
         image_transform: Some(ImageTransform::Crop {
             max_width: 512,
             max_height: 512,
-            ratio: Some((1,1)),
+            ratio: Some((1, 1)),
         }),
     };
 
@@ -177,7 +178,7 @@ pub async fn add_or_update_profile_handler(
 
     tx.commit().await?;
 
-    tracing::trace!("Uploaded profile to : /cdn/{0}", relative_path );
+    tracing::trace!("Uploaded profile to : /cdn/{0}", relative_path);
 
     Ok(Json(UserResponse::from(updated_user)))
 }
