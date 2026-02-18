@@ -14,7 +14,7 @@ use crate::{
         service::{auth_service::AuthService, errors::SessionServiceError, session_service::SessionService},
         state::SharedState,
     },
-    domain::{models::oauth_account::GoogleUserInfo, session::token::SessionToken},
+    domain::{models::oauth_account::GoogleUserInfo, session::session_token::SessionToken},
 };
 
 #[derive(Debug, Serialize, Deserialize)]

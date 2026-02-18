@@ -7,7 +7,7 @@ use crate::{
         service::{errors::SessionServiceError, session_service::SessionService},
         state::SharedState,
     },
-    domain::session::token::SessionToken,
+    domain::session::session_token::SessionToken,
 };
 
 #[derive(Clone, Debug)]

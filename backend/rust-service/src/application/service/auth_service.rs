@@ -5,7 +5,7 @@ use crate::{
         repository::{errors::UserRepoError, oauth_repo, user_repo},
         security::argon,
         service::{errors::AuthServiceError, session_service::SessionService}, state::AppState,
-    }, domain::{models::user::NewUser, session::token::SessionToken, user::username::Username}, infrastructure::database::Database
+    }, domain::{models::user::NewUser, session::session_token::SessionToken, user::username::Username}, infrastructure::database::Database
 };
 
 #[derive(Serialize)]
@@ -154,5 +154,7 @@ impl AuthService {
         }
 
         Err(AuthServiceError::InvalidCredentials)?
-    } 
+    }
+
+    //TODO: implement Email Token
 }

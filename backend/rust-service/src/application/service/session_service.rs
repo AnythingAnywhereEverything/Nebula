@@ -6,7 +6,7 @@ use crate::{
         repository::session_repo, security::argon, service::errors::SessionServiceError,
         state::AppState,
     },
-    domain::session::token::SessionToken,
+    domain::session::session_token::SessionToken,
 };
 
 pub struct SessionService {}

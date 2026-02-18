@@ -2,7 +2,7 @@ use chrono::{NaiveDateTime, TimeZone, Utc};
 use sqlx::{Postgres, Transaction};
 
 use crate::{
-    application::repository::errors::SessionRepoError, domain::session::token::SessionToken,
+    application::repository::errors::SessionRepoError, domain::session::session_token::SessionToken,
 };
 
 pub async fn save_session(
