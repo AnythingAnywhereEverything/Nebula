@@ -492,7 +492,7 @@ const TestPage: NextPageWithLayout = () => {
             hasButton = {hasButton}
             timestamp={new Date('2025-01-01T10:00:00Z')}
             />
-        <Calendar/>
+         <Calendar onSelect={(date) => console.log(date)} mode="single" className="rounded-lg border" />
         </div>
     </div>
   );

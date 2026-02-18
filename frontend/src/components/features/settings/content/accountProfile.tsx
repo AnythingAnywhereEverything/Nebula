@@ -1,20 +1,48 @@
 import { useUser } from "@/hooks/useUser";
 import { useUserService } from "@/hooks/useUserService";
 import Avatar from "@components/ui/Nebula/avatar";
-import { Button, ButtonGroup, Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, Field, FieldDescription, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSeparator, Icon, Input, Separator } from "@components/ui/NebulaUI";
+import { Button, ButtonGroup, Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, Field, FieldDescription, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSeparator, FieldSet, Icon, Input, Separator } from "@components/ui/NebulaUI";
 import style from "@styles/layouts/usersetting.module.scss";
 import Form from "next/form";
 import Image from "next/image";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+
+
+function censorEmail(email: string) {
+  if (!email || typeof email !== 'string' || !email.includes('@')) {
+    return "Invalid Email";
+  }
+
+  const parts = email.split('@');
+  const name = parts[0];
+  const domain = parts[1];
+
+  if (name.length <= 2) {
+    return `${name}@${domain}`;
+  }
+
+  const visibleChars = name.slice(-2);
+  const censoredPart = '*'.repeat(name.length - 2);
+
+  return `${censoredPart}${visibleChars}@${domain}`;
+}
 
 const AccountProfile: React.FC = () => {
 
-    const { data, isLoading } = useUser();
+    const { data } = useUser();
 
     const [preview, setPreview] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [loading, setLoading] = useState(false);
+
+    const [email, setEmail] = useState<string>("");
+    const [isEmailRevealed, setIsEmailRevealed] = useState<boolean>(false);
+
+    useEffect(() => {
+        setEmail(censorEmail(data?.email ?? "Unknown"))
+        setIsEmailRevealed(false)
+    }, [data])
 
     const { updateDisplayName, updateUsername, updateProfilePicture } = useUserService();
 
@@ -30,13 +58,13 @@ const AccountProfile: React.FC = () => {
         setError(null);
 
         if (file.size > 8 * 1024 * 1024) {
-        setError("File too large. Maximum size is 8MB.");
-        return;
+            setError("File too large. Maximum size is 8MB.");
+            return;
         }
 
         if (!["image/png", "image/jpeg"].includes(file.type)) {
-        setError("Only PNG and JPEG images are allowed.");
-        return;
+            setError("Only PNG and JPEG images are allowed.");
+            return;
         }
 
         const objectUrl = URL.createObjectURL(file);
@@ -69,7 +97,7 @@ const AccountProfile: React.FC = () => {
 
 
     return (
-    <Form action="#" className={style.profileForm}>
+    <FieldSet className={style.profileForm}>
         <Field orientation={"horizontal"}>
             <FieldGroup className={style.profileContainer}>
                 <Field orientation={"horizontal"} >
@@ -115,8 +143,17 @@ const AccountProfile: React.FC = () => {
                             Email:
                         </FieldLegend>
                         <FieldDescription>
-                            XY***************@gmail.com
+                            {isEmailRevealed ? email : censorEmail(email)}
                         </FieldDescription>
+                        <Button variant={"ghost"} size={"xs"} onClick={
+                            () => {
+                                if (!isEmailRevealed){setEmail(data?.email ?? "Unknown");}
+                                else{setEmail(censorEmail(data?.email ?? "Unknown"));}
+                                setIsEmailRevealed(!isEmailRevealed)
+                            }
+                        }>
+                            Reveal
+                        </Button>
                     </Field>
                     <Button variant={"ghost"} size={"sm"}>
                         <Icon value="" />
@@ -203,7 +240,7 @@ const AccountProfile: React.FC = () => {
             </FieldGroup>
         </Field>
         <Button variant={"oppose"} size={"sm"} style={{width:"calc(var(--spacing)*32)"}}>Save</Button>
-    </Form>
+    </FieldSet>
     );
 };
 
