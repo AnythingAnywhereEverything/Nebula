@@ -1,8 +1,7 @@
-use base64::{Engine, engine::general_purpose};
 use chrono::Utc;
 use rand::{Rng, distr::Alphanumeric};
 
-use crate::domain::session::error::SessionError;
+use crate::domain::session::{error::SessionError, token::Token};
 
 #[derive(Debug)]
 pub struct SessionToken {
@@ -14,7 +13,7 @@ pub struct SessionToken {
 
 impl SessionToken {
     #[tracing::instrument(level = tracing::Level::TRACE, name = "Session token generation", skip_all, fields(user_id=user_id))]
-    pub async fn new(user_id: i64) -> Result<SessionToken, SessionError> {
+    pub fn new(user_id: i64) -> Result<SessionToken, SessionError> {
         let now = Utc::now();
         let timestamp_millis = now.timestamp_millis();
     
@@ -26,18 +25,20 @@ impl SessionToken {
             .take(random_string_length)
             .map(char::from)
             .collect();
+        
+        let encoded_user_id = Token::new(user_id.to_string());
+        let encoded_timestamp_part = Token::new(&timestamp_part);
+        let encoded_random_string = Token::new(&random_string);
     
-        if random_string.is_empty() {
+        if encoded_random_string.as_str().is_empty() {
             return Err(SessionError::SessionCreationError);
         }
-    
-        let encoded_user_id = general_purpose::STANDARD_NO_PAD.encode(user_id.to_string());
-        let encoded_timestamp_part = general_purpose::STANDARD_NO_PAD.encode(&timestamp_part);
-        let encoded_random_string = general_purpose::STANDARD_NO_PAD.encode(&random_string);
-    
+        
         let full_discord_like_token = format!(
             "{}.{}.{}",
-            encoded_user_id, encoded_timestamp_part, encoded_random_string
+            encoded_user_id.into_inner(),
+            encoded_timestamp_part.into_inner(),
+            encoded_random_string.into_inner()
         );
     
         Ok(SessionToken {
@@ -54,26 +55,11 @@ impl SessionToken {
             return Err(SessionError::InvalidSession);
         }
     
-        let decoded_user_id = String::from_utf8(
-            general_purpose::STANDARD_NO_PAD
-                .decode(parts[0])
-                .map_err(|_| SessionError::InvalidSession)?,
-        )
-        .map_err(|_| SessionError::InvalidSession)?;
+        let decoded_user_id = Token::decode(parts[0])?;
     
-        let decoded_timestamp = String::from_utf8(
-            general_purpose::STANDARD_NO_PAD
-                .decode(parts[1])
-                .map_err(|_| SessionError::InvalidSession)?,
-        )
-        .map_err(|_| SessionError::InvalidSession)?;
+        let decoded_timestamp = Token::decode(parts[1])?;
     
-        let decoded_random_string = String::from_utf8(
-            general_purpose::STANDARD_NO_PAD
-                .decode(parts[2])
-                .map_err(|_| SessionError::InvalidSession)?,
-        )
-        .map_err(|_| SessionError::InvalidSession)?;
+        let decoded_random_string = Token::decode(parts[2])?;
     
         Ok(SessionToken {
             user_id: decoded_user_id.parse::<i64>().map_err(|_| SessionError::InvalidSession)?,

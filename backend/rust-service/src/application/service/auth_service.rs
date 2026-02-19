@@ -133,7 +133,7 @@ impl AuthService {
             if user.is_active && is_password_match {
                 tracing::trace!("access granted, user: {}", user.username);
 
-                let token: SessionToken = SessionToken::new(user.id).await?;
+                let token: SessionToken = SessionToken::new(user.id)?;
 
                 // create session
                 SessionService::create_session(

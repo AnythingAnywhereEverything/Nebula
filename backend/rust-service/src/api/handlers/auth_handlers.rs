@@ -81,7 +81,6 @@ pub async fn oauth_login_handler(
         ).await?;
 
     let tokens: SessionToken = SessionToken::new(user_id)
-        .await
         .map_err(SessionServiceError::from)?;
 
     SessionService::create_session(
