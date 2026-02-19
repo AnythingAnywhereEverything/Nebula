@@ -23,7 +23,7 @@ impl SessionService {
         ip_address: &str,
         expiration: u64,
     ) -> Result<SessionToken, SessionServiceError> {
-        let token: SessionToken = SessionToken::new(user_id).await?;
+        let token: SessionToken = SessionToken::new(user_id)?;
 
         let session_hashed = Self::hash_session_token(&token.full_token).await?;
         let created_at = Utc.timestamp_opt(token.timestamp, 0).unwrap().naive_utc();
