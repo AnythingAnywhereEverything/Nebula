@@ -11,7 +11,7 @@ use crate::{
             auth::AuthError,
             oauth::google::fetch_google_userinfo,
         },
-        service::{auth_service::AuthService, errors::SessionServiceError, session_service::SessionService},
+        service::{auth_service::AuthService, email_service::EmailService, errors::SessionServiceError, session_service::SessionService},
         state::SharedState,
     },
     domain::{models::oauth_account::GoogleUserInfo, session::session_token::SessionToken},
@@ -40,6 +40,11 @@ pub struct OAuthRegisterRequest {
 pub struct OAuthRegisterResponse {
     pub user_id: String,
     pub token: String,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct EmailVerify {
+    pub email_token: String
 }
 
 #[tracing::instrument(level = tracing::Level::TRACE, name = "oauth", skip_all, fields(username=payload.provider))]
@@ -190,5 +195,50 @@ pub async fn logout_handler(
         .and_then(|token| token.to_str().ok())
         .unwrap_or("");
     AuthService::logout(&state, token).await?;
+    Ok(())
+}
+
+pub async fn email_verification_request_handler(
+    api_version: APIVersion,
+    State(state): State<SharedState>,
+    headers: HeaderMap,
+ ) -> Result<impl IntoResponse, APIError> {
+    tracing::trace!("api version: {}", api_version);
+
+    let token = headers
+        .get("token")
+        .and_then(|t| t.to_str().ok())
+        .unwrap_or("");
+
+    let parsed = SessionToken::parse(token).map_err(SessionServiceError::from)?;
+
+    SessionService::validate_session(&state, parsed.user_id, parsed.timestamp, 60 * 60, 60 * 60)
+        .await?;
+
+    //TODO: make this into env
+    let expiration = 15 * 60; // 15 mins 
+
+    let token = EmailService::request_validate_token(
+        &state, 
+        parsed.user_id, 
+        expiration).await?;
+
+    // ! DO NOT DO THIS IN PROD, WE DONT HAVE THIRD PARTY API
+    Ok(Json(json!({"email_token": token})))
+}
+
+pub async fn email_verify_handler(
+    api_version: APIVersion,
+    State(state): State<SharedState>,
+    Json(ev): Json<EmailVerify>,
+ ) -> Result<impl IntoResponse, APIError> {
+    tracing::trace!("api version: {}", api_version);
+
+    let e_token = ev.email_token;
+
+    tracing::trace!("summited token: {}", &e_token);
+
+    EmailService::validate_token(&state, &e_token).await?;
+
     Ok(())
 }
