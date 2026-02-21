@@ -51,7 +51,7 @@ const VerifyEmailPage: NextPageWithLayout = () => {
                             <>
                                 <h2>Email Verified!</h2>
                                 <FieldDescription>Your account is now active. You can now close this window.</FieldDescription>
-                                <Button variant={"outline"}>
+                                <Button variant={"outline"} asChild>
                                     <Link href={"/"}>
                                         Go to home page
                                     </Link>
@@ -63,7 +63,7 @@ const VerifyEmailPage: NextPageWithLayout = () => {
                             <>
                                 <h2>Verification Failed</h2>
                                 <FieldError>The link is invalid, expired, or has already been used.</FieldError>
-                                <Button variant={"outline"}>
+                                <Button variant={"outline"} asChild>
                                     <Link href={"/"}>
                                         Go to home page
                                     </Link>
