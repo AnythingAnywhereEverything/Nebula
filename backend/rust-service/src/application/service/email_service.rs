@@ -1,6 +1,6 @@
 use redis::AsyncCommands;
 
-use crate::{application::{service::errors::EmailServiceError, state::AppState}, domain::user::email::Email};
+use crate::{application::{service::errors::EmailServiceError, state::AppState}, domain::user::email::{Email, EmailToken}};
 
 
 
@@ -32,10 +32,8 @@ impl EmailService {
 
     pub async fn validate_token(
         state: &AppState,
-        email_token: &str,
+        e_token: &EmailToken,
     ) -> Result<(), EmailServiceError> {
-        let e_token = Email::perse(&email_token)?;
-
         let mut conn = state.redis.get().await?;
         
         let key = format!(

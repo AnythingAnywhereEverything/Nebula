@@ -2,10 +2,12 @@ import { requestMailVerification } from "@/api/user";
 import { useUser } from "@/hooks/useUser";
 import { useUserService } from "@/hooks/useUserService";
 import Avatar from "@components/ui/Nebula/avatar";
+import { Badge } from "@components/ui/Nebula/badge";
 import { Button, ButtonGroup, Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, Field, FieldDescription, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSeparator, FieldSet, Icon, Input, Separator } from "@components/ui/NebulaUI";
 import style from "@styles/layouts/usersetting.module.scss";
 import Form from "next/form";
 import Image from "next/image";
+import Link from "next/link";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 
@@ -143,9 +145,18 @@ const AccountProfile: React.FC = () => {
                         <FieldLegend variant="label" style={{margin:0}}>
                             Email:
                         </FieldLegend>
-                        <FieldDescription>
-                            {isEmailRevealed ? email : censorEmail(email)}
+                        <FieldDescription style={{margin: 0}}>
+                            <Field orientation={"horizontal"}>
+                                {isEmailRevealed ? email : censorEmail(email)}
+                            </Field>
                         </FieldDescription>
+                        <Badge color={data?.email_verified ? "#a3ffa3" : "#ff8a8a"} size={"xs"}>
+                        {
+                            data?.email_verified ?
+                            "Verified":
+                            "Unverified"
+                        }
+                        </Badge>
                         <Button variant={"ghost"} size={"xs"} onClick={
                             () => {
                                 if (!isEmailRevealed){setEmail(data?.email ?? "Unknown");}
@@ -156,14 +167,17 @@ const AccountProfile: React.FC = () => {
                             Reveal
                         </Button>
                     </Field>
-                    <Button variant={"ghost"} size={"sm"} onClick={
-                        () => {
-                            requestMailVerification()
-                        }
-                    }>
-                        <Icon value="" />
-                        Edit
-                    </Button>
+                    {
+
+                        !data?.email_verified ?
+                        <TokenRequestDialog title={"Request"} onOpen={requestMailVerification}>
+
+                        </TokenRequestDialog> :
+                        <Button variant={"ghost"} size={"sm"}>
+                            <Icon value="" />
+                            Edit
+                        </Button>
+                    }
                 </Field>
                 <Field orientation={"horizontal"}>
                     <Field orientation={"horizontal"}>
@@ -249,82 +263,173 @@ const AccountProfile: React.FC = () => {
     );
 };
 
+interface TokenRequestDialogProp {
+    title: string;
+    description?: string;
+    error?: string;
+    onOpen: () => Promise<string>;
+}
+
+const TokenRequestDialog: React.FC<TokenRequestDialogProp> = ({
+    title,
+    description,
+    error,
+    onOpen
+}) => {
+    const [open, setOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [sent, setSent] = useState(false);
+    
+    // ! Development only
+    const [token, setToken] = useState("");
+
+
+    const handleOpenChange = async (next: boolean) => {
+        setOpen(next);
+
+        if (!next) return;
+
+        try {
+            setLoading(true);
+            setSent(false);
+
+            const token = await onOpen();
+            setToken(token)
+
+            setSent(true);
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <Dialog open={open} onOpenChange={handleOpenChange}>
+            <DialogTrigger asChild>
+                <Button variant="ghost" size="sm">
+                    <Icon value="" />
+                    Verify
+                </Button>
+            </DialogTrigger>
+
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>{title}</DialogTitle>
+                    {description && (
+                        <DialogDescription>
+                            {description}
+                        </DialogDescription>
+                    )}
+                </DialogHeader>
+
+                {loading && (
+                    <DialogDescription>
+                        Sending verification request...
+                    </DialogDescription>
+                )}
+
+                {!loading && sent && (
+                    <DialogDescription>
+                        Check your email for the verification link
+                    </DialogDescription>
+                )}
+
+                {error && (
+                    <FieldError>{error}</FieldError>
+                )}
+                <Field>
+                    <Button onClick={() => onOpen()}>
+                        Resend Verification Link
+                    </Button>
+                    <Button variant={"oppose"} asChild>
+                        <Link href={`/auth/email_verify?e_token=${token}`}>
+                            [Demo] Simulate Verification Link
+                        </Link>
+                    </Button>
+                </Field>
+            </DialogContent>
+        </Dialog>
+    );
+};
+
+
 interface EditFieldDialogProps {
-  title: string;
-  description?: string;
-  defaultValue?: string;
-  maxLength?: number;
-  error?: string | undefined;
-  onSave: (value: string) => Promise<void>;
+    title: string;
+    description?: string;
+    defaultValue?: string;
+    maxLength?: number;
+    error?: string | undefined;
+    onSave: (value: string) => Promise<void>;
 }
 
 //NOTE: Move this if reuse
 const EditFieldDialog: React.FC<EditFieldDialogProps> = ({
-  title,
-  description,
-  defaultValue = "",
-  maxLength,
-  onSave,
-  error
+    title,
+    description,
+    defaultValue = "",
+    maxLength,
+    onSave,
+    error
 }) => {
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(defaultValue);
-  const [loading, setLoading] = useState(false);
+    const [open, setOpen] = useState(false);
+    const [value, setValue] = useState(defaultValue);
+    const [loading, setLoading] = useState(false);
 
-  const handleSave = async () => {
-    try {
-      setLoading(true);
-      await onSave(value);
-      setOpen(false);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    const handleSave = async () => {
+        try {
+            setLoading(true);
+        await onSave(value);
+            setOpen(false);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-  return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="ghost" size="sm">
-          <Icon value="" />
-          Edit
-        </Button>
-      </DialogTrigger>
+    return (
+        <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+                <Button variant="ghost" size="sm">
+                    <Icon value="" />
+                    Edit
+                </Button>
+            </DialogTrigger>
 
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          {description && (
-            <DialogDescription>{description}</DialogDescription>
-          )}
-        </DialogHeader>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>{title}</DialogTitle>
+                    {description && (
+                        <DialogDescription>{description}</DialogDescription>
+                    )}
+                </DialogHeader>
 
-        <Field>
-          <Input
-            value={value}
-            maxLength={maxLength}
-            onChange={(e) => setValue(e.target.value)}
-            aria-invalid = {error ? true : false}
-          />
-          {maxLength && (
-            <DialogDescription>
-              {value.length}/{maxLength}
-            </DialogDescription>
-          )}
-          {error && (
-            <FieldError>{error}</FieldError>
-          )}
-        </Field>
+                <Field>
+                    <Input
+                        value={value}
+                        maxLength={maxLength}
+                        onChange={(e) => setValue(e.target.value)}
+                        aria-invalid = {error ? true : false}
+                    />
+                    {maxLength && (
+                        <DialogDescription>
+                        {value.length}/{maxLength}
+                        </DialogDescription>
+                    )}
+                    {error && (
+                        <FieldError>{error}</FieldError>
+                    )}
+                </Field>
 
-        <DialogFooter>
-          <Button size="sm" onClick={handleSave} disabled={loading}>
-            {loading ? "Saving..." : "Save"}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
+                <DialogFooter>
+                    <Button size="sm" onClick={handleSave} disabled={loading}>
+                        {loading ? "Saving..." : "Save"}
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+    );
 };
 
 export default AccountProfile;

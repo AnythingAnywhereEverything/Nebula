@@ -6,6 +6,7 @@ interface UserResponse {
   display_name: string;
   profile_picture_url: string;
   email: string;
+  email_verified:boolean;
   active: boolean;
   created_at: string;
 }
@@ -18,6 +19,9 @@ export async function getUser(): Promise<UserResponse> {
   const res = await fetchWithAuth(`/api/v2/users/${userId}`); // proxied to backend via nginx
   if (!res.ok) throw new Error("Failed to get user data");
   const data = await res.json();
+
+  console.log(data)
+
   return data;
 }
 
@@ -112,6 +116,8 @@ export const requestMailVerification = async () => {
   }
 
   console.log(data)
+
+  return data?.email_token
 }
 
 export const verifyEmail = async (email_token:string) => {

@@ -7,8 +7,10 @@ pub struct User {
     pub id: i64,
     pub display_name: String,
     pub username: String,
+
     pub email: String,
-    
+    pub email_verified: bool,
+
     pub profile_picture_url: Option<String>,
     pub phone_number: Option<String>,
     pub password_hash: Option<String>,
@@ -35,6 +37,7 @@ pub struct UserUpdate {
     pub display_name: Option<String>,
     pub username: Option<String>,
     pub email: Option<String>,
+    pub email_verified: Option<bool>,
     pub phone_number: Option<String>,
     pub password_hash: Option<String>,
 
@@ -51,6 +54,7 @@ pub struct UserResponse {
     pub username: String,
     pub display_name: Option<String>,
     pub email: Option<String>,
+    pub email_verified: bool,
     pub active: bool,
     pub created_at: Option<NaiveDateTime>,
     pub profile_picture_url: Option<String>,
@@ -63,6 +67,7 @@ impl From<User> for UserResponse {
             username: user.username,
             display_name: Some(user.display_name),
             email: Some(user.email),
+            email_verified: user.email_verified,
             active: user.is_active,
             created_at: user.created_at,
             profile_picture_url: user.profile_picture_url

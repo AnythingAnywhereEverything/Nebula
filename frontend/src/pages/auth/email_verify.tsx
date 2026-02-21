@@ -6,6 +6,7 @@ import { Button, FieldDescription, FieldError, FieldSet } from '@components/ui/N
 import { verifyEmail } from '@/api/user';
 import { NextPageWithLayout } from '@/types/global';
 import AuthLayout from '@components/layouts/main-layouts/authLayout';
+import Link from 'next/link';
 
 const VerifyEmailPage: NextPageWithLayout = () => {
     const searchParams = useSearchParams();
@@ -51,7 +52,9 @@ const VerifyEmailPage: NextPageWithLayout = () => {
                                 <h2>Email Verified!</h2>
                                 <FieldDescription>Your account is now active. You can now close this window.</FieldDescription>
                                 <Button variant={"outline"}>
-                                    Go to home page
+                                    <Link href={"/"}>
+                                        Go to home page
+                                    </Link>
                                 </Button>
                             </>
                         )}
@@ -61,7 +64,9 @@ const VerifyEmailPage: NextPageWithLayout = () => {
                                 <h2>Verification Failed</h2>
                                 <FieldError>The link is invalid, expired, or has already been used.</FieldError>
                                 <Button variant={"outline"}>
-                                    Go to home page
+                                    <Link href={"/"}>
+                                        Go to home page
+                                    </Link>
                                 </Button>
                             </>
                         )}

@@ -7,14 +7,20 @@ use crate::{
     api::{APIError, middleware::auth_mw::AuthHeader, version::APIVersion},
     application::{
         repository::user_repo,
-        security::{
-            auth::AuthError,
-            oauth::google::fetch_google_userinfo,
+        security::{auth::AuthError, oauth::google::fetch_google_userinfo},
+        service::{
+            auth_service::AuthService,
+            email_service::EmailService,
+            errors::{EmailServiceError, SessionServiceError},
+            session_service::SessionService,
         },
-        service::{auth_service::AuthService, email_service::EmailService, errors::SessionServiceError, session_service::SessionService},
         state::SharedState,
     },
-    domain::{models::oauth_account::GoogleUserInfo, session::session_token::SessionToken},
+    domain::{
+        models::{oauth_account::GoogleUserInfo, user::UserUpdate},
+        session::session_token::SessionToken,
+        user::email::Email,
+    },
 };
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -44,7 +50,7 @@ pub struct OAuthRegisterResponse {
 
 #[derive(Debug, Deserialize)]
 pub struct EmailVerify {
-    pub email_token: String
+    pub email_token: String,
 }
 
 #[tracing::instrument(level = tracing::Level::TRACE, name = "oauth", skip_all, fields(username=payload.provider))]
@@ -77,24 +83,19 @@ pub async fn oauth_login_handler(
     });
 
     let user_id: i64 =
-        AuthService::login_oauth(
-            &state, 
-            "google", 
-            &userinfo.sub, 
-            &userinfo.email, 
-            &full_name
-        ).await?;
+        AuthService::login_oauth(&state, "google", &userinfo.sub, &userinfo.email, &full_name)
+            .await?;
 
-    let tokens: SessionToken = SessionToken::new(user_id)
-        .map_err(SessionServiceError::from)?;
+    let tokens: SessionToken = SessionToken::new(user_id).map_err(SessionServiceError::from)?;
 
     SessionService::create_session(
         &state,
         user_id,
         &auth.user_agent,
         &auth.ip_address.to_string(),
-        60 * 60
-    ).await?;
+        60 * 60,
+    )
+    .await?;
 
     let response = OAuthRegisterResponse {
         user_id: user_id.to_string(),
@@ -150,14 +151,10 @@ pub async fn login_handler(
     Json(login): Json<LoginUser>,
 ) -> Result<impl IntoResponse, APIError> {
     tracing::trace!("api version: {}", api_version);
-    
-    let response = AuthService::login(
-        &state, 
-        &login.username_or_email, 
-        &login.password, 
-        auth
-    ).await?;
-    
+
+    let response =
+        AuthService::login(&state, &login.username_or_email, &login.password, auth).await?;
+
     Ok(Json(json!(response)))
 }
 
@@ -175,7 +172,8 @@ pub async fn register_handler(
         register.username,
         register.password,
         register.email,
-    ).await?;
+    )
+    .await?;
 
     let response = Json(json!({
         "message": "User registered successfully"
@@ -202,7 +200,7 @@ pub async fn email_verification_request_handler(
     api_version: APIVersion,
     State(state): State<SharedState>,
     headers: HeaderMap,
- ) -> Result<impl IntoResponse, APIError> {
+) -> Result<impl IntoResponse, APIError> {
     tracing::trace!("api version: {}", api_version);
 
     let token = headers
@@ -218,10 +216,7 @@ pub async fn email_verification_request_handler(
     //TODO: make this into env
     let expiration = 15 * 60; // 15 mins 
 
-    let token = EmailService::request_validate_token(
-        &state, 
-        parsed.user_id, 
-        expiration).await?;
+    let token = EmailService::request_validate_token(&state, parsed.user_id, expiration).await?;
 
     // ! DO NOT DO THIS IN PROD, WE DONT HAVE THIRD PARTY API
     Ok(Json(json!({"email_token": token})))
@@ -231,14 +226,28 @@ pub async fn email_verify_handler(
     api_version: APIVersion,
     State(state): State<SharedState>,
     Json(ev): Json<EmailVerify>,
- ) -> Result<impl IntoResponse, APIError> {
+) -> Result<impl IntoResponse, APIError> {
     tracing::trace!("api version: {}", api_version);
 
-    let e_token = ev.email_token;
+    let email_token = ev.email_token;
 
-    tracing::trace!("summited token: {}", &e_token);
+    tracing::trace!("summited token: {}", &email_token);
+
+    let e_token = Email::perse(&email_token).map_err(EmailServiceError::from)?;
 
     EmailService::validate_token(&state, &e_token).await?;
+
+    // Update verify
+    let update = UserUpdate {
+        email_verified: Some(true),
+        ..Default::default()
+    };
+
+    let mut tx = state.db_pool.begin().await?;
+
+    user_repo::update(&mut tx, update, e_token.user_id).await?;
+
+    tx.commit().await?;
 
     Ok(())
 }
