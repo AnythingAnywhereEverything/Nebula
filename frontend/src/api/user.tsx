@@ -91,3 +91,38 @@ export const updateProfilePicture = async (file: File) => {
 
   return data;
 };
+
+export const requestMailVerification = async () => {
+  const token = getToken();
+  if (!token) throw new Error("No token found");
+
+  const res = await fetchWithAuth(`/api/v2/auth/email`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    const errorMessage =
+      data?.errors?.[0]?.message || "Failed to request";
+    throw new Error(errorMessage);
+  }
+
+  console.log(data)
+}
+
+export const verifyEmail = async (email_token:string) => {
+  const res = await fetch(`/api/v2/auth/email`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email_token }),
+  })
+
+  return res.ok;
+}
+

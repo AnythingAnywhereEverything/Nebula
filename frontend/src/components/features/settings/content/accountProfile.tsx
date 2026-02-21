@@ -1,3 +1,4 @@
+import { requestMailVerification } from "@/api/user";
 import { useUser } from "@/hooks/useUser";
 import { useUserService } from "@/hooks/useUserService";
 import Avatar from "@components/ui/Nebula/avatar";
@@ -155,7 +156,11 @@ const AccountProfile: React.FC = () => {
                             Reveal
                         </Button>
                     </Field>
-                    <Button variant={"ghost"} size={"sm"}>
+                    <Button variant={"ghost"} size={"sm"} onClick={
+                        () => {
+                            requestMailVerification()
+                        }
+                    }>
                         <Icon value="" />
                         Edit
                     </Button>
