@@ -5,6 +5,7 @@
     margin: 0 auto;
     gap: calc(var(--spacing) * 4);
     padding: 2rem 1rem;
+    overflow: hidden;
 
     .sellerToolbar,.sellerPanel{
         width: 100%;
@@ -15,6 +16,7 @@
         background-color: color-mix(in oklab, var(--muted) 30%, transparent);
         border: 1px solid var(--border);
         border-radius: var(--radius-medium);
+        overflow: hidden;
 
         [data-theme=dark] & {
             background-color: color-mix(in oklab, var(--input) 30%, transparent);
