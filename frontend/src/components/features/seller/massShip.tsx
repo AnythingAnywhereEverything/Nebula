@@ -1,9 +1,20 @@
-import { SellerHeader, SellerLayout, SellerContent, SellerToolbarRow } from "@components/layouts/sellerPageLayout"
-import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, Field, FieldDescription, FieldGroup, FieldLabel } from "@components/ui/NebulaUI"
+import { SellerHeader, SellerLayout, SellerContent, SellerToolbarRow, SellerPanel } from "@components/layouts/sellerPageLayout"
+import { Button, Checkbox, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, Field, FieldDescription, FieldGroup, FieldLabel, FieldSeparator, Input, Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@components/ui/NebulaUI"
 import Form from "next/form"
-import React from "react"
+import style from "@styles/features/filterbar.module.scss"
+import s from "@styles/layouts/seller/myorder.module.scss"
+import React, { useState } from "react"
+import { MassShipRight, MassShipShowMore } from "./order/massShipComponent"
+import { useSearchParams } from "next/navigation"
+import MassOrderRow from "./order/massOrderRow"
+
 
 export default function MassShipPage (){
+    const [showMore, setShowMore] = useState(false);
+    const searchParams = useSearchParams();
+    const currentParams = new URLSearchParams(searchParams.toString());
+    const sortType = searchParams.get('sort') || '';
+
     return(
             <SellerLayout>
                 <SellerHeader>
@@ -22,122 +33,92 @@ export default function MassShipPage (){
                                 <div>
                                     <span>Shipping Deadline :</span>
                                 </div>
-                                <Button>All</Button>
-                                <Button>Overdue (0)</Button>
-                                <Button>Within 24h (0)</Button>
-                                <Button>Beyond 24h (0)</Button>
+                                <Button size={'sm'}>All</Button>
+                                <Button size={'sm'}>Overdue (0)</Button>
+                                <Button size={'sm'}>Within 24h (0)</Button>
+                                <Button size={'sm'}>Beyond 24h (0)</Button>
                             </SellerToolbarRow>
         
                             <SellerToolbarRow>
                                 <div>
                                     <span>Shipping Channel :</span>
                                 </div>
-                                <Button>NBX (0)</Button>
-                                <Button>NBX Express Instant (0)</Button>
-                                <Button>J&T (0)</Button>
-                                <Button>FBN (0)</Button>
+                                <Button size={'sm'}>NBX (0)</Button>
+                                <Button size={'sm'}>NBX Express Instant (0)</Button>
+                                <Button size={'sm'}>J&T (0)</Button>
+                                <Button size={'sm'}>FBN (0)</Button>
                             </SellerToolbarRow>
 
+                            <MassShipShowMore isOpen={showMore}/>
                             <SellerToolbarRow>
-                                <FieldGroup>
-                                    <span>Print status : </span>
-                                    
-                                    <DropdownMenu>
-                                        <DropdownMenuTrigger asChild>
-                                            <Button>All</Button>
-                                        </DropdownMenuTrigger>
-                                    </DropdownMenu>
-
-                                </FieldGroup>
+                                <Field orientation={'horizontal'} style={{justifyContent: 'flex-end'}}>
+                                    <Button
+                                    variant={'ghost'}
+                                    size={'sm'}
+                                    onClick={() => setShowMore(prev => !prev)}>
+                                        {showMore ? "Hide filters" : "Show more filter"}
+                                    </Button>
+                                </Field>
                             </SellerToolbarRow>
                         </SellerContent>
-                    </Field>
 
-                    <FieldGroup style={{width: "400px"}}>
-                        <SellerContent>
-                            <h4>Mass Ship</h4>
+                        <SellerPanel>
+                            <Field orientation={'horizontal'}>
+                                <Field>
+                                    <h4>2 Parcels</h4>
+                                </Field>
+
+                                <Select 
+                                value={sortType === 'price_asc' || sortType === 'price_desc' ? sortType : ""}
+                                onValueChange={(val) => {
+                                    currentParams.set('sort', val);
+                                }}
+                                >
+                                    <SelectTrigger
+                                        className={(sortType === 'ASC-SKU' || sortType === 'DSC-SKU') ? style.active : ""}
+                                        style={{color: "var(--secondary-foreground)",
+                                         backgroundColor: "var(--secondary)",
+                                         borderRadius: "var(--radius-small)",
+                                         minWidth: "calc(var(--spacing)*48)"
+                                         }}>
+                                        <SelectValue placeholder="Sort by SKU (ASC)"/>
+                                    </SelectTrigger>
+
+                                    <SelectContent position="popper">
+                                        <SelectGroup>
+                                            <SelectLabel>Price</SelectLabel>
+                                            <SelectItem value='ASC-SKU'>Sort by SKU (ASC)</SelectItem>
+                                            <SelectItem value='DSC-SKU'>Sort by SKU (DSC)</SelectItem>
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                            </Field>
+                                <FieldSeparator/>
                             
-                            0 parcel selected
-
-                            <SellerContent>
-                                <FieldGroup>
-                                    <Field>
-                                        <Field orientation={'horizontal'}>
-                                            <FieldLabel>
-                                                Pickup Address:
-                                            </FieldLabel>   
-                                            <Button size={'xs'} variant={'ghost'}>Change</Button>
-                                        </Field>
-                                        <p>Place 62316231472</p>
-                                        <FieldDescription>
-                                            742 Evergreen Terrace California United States 94107 
-                                        </FieldDescription>
-                                    </Field>
-                                </FieldGroup>
-
-                                <FieldGroup>
-                                    <Form action={''}>
-                                        <FieldLabel>
-                                            Pickup Date:
-                                        </FieldLabel>
-
-                                        <Field>
-                                            <DropdownMenu>
-                                                <DropdownMenuTrigger asChild>
-                                                    <Button size={'sm'}>
-                                                        Select
-                                                    </Button>
-                                                </DropdownMenuTrigger>
-
-                                                <DropdownMenuContent>
-                                                    <DropdownMenuItem>
-                                                        12 Feb
-                                                    </DropdownMenuItem>
-                                                </DropdownMenuContent>
-                                            </DropdownMenu>
-                                        </Field>
-                                    </Form>
-
-                                    <Field >
-                                        <FieldDescription style={{
-                                        padding: "calc(var(--spacing)* 1.2)",
-                                        border: "1px solid var(--tertiary)",
-                                        borderRadius: "var(--radius)",
-                                        backgroundColor: "color-mix(in oklab, var(--tertiary) 30%, transparent)"
-                                        }}>
-                                            Courier will refer to your avaliable pickup time to arrange pickup service
-                                        </FieldDescription>
-                                    </Field>
-
-                                    <Button>Mass Arrange Pickup</Button>
-                                </FieldGroup>
-                            </SellerContent>
-
-                            <SellerContent>
-                                 <FieldGroup>
-                                    <Field>
-                                        <Field orientation={'horizontal'}>
-                                            <FieldLabel>
-                                                Nearest branch:
-                                            </FieldLabel>   
-                                            <Button size={'xs'} variant={'ghost'}>Change</Button>
-                                        </Field>
-                                        <p>Blahaj (200m)</p>
-                                        <FieldDescription>
-                                            742 Evergreen Terrace California United States 94107 
-                                        </FieldDescription>
-                                    </Field>
-                                    <Button size={'xs'} variant={'oppose'}>
-                                        Check All Braches on Map
-                                    </Button>
-
-                                    <Button>Mass Arrange Dropoff</Button>
-                                </FieldGroup>
-                            </SellerContent>
-
-                        </SellerContent>
-                    </FieldGroup>
+                                <Field>
+                                     <table className={s.productTable}>
+                                        <thead>
+                                          <tr className={s.tableHead}>
+                                            <th style={{width: '5%'}}><Checkbox/></th>
+                                            <th >Product(s)</th>
+                                            <th >Buyer</th>
+                                            <th >Channel</th>
+                                            <th >Confirmed Time</th>
+                                            <th >Order Status</th>
+                                            <th >Print Status</th>
+                                          </tr>
+                                        </thead>
+                                        
+                                        <MassOrderRow/>
+                                        <MassOrderRow/>
+                                    </table>
+                                </Field>
+                            </SellerPanel>
+                        </Field>
+                    <MassShipRight/>
                 </Field>
+
+                
 
             </SellerLayout>
     )
