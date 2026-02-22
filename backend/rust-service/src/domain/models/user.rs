@@ -12,12 +12,10 @@ pub struct User {
     pub email_verified: bool,
 
     pub profile_picture_url: Option<String>,
-    pub phone_number: Option<String>,
     pub password_hash: Option<String>,
     
     pub is_active: bool,
 
-    pub date_of_birth: Option<NaiveDateTime>,
     pub last_login: Option<NaiveDateTime>,
     pub created_at: Option<NaiveDateTime>,
     pub updated_at: Option<NaiveDateTime>,
@@ -38,14 +36,12 @@ pub struct UserUpdate {
     pub username: Option<String>,
     pub email: Option<String>,
     pub email_verified: Option<bool>,
-    pub phone_number: Option<String>,
     pub password_hash: Option<String>,
 
     pub profile_picture_url: Option<String>,
 
     pub is_active: Option<bool>,
 
-    pub date_of_birth: Option<NaiveDateTime>,
 }
 
 #[derive(Debug, FromRow, Serialize, Deserialize, PartialEq, Eq, Clone)]

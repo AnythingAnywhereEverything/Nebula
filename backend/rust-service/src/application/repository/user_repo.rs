@@ -113,11 +113,9 @@ pub async fn update(
     push_field!(user.username, "username");
     push_field!(user.email, "email");
     push_field!(user.email_verified, "email_verified");
-    push_field!(user.phone_number, "phone_number");
     push_field!(user.password_hash, "password_hash");
     push_field!(user.profile_picture_url, "profile_picture_url");
     push_field!(user.is_active, "is_active");
-    push_field!(user.date_of_birth, "date_of_birth");
 
     // Always update updated_at
     if !first {
