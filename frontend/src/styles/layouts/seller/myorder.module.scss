@@ -43,3 +43,10 @@
         object-fit: cover;
       }
     }
+.massShipStatus,.confirmTime{
+  gap: calc(var(--spacing)*2);
+  font-size: 12px;
+  p{
+    margin-bottom: var(--spacing);
+  }
+}
