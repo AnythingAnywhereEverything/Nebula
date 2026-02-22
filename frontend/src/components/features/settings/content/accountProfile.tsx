@@ -173,39 +173,8 @@ const AccountProfile: React.FC = () => {
                         <TokenRequestDialog title={"Request"} onOpen={requestMailVerification}>
 
                         </TokenRequestDialog> :
-                        <Button variant={"ghost"} size={"sm"}>
-                            <Icon value="" />
-                            Edit
-                        </Button>
+                        <></>
                     }
-                </Field>
-                <Field orientation={"horizontal"}>
-                    <Field orientation={"horizontal"}>
-                        <FieldLegend variant="label" style={{margin:0}}>
-                            Phone Number:
-                        </FieldLegend>
-                        <FieldDescription>
-                            ************89
-                        </FieldDescription>
-                    </Field>
-                    <Button variant={"ghost"} size={"sm"}>
-                        <Icon value="" />
-                        Edit
-                    </Button>
-                </Field>
-                <Field orientation={"horizontal"}>
-                    <Field orientation={"horizontal"}>
-                        <FieldLegend variant="label" style={{margin:0}}>
-                            Date of Birth:
-                        </FieldLegend>
-                        <FieldDescription>
-                            12/12/1990
-                        </FieldDescription>
-                    </Field>
-                    <Button variant={"ghost"} size={"sm"}>
-                        <Icon value="" />
-                        Edit
-                    </Button>
                 </Field>
             </FieldGroup>
             <Separator orientation="vertical" />
@@ -258,7 +227,6 @@ const AccountProfile: React.FC = () => {
                 />
             </FieldGroup>
         </Field>
-        <Button variant={"oppose"} size={"sm"} style={{width:"calc(var(--spacing)*32)"}}>Save</Button>
     </FieldSet>
     );
 };
