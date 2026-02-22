@@ -5,7 +5,7 @@ use crate::{
         repository::{errors::UserRepoError, oauth_repo, user_repo},
         security::argon,
         service::{errors::AuthServiceError, session_service::SessionService}, state::AppState,
-    }, domain::{models::user::NewUser, session::session_token::SessionToken, user::username::Username}, infrastructure::database::Database
+    }, domain::{models::user::{NewUser, UserUpdate}, session::session_token::SessionToken, user::username::Username}, infrastructure::database::Database
 };
 
 #[derive(Serialize)]
@@ -71,6 +71,19 @@ impl AuthService {
         let oauth_id = state.snowflake_generator.generate_id()?;
 
         oauth_repo::insert(&mut tx, oauth_id, user_id, provider, provider_user_id).await?;
+
+        tx.commit().await?;
+
+        // pre-update verified
+
+        let update = UserUpdate {
+            email_verified: Some(true),
+            ..Default::default()
+        };
+
+        let mut tx = state.db_pool.begin().await?;
+
+        user_repo::update(&mut tx, update, user_id).await?;
 
         tx.commit().await?;
 

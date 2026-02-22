@@ -3,7 +3,6 @@ import Avatar from '@components/ui/Nebula/avatar';
 import NebulaSettingListItem from '@components/ui/NebulaSettingListOption';
 import { Button, Field, FieldDescription, FieldLegend, Icon } from '@components/ui/NebulaUI';
 import style from '@styles/features/profile/usersettingoption.module.scss';
-import Image from 'next/image';
 import Link from 'next/link';
 
 const UserSettingsOptions: React.FC = () => {
@@ -17,7 +16,7 @@ const UserSettingsOptions: React.FC = () => {
                     <Avatar src={data?.profile_picture_url} fill className={style.profilePicture}/>
 
                     <Field className={style.profileName}>
-                        <FieldLegend style={{textAlign: "start"}}>Username</FieldLegend>
+                        <FieldLegend style={{textAlign: "start"}}>{data?.display_name}</FieldLegend>
                         <FieldDescription><Icon> </Icon>Edit Profile</FieldDescription>
                     </Field>
                 </Link>
