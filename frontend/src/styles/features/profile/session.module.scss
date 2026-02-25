@@ -1,0 +1,5 @@
+.sessionContainer{
+    padding: calc(var(--spacing)* 2.5);
+    background-color: color-mix(in oklab, var(--muted) 50%, transparent);
+    border-radius: var(--radius);
+}

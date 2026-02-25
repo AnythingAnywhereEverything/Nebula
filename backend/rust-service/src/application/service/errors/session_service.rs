@@ -10,6 +10,9 @@ pub enum SessionServiceError {
     #[error("Missing credential.")]
     MissingCredential,
 
+    #[error("Invalid Session ID.")]
+    InvalidSessionID,
+
     #[error("Unable to hash the session.")]
     UnableToHashSession,
 

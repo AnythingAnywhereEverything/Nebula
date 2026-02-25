@@ -1,12 +1,12 @@
 use axum::{
-    Router, middleware, routing::{get, patch}
+    Router, middleware, routing::{delete, get, patch}
 };
 
 use crate::{
-    api::{handlers::user_handlers::{
+    api::{handlers::{session_handler::{delete_session_user_handler, get_all_session_handler}, user_handlers::{
         add_or_update_profile_handler, change_display_name, change_username, get_user_handler
-    }, middleware::user_mw},
-    application::state::{SharedState},
+    }}, middleware::user_mw},
+    application::{ state::SharedState},
 };
 
 pub fn routes(state: SharedState) -> Router<SharedState> {
@@ -16,6 +16,9 @@ pub fn routes(state: SharedState) -> Router<SharedState> {
         .route("/{id}/profile_image", patch(add_or_update_profile_handler))
         .route("/{id}/display_name", patch(change_display_name))
         .route("/{id}/username", patch(change_username))
+        .route("/{id}/session", get(get_all_session_handler))
+        .route("/{id}/session", delete(delete_session_user_handler))
+        
         .layer(middleware::from_fn_with_state(
             state.clone(),
             user_mw::validate_user

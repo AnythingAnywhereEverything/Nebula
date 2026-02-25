@@ -12,4 +12,6 @@ pub enum SessionRepoError {
     FailedToCount,
     #[error("Username {0} is already taken.")]
     UsernameAlreadyTaken(String),
+    #[error("Failed to get session")]
+    FailedToGetSession,
 }
