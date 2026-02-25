@@ -11,6 +11,12 @@ interface UserResponse {
   created_at: string;
 }
 
+export interface SessionResponse{
+  id: string,
+  created_at: string,
+  agent: string,
+} 
+
 export async function getUser(): Promise<UserResponse> {
   const token = getToken();
   const userId = getCacheUserId();
@@ -132,3 +138,26 @@ export const verifyEmail = async (email_token:string) => {
   return res.ok;
 }
 
+export const getSessions = async (): Promise<SessionResponse[]> =>{
+  const user_id = getCacheUserId();
+  const res = await fetchWithAuth( `/api/v2/users/${user_id}/session`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+  const data = await res.json()
+  return data;
+}
+
+export const deleteSelectSession = async (session_id : string) => {
+  const user_id = getCacheUserId();
+  const res = await fetchWithAuth(`/api/v2/users/${user_id}/session`,{
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({session_id, user_id}),
+  })
+  return res.ok
+}
