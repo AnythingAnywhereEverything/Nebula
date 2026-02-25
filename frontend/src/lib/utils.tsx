@@ -75,3 +75,12 @@ export function formatPhoneByCountry(digits: string, countryCode: string) {
 
     return `+${countryCode} ${numbers}`;
 }
+
+export function formatDateTime(time:string){
+    const standardizedString = time.replace(' ', 'T') + 'Z';
+    const localDate = new Date(standardizedString);
+    
+    const datePart = localDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    const timePart = localDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    return (`${datePart} at ${timePart}`);
+}
