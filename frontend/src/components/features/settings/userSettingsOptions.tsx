@@ -35,6 +35,7 @@ const UserSettingsOptions: React.FC = () => {
                         {title:"Change Password", link:"/account/password"},
                         {title:"Privacy Settings", link:"/account/privacy"},
                         {title:"Notification", link:"/account/notification"},
+                        {title:"Session", link:"/account/session"},
                     ]}
                 />
 

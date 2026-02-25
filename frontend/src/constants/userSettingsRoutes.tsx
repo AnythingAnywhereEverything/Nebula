@@ -11,6 +11,7 @@ import WebUpdate from "@components/features/settings/content/nebulaUpdate";
 import NewAddressBtn from "@components/features/settings/address/newAddressButton";
 import PrivacySetting from "@components/features/settings/content/privacy";
 import MyPurchase from "@components/features/settings/content/myPurchase";
+import UserSession from "@components/features/settings/session/userSession";
 
 export const userSettingsAllowList: Record<string, {
     component: React.ComponentType;
@@ -49,6 +50,11 @@ export const userSettingsAllowList: Record<string, {
         component: Notification,
         title: "Notifications",
         description: "Manage your notification preferences",
+    },
+    "/account/session": {
+        component: UserSession,
+        title: "Session",
+        description: "Manage your session",
     },
 
     // My Purchases Area
