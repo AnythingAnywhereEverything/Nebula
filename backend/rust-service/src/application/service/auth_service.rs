@@ -91,7 +91,7 @@ impl AuthService {
     }
 
     pub async fn logout(state: &AppState, token: &str) -> Result<(), AuthServiceError> {
-        SessionService::delete_session(state, token).await.map_err(|_| AuthServiceError::LogoutFailed)?;
+        SessionService::delete_session_token(state, token).await.map_err(|_| AuthServiceError::LogoutFailed)?;
         Ok(())
     }
 
