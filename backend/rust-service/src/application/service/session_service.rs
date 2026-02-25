@@ -6,7 +6,7 @@ use crate::{
         repository::session_repo, security::argon, service::errors::SessionServiceError,
         state::AppState,
     },
-    domain::session::session_token::SessionToken,
+    domain::{models::{session::Session}, session::session_token::SessionToken},
 };
 
 pub struct SessionService {}
@@ -26,7 +26,7 @@ impl SessionService {
         let token: SessionToken = SessionToken::new(user_id)?;
 
         let session_hashed = Self::hash_session_token(&token.full_token).await?;
-        let created_at = Utc.timestamp_opt(token.timestamp, 0).unwrap().naive_utc();
+        let created_at = Utc.timestamp_millis_opt(token.timestamp).unwrap().naive_utc();
 
         let id = state.snowflake_generator.generate_id()?;
 
@@ -91,7 +91,7 @@ impl SessionService {
         Ok(())
     }
 
-    pub async fn delete_session(state: &AppState, token: &str) -> Result<(), SessionServiceError> {
+    pub async fn delete_session_token(state: &AppState, token: &str) -> Result<(), SessionServiceError> {
         let session_token = SessionToken::parse(token)?;
         let mut tx = state.db_pool.begin().await?;
 
@@ -128,7 +128,7 @@ impl SessionService {
             return Ok(())
         }
 
-        let date_time = Utc.timestamp_opt(created_time, 0).unwrap().naive_utc();
+        let date_time = Utc.timestamp_millis_opt(created_time).unwrap().naive_utc();
 
         let is_exist = session_repo::is_session_exist(
             &mut tx, 
@@ -146,4 +146,33 @@ impl SessionService {
 
         Ok(())
     }
+
+    pub async fn get_all_sessions_by_user_id(
+        state: &AppState, 
+        user_id: i64
+    ) -> Result<Vec<Session>, SessionServiceError>{
+        let mut tx = state.db_pool.begin().await?;
+        let session = session_repo::get_all_sessions_by_user_id(&mut tx, user_id).await?;
+        
+        Ok(session)
+    }
+
+    pub async fn delete_session_user(state: &AppState, session_id: String, user_id: i64) -> Result<(), SessionServiceError> {
+        let mut tx = state.db_pool.begin().await?;
+        let ses_id = session_id.parse::<i64>().map_err(|_| SessionServiceError::InvalidSessionID)?;
+        session_repo::delete_session_by_user(&mut tx, ses_id, user_id).await?;
+        tx.commit().await?;
+
+        // TODO: Delete in Redis please
+        
+        // let mut conn = state.redis.get().await?;
+        // let key = format!(
+            // "session_active:{}:{}",
+            // session_token.user_id, session_token.timestamp
+        // );
+        // let _: usize = conn.del(key).await?;
+
+        return Ok(())
+    }
+
 }
