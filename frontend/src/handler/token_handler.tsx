@@ -1,5 +1,6 @@
-const TOKEN_KEY = "token";
+import { queryClient } from "@/hooks/clientQuery";
 
+const TOKEN_KEY = "token";
 //we're not using Jwts, so we dont need to decode them or check expiration, we just check if they exist and are valid on the server
 
 export function setToken(token: string) {
@@ -23,6 +24,10 @@ export function getToken(): string | null {
 
 export function clearToken() {
     localStorage.removeItem(TOKEN_KEY);
+    clearCacheUserId();
+
+    //also clear react query cache for user data
+    queryClient.invalidateQueries();
 }
 
 export function isAuthenticated(): boolean {

@@ -1,16 +1,18 @@
 import React from "react";
 import style from "@styles/layouts/address.module.scss"
-import { noAddresses, userAddresses } from "@/mocks/address.mock";
 import AddressCard from "../address/addressCard";
 import { FieldGroup } from "@components/ui/NebulaUI";
+import { useAddress } from "@/hooks/useAddress";
 
 const Address: React.FC = () => {
-    const addresses = userAddresses;
 
+    const { data } = useAddress();
+
+    console.log(data);
     return (
 
         <section className={style.addressContainer}>
-            {addresses.length === 0? (
+            {data?.length === 0 ? (
                 <div className={style.noLocation}>
                     <div>
                         <h2>You don't have addresses yet</h2>
@@ -18,10 +20,10 @@ const Address: React.FC = () => {
                 </div>
                 ) : (
                 <FieldGroup className={style.hasLocation}>
-                    {addresses.map((user, index) => (
+                    {data?.map((address, index) => (
                         <AddressCard 
                             key={index}
-                            {...user}
+                            {...address}
                         />
                     ))}
                 </FieldGroup>

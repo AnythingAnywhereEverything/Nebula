@@ -5,15 +5,14 @@ import { AppProps } from 'next/app';
 
 import Head from 'next/head';
 import { GoogleOAuthProvider } from '@react-oauth/google';
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from 'next-themes';
+import { queryClient } from '@/hooks/clientQuery';
 
 
 type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout;
 };
-
-const queryClient = new QueryClient();
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const getLayout = Component.getLayout ?? ((page) => <DefaultLayout>{page}</DefaultLayout>);

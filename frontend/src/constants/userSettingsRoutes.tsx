@@ -8,10 +8,10 @@ import PromotionNotification from "@components/features/settings/content/promoti
 import FinanceUpdates from "@components/features/settings/content/financeUpdate";
 import WebUpdate from "@components/features/settings/content/nebulaUpdate";
 
-import NewAddressBtn from "@components/features/settings/address/newAddressButton";
 import PrivacySetting from "@components/features/settings/content/privacy";
 import MyPurchase from "@components/features/settings/content/myPurchase";
 import UserSession from "@components/features/settings/session/userSession";
+import AddressButton from "@components/features/settings/address/newAddressButton";
 
 export const userSettingsAllowList: Record<string, {
     component: React.ComponentType;
@@ -34,7 +34,7 @@ export const userSettingsAllowList: Record<string, {
         component: Address,
         title: "Address",
         description: "Manage your delivery addresses",
-        extra: <NewAddressBtn/>
+        extra: <AddressButton type="new" />
     },
     "/account/password": {
         component: ChangePassword,
