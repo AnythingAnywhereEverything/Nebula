@@ -146,9 +146,7 @@ const AccountProfile: React.FC = () => {
                             Email:
                         </FieldLegend>
                         <FieldDescription style={{margin: 0}}>
-                            <Field orientation={"horizontal"}>
-                                {isEmailRevealed ? email : censorEmail(email)}
-                            </Field>
+                            {isEmailRevealed ? email : censorEmail(email)}
                         </FieldDescription>
                         <Badge color={data?.email_verified ? "#a3ffa3" : "#ff8a8a"} size={"xs"}>
                         {
