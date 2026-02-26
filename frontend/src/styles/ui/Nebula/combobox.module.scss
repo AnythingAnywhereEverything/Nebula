@@ -5,6 +5,7 @@
     pointer-events: none;
     flex-shrink: 0;
     font-size: 0.5rem;
+    line-height: calc(var(--spacing) * 4);
 }
 
 .inputAddon {
