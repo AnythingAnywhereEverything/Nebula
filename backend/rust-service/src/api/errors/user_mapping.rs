@@ -3,9 +3,8 @@ use axum::http::StatusCode;
 use crate::{
     api::error::{APIError, APIErrorCode, APIErrorEntry, APIErrorKind},
     application::{
-        service::errors::UserServiceError,
-        repository::errors::UserRepoError,
-    },
+        repository::errors::UserRepoError, service::errors::UserServiceError
+    }, domain::user::error::PhoneNumberError,
 };
 
 impl From<UserServiceError> for APIError {
@@ -34,6 +33,29 @@ impl From<UserServiceError> for APIError {
                     .code(APIErrorCode::SystemError)
                     .kind(APIErrorKind::SystemError)
                     .trace_id(),
+            ),
+        };
+
+        APIError::from((status, entry))
+    }
+}
+
+// Phonenumber Error, considered as small to be place in a seperated file
+
+impl From<PhoneNumberError> for APIError {
+    fn from(error: PhoneNumberError) -> Self {
+        let (status, entry) = match error {
+            PhoneNumberError::InvalidFormat => (
+                StatusCode::BAD_REQUEST,
+                APIErrorEntry::new("Invalid phone number format")
+                    .code(APIErrorCode::InvalidUsername)
+                    .kind(APIErrorKind::ValidationError),
+            ),
+            PhoneNumberError::InvalidStructure => (
+                StatusCode::BAD_REQUEST,
+                APIErrorEntry::new("Invalid phone number structure")
+                    .code(APIErrorCode::InvalidUsername)
+                    .kind(APIErrorKind::ValidationError),
             ),
         };
 

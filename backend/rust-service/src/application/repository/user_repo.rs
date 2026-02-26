@@ -142,3 +142,27 @@ pub async fn delete(id: Uuid, state: &SharedState) -> RepositoryResult<bool> {
 
     Ok(query_result.rows_affected() == 1)
 }
+
+pub async fn set_default_address_id(
+    tx: &mut Transaction<'_, Postgres>,
+    user_id: i64,
+    address_id: Option<i64>,
+) -> RepositoryResult<User> {
+    let time_now = Utc::now().naive_utc();
+
+    let user = sqlx::query_as::<_, User>(
+        r#"
+        UPDATE users
+        SET default_shipping_address_id = $1, updated_at = $2
+        WHERE id = $3
+        RETURNING *
+        "#,
+    )
+    .bind(address_id)
+    .bind(time_now)
+    .bind(user_id)
+    .fetch_one(tx.as_mut())
+    .await?;
+
+    Ok(user)
+}

@@ -5,7 +5,7 @@ use crate::{
         version::{self, APIVersion},
     },
     application::{
-        repository::{errors::UserRepoError, user_repo},
+        repository::{address_repo, errors::UserRepoError, user_repo},
         security::auth::AuthError,
         service::{
             errors::UserServiceError,
@@ -14,17 +14,62 @@ use crate::{
         state::SharedState,
     },
     domain::{
-        models::user::{UserResponse, UserUpdate},
-        user::username::Username,
+        models::{
+            address::{AddressResponse, NewAddress},
+            user::{UserResponse, UserUpdate},
+        },
+        user::{phone_number::PhoneNumber, username::Username},
     },
 };
 use axum::{
-    Extension,
-    Json,
-    extract::{Multipart, Path, State},
-    response::IntoResponse, // response::IntoResponse,
+    Extension, Json, extract::{Multipart, Path, State}, response::IntoResponse // response::IntoResponse,
 };
 use serde::Deserialize;
+
+// TODO: Add permission checks for each handler, e.g., only allow users to update their own profile, or require admin permissions for certain actions. This can be done by checking the AuthUser information in the Extension and comparing it with the user ID in the path parameters.
+// * The user permission will be handle with permission service in the future
+// * For now, we will just check if the user is authenticated and if the user ID in the path matches the authenticated user's ID for certain actions like updating profile or adding addresses.
+// * While some handler doesnt have user_id checked, it is because they are not implemented yet. We will add the permission checks when we implement those handlers.
+
+// -----------------------
+// DTOs
+// -----------------------
+
+#[derive(Deserialize)]
+pub struct ChangeDisplayNameRequest {
+    pub display_name: String,
+}
+#[derive(Deserialize)]
+pub struct ChangeUsernameRequest {
+    pub username: String,
+}
+
+#[derive(Deserialize)]
+pub struct AddressRequest {
+    pub full_name: String,
+    pub address_line1: String,
+    pub address_line2: String,
+    pub city: String,
+    pub country: String,
+    pub state: String,
+    pub zip_code: String,
+    pub phone_number: String,
+    pub is_default: bool,
+}
+
+#[derive(Deserialize)]
+pub struct UpdateAddressRequest {
+    pub full_name: String,
+    pub address_line1: String,
+    pub address_line2: String,
+    pub city: String,
+    pub country: String,
+    pub state: String,
+    pub zip_code: String,
+    pub phone_number: String,
+    pub is_default: bool,
+}
+
 
 // -----------------------
 // GET
@@ -71,15 +116,6 @@ where
     tx.commit().await?;
 
     Ok(Json(UserResponse::from(updated_user)))
-}
-
-#[derive(Deserialize)]
-pub struct ChangeDisplayNameRequest {
-    pub display_name: String,
-}
-#[derive(Deserialize)]
-pub struct ChangeUsernameRequest {
-    pub username: String,
 }
 
 pub async fn change_display_name(
@@ -181,4 +217,135 @@ pub async fn add_or_update_profile_handler(
     tracing::trace!("Uploaded profile to : /cdn/{0}", relative_path);
 
     Ok(Json(UserResponse::from(updated_user)))
+}
+
+pub async fn add_user_address_handler(
+    Path((version, id)): Path<(String, i64)>,
+    State(state): State<SharedState>,
+    Json(payload): Json<AddressRequest>,
+) -> Result<impl IntoResponse, APIError> {
+    let api_version: APIVersion = version::parse_version(&version)?;
+    tracing::trace!("api version: {}", api_version);
+
+    let address_id = state.snowflake_generator.generate_id()?;
+
+    let phone_number = PhoneNumber::new(&payload.phone_number)?;
+
+    let address_input = NewAddress {
+        id: address_id,
+        user_id: id,
+        address_line1: payload.address_line1,
+        address_line2: Some(payload.address_line2),
+        full_name: payload.full_name,
+        city: payload.city,
+        country: payload.country,
+        state: payload.state,
+        zip_code: payload.zip_code,
+        phone_number: phone_number.as_str().to_string(),
+        is_default: payload.is_default
+    };
+
+    let mut tx = state.db_pool.begin().await?;
+
+    let mut address = address_repo::add(&mut tx, address_input).await?;
+
+    if payload.is_default {
+        address_repo::update_default_address(&mut tx, id, payload.is_default, address.clone()).await?;
+    }
+
+    tx.commit().await?;
+
+    address.is_default = Some(payload.is_default);
+
+    Ok(Json(AddressResponse::from(address)))
+}
+
+pub async fn update_user_address_handler(
+    Path((version, id, address_id)): Path<(String, i64, i64)>,
+    State(state): State<SharedState>,
+    Json(payload): Json<UpdateAddressRequest>,
+) -> Result<impl IntoResponse, APIError> {
+    let api_version: APIVersion = version::parse_version(&version)?;
+    tracing::trace!("api version: {}", api_version);
+
+    let mut tx = state.db_pool.begin().await?;
+
+    let phone_number = PhoneNumber::new(&payload.phone_number)?;
+
+    let address_input = NewAddress {
+        id: address_id,
+        user_id: id,
+        address_line1: payload.address_line1,
+        address_line2: Some(payload.address_line2),
+        full_name: payload.full_name,
+        city: payload.city,
+        country: payload.country,
+        state: payload.state,
+        zip_code: payload.zip_code,
+        phone_number: phone_number.as_str().to_string(),
+        is_default: payload.is_default
+    };
+
+    let mut address = address_repo::update(&mut tx, address_id, id, address_input).await?;
+
+    if payload.is_default {
+        address_repo::update_default_address(&mut tx, id, payload.is_default, address.clone()).await?;
+    }
+
+    tx.commit().await?;
+
+    address.is_default = Some(payload.is_default);
+
+
+    Ok(Json(AddressResponse::from(address)))
+}
+
+pub async fn get_user_addresses_handler(
+    Path((version, id)): Path<(String, i64)>,
+    State(state): State<SharedState>,
+) -> Result<impl IntoResponse, APIError> {
+    let api_version: APIVersion = version::parse_version(&version)?;
+    tracing::trace!("api version: {}", api_version);
+
+    let mut tx = state.db_pool.begin().await?;
+
+    let addresses = address_repo::get_by_user_id(&mut tx, id).await?;
+
+    let addresses: Vec<AddressResponse> = addresses.into_iter().map(|addr| {
+        AddressResponse::from(addr)
+    }).collect();
+
+    Ok(Json(addresses))
+}
+
+pub async fn delete_user_address_handler(
+    Path((version, id, address_id)): Path<(String, i64, i64)>,
+    State(state): State<SharedState>,
+) -> Result<impl IntoResponse, APIError> {
+    let api_version: APIVersion = version::parse_version(&version)?;
+    tracing::trace!("api version: {}", api_version);
+
+    let mut tx = state.db_pool.begin().await?;
+
+    address_repo::delete(&mut tx, address_id, id).await?;
+
+    tx.commit().await?;
+
+    Ok(())
+}
+
+pub async fn set_default_address_handler(
+    Path((version, id, address_id)): Path<(String, i64, i64)>,
+    State(state): State<SharedState>,
+) -> Result<impl IntoResponse, APIError> {
+    let api_version: APIVersion = version::parse_version(&version)?;
+    tracing::trace!("api version: {}", api_version);
+
+    let mut tx = state.db_pool.begin().await?;
+
+    address_repo::set_default_address_id(&mut tx, id, Some(address_id)).await?;
+
+    tx.commit().await?;
+
+    Ok(())
 }
