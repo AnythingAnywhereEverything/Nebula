@@ -14,7 +14,7 @@
     
     
     &::placeholder {
-        color: var(--placeholder);
+        color: var(--muted-foreground);
     }
     
     [data-theme=dark] & {
