@@ -20,6 +20,15 @@ pub enum EmailError {
     InvalidToken
 }
 
+#[derive(Debug, Error)]
+pub enum PhoneNumberError {
+    #[error("Invalid phone structure")]
+    InvalidStructure,
+
+    #[error("Invalid phone number format")]
+    InvalidFormat
+}
+
 impl From<TokenError> for EmailError {
     fn from(_: TokenError) -> Self {
         Self::InvalidToken
