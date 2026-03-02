@@ -4,14 +4,6 @@ import { usePathname } from "next/navigation";
 import router from "next/router";
 
 export default function ShippingSetting(){
-    const currentPath = usePathname();
-
-    // If there's a optimal way, help
-    useEffect(() => {
-      if (currentPath.endsWith("/setting")) {
-        router.replace("/portal/seller/order/setting/account");
-      }
-    }, [currentPath, router]);
 
     return(
         <SellerLayout>

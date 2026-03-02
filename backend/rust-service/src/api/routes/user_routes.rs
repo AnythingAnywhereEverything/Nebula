@@ -6,7 +6,7 @@ use axum::{
 use crate::{
     api::{
         handlers::{
-            session_handler::{delete_session_user_handler, get_all_session_handler},
+            session_handlers::{delete_session_user_handler, get_all_session_handler},
             user_handlers::{
                 add_or_update_profile_handler, add_user_address_handler, change_display_name, change_username, delete_user_address_handler, get_user_addresses_handler, get_user_handler, set_default_address_handler, set_new_password_handler, update_user_address_handler
             },
