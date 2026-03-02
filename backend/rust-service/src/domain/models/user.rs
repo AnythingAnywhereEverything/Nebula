@@ -56,6 +56,13 @@ pub struct UserResponse {
     pub profile_picture_url: Option<String>,
 }
 
+#[derive(Debug, FromRow, Serialize, Deserialize, PartialEq, Eq, Clone)]
+pub struct PasswordUpdate {
+    pub old_password: Option<String>,
+    pub new_password: Option<String>,
+    pub confirm_password: Option<String>
+}
+
 impl From<User> for UserResponse {
     fn from(user: User) -> Self {
         Self {
