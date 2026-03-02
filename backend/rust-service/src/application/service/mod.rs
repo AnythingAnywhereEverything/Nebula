@@ -5,3 +5,4 @@ pub mod auth_service;
 pub mod errors;
 pub mod session_service;
 pub mod email_service;
+pub mod password_service;
