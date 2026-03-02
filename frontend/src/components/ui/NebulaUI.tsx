@@ -24,3 +24,5 @@ export * from "./Nebula/tooltip"
 export * from "./Nebula/combobox"
 
 export * from "./Nebula/avatar"
+
+export * from "./Nebula/image-uploader"
