@@ -9,7 +9,7 @@ use crate::{
         security::auth::AuthError,
         service::{
             errors::UserServiceError,
-            media_service::{AllowedMediaType, ImageTransform, MediaOptions},
+            media_service::{AllowedMediaType, ImageTransform, MediaOptions}, password_service::PasswordSerivce,
         },
         state::SharedState,
     },
@@ -42,6 +42,12 @@ pub struct ChangeDisplayNameRequest {
 #[derive(Deserialize)]
 pub struct ChangeUsernameRequest {
     pub username: String,
+}
+#[derive(Deserialize)]
+pub struct ChangePasswordRequest {
+    pub current_password: String,
+    pub new_password: String,
+    pub confirm_password: String
 }
 
 #[derive(Deserialize)]
@@ -171,6 +177,7 @@ pub async fn change_username(
     })
     .await
 }
+
 
 pub async fn add_or_update_profile_handler(
     Extension(auth): Extension<AuthUser>,
@@ -346,6 +353,25 @@ pub async fn set_default_address_handler(
     address_repo::set_default_address_id(&mut tx, id, Some(address_id)).await?;
 
     tx.commit().await?;
+
+    Ok(())
+}
+
+#[axum::debug_handler]
+pub async fn set_new_password_handler(
+    Extension(auth): Extension<AuthUser>,
+    Path((version, id)):Path<(String, i64)>,
+    State(state): State<SharedState>,
+    Json(payload): Json<ChangePasswordRequest>,
+) -> Result<impl IntoResponse, APIError> {
+    let api_version: APIVersion = version::parse_version(&version)?;
+    tracing::trace!("api version: {}", api_version);
+
+    if auth.user_id != id{
+        return Err(APIError::from(AuthError::MissingAppropriatePermission));
+    }
+    tracing::debug!("payload {}", payload.current_password);
+    let _ = PasswordSerivce::change_password(&state, id, &payload.current_password, &payload.new_password, &payload.confirm_password).await?;
 
     Ok(())
 }
