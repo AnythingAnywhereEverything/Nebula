@@ -16,7 +16,11 @@ export interface SessionResponse{
   created_at: string,
   agent: string,
 } 
-
+interface PasswordData{
+  current_password: string;
+  new_password: string;
+  confirm_password: string;
+}
 export async function getUser(): Promise<UserResponse> {
   const token = getToken();
   const userId = getCacheUserId();
@@ -160,4 +164,20 @@ export const deleteSelectSession = async (session_id : string) => {
     body: JSON.stringify({session_id, user_id}),
   })
   return res.ok
+}
+
+export const updatePassword = async (data: PasswordData) => {
+    const user_id = getCacheUserId();
+    const res = await fetchWithAuth( `/api/v2/users/${user_id}/password`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data)
+    })
+
+    console.log(data)
+    if (!res.ok) throw new Error("Change password failed")
+    if(res.ok){console.log("Hello worldddd")}
+    return res.ok
 }
