@@ -27,9 +27,9 @@ export function SellerHeader({ children }: Props) {
   )
 }
 
-export function SellerContent({ children }: Props) {
+export function SellerContent({ children, ...props }: Props & React.ComponentProps<"div">) {
   return (
-    <Field className={s.sellerToolbar}>
+    <Field className={s.sellerToolbar} {...props}>
       {children}
     </Field>
   )
