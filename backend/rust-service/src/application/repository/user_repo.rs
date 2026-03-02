@@ -166,3 +166,46 @@ pub async fn set_default_address_id(
 
     Ok(user)
 }
+
+pub async fn is_current_password_match(
+    tx: &mut Transaction<'_, Postgres>,
+    user_id: i64
+) -> RepositoryResult<String> {
+    let row: (String,) = sqlx::query_as(
+        r#"
+            SELECT password_hash
+            FROM users
+            WHERE id = $1
+        "#
+    )
+    .bind(user_id)
+    .fetch_one(tx.as_mut())
+    .await?;
+
+    Ok(row.0)
+}
+
+pub async fn set_new_password(
+    tx: &mut Transaction<'_, Postgres>,
+    user_id: i64,
+    new_password_hash: Option<String> 
+)   -> Result<(), sqlx::Error> {
+    let result = sqlx::query(
+        r#"
+        UPDATE users
+        SET password_hash = $1
+        WHERE id = $2
+        "#,
+    )
+    .bind(new_password_hash)
+    .bind(user_id)
+    .execute(tx.as_mut())
+    .await
+    .map_err(|_| sqlx::Error::InvalidSavePointStatement);
+
+    if result?.rows_affected() == 0 {
+        return Err(sqlx::Error::RowNotFound);
+    }
+
+    Ok(())
+}
