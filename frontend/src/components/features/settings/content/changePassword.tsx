@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { ChangeEvent, use, useState } from "react";
 import Link from "next/link";
-import { Button, ButtonGroup, Field, FieldDescription, FieldGroup , FieldLabel, FieldSet, Icon, Input, InputGroup, InputGroupAddon, InputGroupInput } from "@components/ui/NebulaUI";
+import { Button, ButtonGroup, Field, FieldDescription, FieldError, FieldGroup , FieldLabel, FieldSet, Icon, Input, InputGroup, InputGroupAddon, InputGroupInput } from "@components/ui/NebulaUI";
 import Form from "next/form";
+import { error } from "console";
+import { updatePassword } from "@/api/user";
 
-// Verify first
 const ChangePassword: React.FC = () =>{
     const [revealPassword, setRevealPassword] = useState(false);
     const [revealNewPassword, setRevealNewPassword] = useState(false);
@@ -16,14 +17,14 @@ const ChangePassword: React.FC = () =>{
     }>;
     
     const [values, setValues] = useState({
-        currentPassword: "",
-        newPassword: "",
-        confirmPassword: "",
+        current_password: "",
+        new_password: "",
+        confirm_password: "",
     });
 
     const [errors, setErrors] = useState<Errors>({});
 
-        const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
 
         setValues(prev => ({
@@ -36,11 +37,34 @@ const ChangePassword: React.FC = () =>{
         }
     };
 
-    const validate = () =>{
+    const strongPasswordRegex = new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$');
+    const validateNewPassword = () =>{
         const nextErrors: Errors = {};
-        
-        // TODO: regEx and validate the password
 
+        if (!values.new_password) {
+            nextErrors.newPassword = "Password is required.";
+        } else if (!strongPasswordRegex.test(values.new_password)){
+            nextErrors.newPassword = `minimum length 8 characters.
+At least one uppercase letter (A-Z).
+At least one lowercase letter (a-z).
+At least one digit (0-9).
+At least one special character (e.g., !@#$%()-)`
+        }
+        if (values.confirm_password !== values.new_password) {
+            nextErrors.confirmPassword = "Passwords do not match.";
+        }
+
+        setErrors(nextErrors);
+        return Object.keys(nextErrors).length === 0;
+    }
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+
+        if (!validateNewPassword()) return;
+
+        console.log("Values", values);
+        updatePassword(values)
     }
         
     return (
@@ -52,7 +76,7 @@ const ChangePassword: React.FC = () =>{
                     <FieldGroup>
 
                         <Field>
-                            <FieldLabel htmlFor="currentPassword">Current Password</FieldLabel>
+                            <FieldLabel htmlFor="current_password">Current Password</FieldLabel>
                                 <InputGroup>
                                 
                                     <InputGroupAddon align="inline-end"
@@ -70,9 +94,9 @@ const ChangePassword: React.FC = () =>{
                                     <InputGroupInput
                                         required
                                         type={revealPassword ? "text" : "password"}
-                                        name="currentPassword"
+                                        name="current_password"
                                         id="current-password"
-                                        value={values.currentPassword}
+                                        value={values.current_password}
                                         onChange={handleChange}
                                         placeholder="Current password"
                                     />
@@ -84,10 +108,9 @@ const ChangePassword: React.FC = () =>{
 
                         </Field>
 
-                        <Field>
-                            <FieldLabel htmlFor="newPassword">New Password</FieldLabel>
-                            <InputGroup>
-                                
+                        <Field data-invalid={!!errors.newPassword}>
+                            <FieldLabel htmlFor="new_password">New Password</FieldLabel>
+                            <InputGroup aria-invalid={!!errors.newPassword}>
                                 <InputGroupAddon align="inline-end">
                                     <Button
                                     type="button"
@@ -98,24 +121,22 @@ const ChangePassword: React.FC = () =>{
                                         <Icon value={revealNewPassword ? "" : ""} />
                                     </Button>
                                 </InputGroupAddon>    
-                                    
                                 <InputGroupInput
                                     required
                                     type={revealNewPassword ? "text" : "password"}
-                                    name="newPassword"
+                                    name="new_password"
                                     id="new-password"
-                                    value={values.newPassword}
+                                    value={values.new_password}
                                     onChange={handleChange}
                                     placeholder="New password"
                                 />
-
                             </InputGroup>
+                            {errors.newPassword && <FieldError style={{whiteSpace: "pre-wrap"}}>{errors.newPassword}</FieldError>}
                         </Field>
 
-                        <Field>
-                            <FieldLabel htmlFor="confirmPassword">Confirm New Password</FieldLabel>
-                            <InputGroup>
-                                
+                        <Field data-invalid={!!errors.confirmPassword}>
+                            <FieldLabel htmlFor="confirm_password">Confirm New Password</FieldLabel>
+                            <InputGroup aria-invalid={!!errors.confirmPassword}>
                                 <InputGroupAddon align="inline-end">
                                     <Button
                                     type="button"
@@ -130,18 +151,16 @@ const ChangePassword: React.FC = () =>{
                                 <InputGroupInput
                                     required
                                     type={revealConfirm ? "text" : "password"}
-                                    name="confirmPassword"
+                                    name="confirm_password"
                                     id="confirm-password"
-                                    value={values.confirmPassword}
+                                    value={values.confirm_password}
                                     onChange={handleChange}
                                     placeholder="Confirm new password"
                                 />
-
                             </InputGroup>
+                            {errors.confirmPassword && <FieldError >{errors.confirmPassword}</FieldError>}
                         </Field>
-
                             <ButtonGroup>
-                                
                                 <ButtonGroup>
                                     <Button
                                     variant={`outline`}
@@ -150,23 +169,18 @@ const ChangePassword: React.FC = () =>{
                                     >
                                         Reset
                                     </Button>
-
                                 </ButtonGroup>
-
                                 <ButtonGroup>
                                     <Button
                                     variant={`default`}
-                                    onClick = {() => {console.log("Hello world");
-                                    }}
+                                    onClick = {handleSubmit}
                                     >
                                         Change Password
                                     </Button>
                                 </ButtonGroup>
-
                             </ButtonGroup>
                     </FieldGroup>
                 </FieldSet>
-
             </Form>
         </section>
     );
