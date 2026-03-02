@@ -1,7 +1,8 @@
 import { useAuthService } from "@/hooks/useAuthService";
+import { useShop } from "@/hooks/useShop";
 import { useUser } from "@/hooks/useUser";
 import Avatar from "@components/ui/Nebula/avatar";
-import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, Field, FieldDescription, FieldLabel, Label } from "@components/ui/NebulaUI";
+import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, Field, FieldDescription, FieldLabel, Icon, Label } from "@components/ui/NebulaUI";
 
 import s from "@styles/features/profilebadge.module.scss"
 import { useTheme } from "next-themes";
@@ -18,6 +19,7 @@ export function ProfileBadge() {
     const router = useRouter();
 
     const { data, isLoading } = useUser();
+    const { data: shopData } = useShop();
     const { logout } = useAuthService();
     
 
@@ -90,10 +92,58 @@ export function ProfileBadge() {
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                    <DropdownMenuLabel>My Nebula Shops</DropdownMenuLabel>
-                    <DropdownMenuItem asChild>
-                        <Link href={"/portal/seller/dashboard"}>Dashboard</Link>
-                    </DropdownMenuItem>
+                    <DropdownMenuSub>
+                        <DropdownMenuSubTrigger>My Nebula Shops</DropdownMenuSubTrigger>
+
+                        <DropdownMenuSubContent>
+
+                            <DropdownMenuGroup>
+                                <DropdownMenuLabel>Owned shops</DropdownMenuLabel>
+
+                                {shopData?.owned?.length ? (
+                                shopData.owned.map((shop) => (
+                                    <DropdownMenuItem key={`owned-${shop.id}`} asChild>
+                                    <Link href={`/portal/seller/${shop.id}/dashboard`}>
+                                        {shop.name}
+                                    </Link>
+                                    </DropdownMenuItem>
+                                ))
+                                ) : (
+                                <DropdownMenuItem disabled>No owned shops</DropdownMenuItem>
+                                )}
+                            </DropdownMenuGroup>
+
+                            <DropdownMenuSeparator />
+
+                            {/* Associate shops */}
+                            <DropdownMenuGroup>
+                                <DropdownMenuLabel>Associate shops</DropdownMenuLabel>
+
+                                {shopData?.associate?.length ? (
+                                shopData.associate.map((shop) => (
+                                    <DropdownMenuItem key={`associate-${shop.id}`} asChild>
+                                    <Link href={`/portal/seller/${shop.id}/dashboard`}>
+                                        {shop.name}
+                                    </Link>
+                                    </DropdownMenuItem>
+                                ))
+                                ) : (
+                                <DropdownMenuItem disabled>No associate shops</DropdownMenuItem>
+                                )}
+                            </DropdownMenuGroup>
+
+                            <DropdownMenuSeparator />
+
+                            <DropdownMenuItem asChild>
+                                <Link href="/portal/seller/shop/new">
+                                    <Icon value="" />
+                                    Create new shop
+                                </Link>
+                            </DropdownMenuItem>
+
+                        </DropdownMenuSubContent>
+
+                    </DropdownMenuSub>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
@@ -105,3 +155,4 @@ export function ProfileBadge() {
         </DropdownMenu>
     )
 }
+
