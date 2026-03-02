@@ -52,7 +52,8 @@ pub enum APIErrorCode {
     SessionError,
     UserError,
     MultipartError,
-    SystemError
+    SystemError,
+    PasswordError
 }
 
 impl Display for APIErrorCode {
@@ -77,7 +78,8 @@ pub enum APIErrorKind {
     UserError,
     MultipartError,
     SnowflakeError,
-    UserProfileError
+    UserProfileError,
+    PasswordError
 }
 
 impl Display for APIErrorKind {
