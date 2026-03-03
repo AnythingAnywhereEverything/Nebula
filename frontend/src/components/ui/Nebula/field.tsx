@@ -56,23 +56,36 @@ const fieldVariants = cva(s.fieldBase, {
       responsive:
         s.responsive,
     },
+    justify: {
+      "space-between": 
+        s.spacebetween,
+      "space-around": 
+        s.spacearound,
+      "center": 
+        s.center,
+      none: ""
+    }
   },
   defaultVariants: {
     orientation: "vertical",
+    justify: "none"
   },
 })
 
 function Field({
   className,
+  stretch = false,
   orientation = "vertical",
+  justify = "none",
   ...props
-}: React.ComponentProps<"div"> & VariantProps<typeof fieldVariants>) {
+}: React.ComponentProps<"div"> & VariantProps<typeof fieldVariants> & {stretch?: boolean}) {
   return (
     <div
       role="group"
       data-component="field"
       data-orientation={orientation}
-      className={cn(fieldVariants({ orientation }), className)}
+      data-stretch={stretch}
+      className={cn(fieldVariants({ orientation, justify }), className)}
       {...props}
     />
   )

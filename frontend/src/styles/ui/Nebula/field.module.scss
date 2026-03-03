@@ -164,6 +164,23 @@
     &[data-invalid="true"] {
         color: var(--destructive);
     }
+
+    &[data-stretch="true"] {
+        flex: 1;
+        align-items: stretch;
+    }
+
+    &.spacebetween {
+        justify-content: space-between;
+    }
+
+    &.center {
+        justify-content: center;
+    }
+
+    &.spacearound {
+        justify-content: space-around;
+    }
     
     &.vertical {
         flex-direction: column;
