@@ -1,5 +1,6 @@
 import AddNewProduct from "@components/features/seller/addProduct";
 import CancelRefunedReturn from "@components/features/seller/cancelProduct";
+import ShopDashboard from "@components/features/seller/dashboard";
 import MassShipPage from "@components/features/seller/massShip";
 import myOrder from "@components/features/seller/myOrder";
 import MyProduct from "@components/features/seller/myProduct";
@@ -10,12 +11,16 @@ import SellerSettingPayment from "@components/features/seller/order/shippingSett
 import SellerSettingProduct from "@components/features/seller/order/shippingSetting/product";
 import SellerSettingVacation from "@components/features/seller/order/shippingSetting/vacation";
 import ShippingSetting from "@components/features/seller/shippingSetting";
+import ShopSettings from "@components/features/seller/shopSettings";
 
 export const portalSellerAllowedList: Record<string, {
     component: React.ComponentType;
 }> = {
     "/dashboard": {
-        component: () => <p>Dashboard</p>
+        component: ShopDashboard
+    },
+    "/settings": {
+        component: ShopSettings
     },
     "/canceled": {
         component: CancelRefunedReturn

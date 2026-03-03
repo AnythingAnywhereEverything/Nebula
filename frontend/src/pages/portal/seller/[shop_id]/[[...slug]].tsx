@@ -126,6 +126,7 @@ export const SellerSideBar: React.FC = () => {
             description: null,
             items: [
                 { icon: "", name: "Shop Dashboard", link: "/dashboard" },
+                { icon: "", name: "Shop Settings", link: "/settings" },
                 { icon: "󱝋", name: "Cancel Refund Return", link: "/canceled" },
             ]
         },
