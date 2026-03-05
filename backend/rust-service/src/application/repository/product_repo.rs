@@ -57,7 +57,7 @@ pub async fn insert_product_specifications(
             INSERT INTO product_specifications (
                 id,
                 product_id,
-                key,
+                name,
                 value
             )
             VALUES ($1, $2, $3, $4)
