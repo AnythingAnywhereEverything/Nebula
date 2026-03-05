@@ -1,200 +1,302 @@
 import { SellerContent, SellerHeader, SellerLayout } from "@components/layouts/sellerPageLayout";
-import { FieldDescription, Field, FieldLabel,
-        Input, FieldGroup,
-        Button,
-        Textarea,
-        FieldSeparator,
-        ButtonGroup,
-        Switch,
-        ComboboxItem,
-        ComboboxInput,
-        ComboboxContent,
-        Combobox,
-        ComboboxList,
-        ComboboxEmpty,
-        FieldLegend,
-        } from "@components/ui/NebulaUI";
-import Form from "next/form";
-import React, { useEffect, useRef, useState } from "react";
-import s from "@styles/layouts/seller/addProduct.module.scss"
+import {
+    FieldDescription,
+    Field,
+    FieldLabel,
+    FieldGroup,
+    Button,
+    FieldSeparator,
+    Switch,
+    ComboboxItem,
+    ComboboxInput,
+    ComboboxContent,
+    Combobox,
+    ComboboxList,
+    ComboboxEmpty,
+    FieldLegend,
+    Input,
+    Textarea,
+} from "@components/ui/NebulaUI";
+import React, { useState } from "react";
+import s from "@styles/layouts/seller/addProduct.module.scss";
+
 import ImageUploader from "@components/ui/Nebula/image-uploader";
-import ProductVariantPanel from "./addProduct/productVariant";
-import ProductSpecificationTable from "./addProduct/specTable";
+import ProductVariantPanel, { ProductVariantResponse } from "./addProduct/productVariant";
+import ProductSpecificationTable, { Specification } from "./addProduct/specTable";
+import ProductDataField from "./addProduct/productData";
+import { VariantRow } from "@/types/product";
+import { useRouter } from "next/router";
+import { createProduct } from "@/api/product";
+
 
 const AddProduct: React.FC = () => {
 
+    const router = useRouter();
+    const { shop_id, slug } = router.query;
+
+    const [productInfo, setProductInfo] = useState({
+        name: "",
+        description: "",
+        images: [] as (File | string)[]
+    });
+
+    const [productSettings, setProductSettings] = useState({
+        isActive: true,
+        freeShipping: false,
+        category: "",
+        shopCategory: ""
+    });
+
+    const [variantData, setVariantData] = useState<ProductVariantResponse>({
+        hasVariant: false,
+        variants: []
+    });
+
+    const [productData, setProductData] = useState<{
+        hasVariant: boolean;
+        variants: VariantRow[];
+    }>({
+        hasVariant: false,
+        variants: []
+    });
+
+    const [specifications, setSpecifications] = useState<Specification[]>([]);
+
+    
+
+    const handleSubmit = () => {
+
+        const finalPayload = {
+            ...productInfo,
+            ...productSettings,
+            attributes: variantData.variants,
+            hasVariant: productData.hasVariant,
+            variants: productData.variants,
+            specifications
+        };
+        
+        if (typeof shop_id === 'string') {
+            createProduct(finalPayload, shop_id);
+        }
+    };
+
     return (
         <SellerLayout>
-            <SellerHeader>
-                Add New Products
-            </SellerHeader>
-            <Field orientation={"horizontal"} style={{alignItems:"start"}}>
+
+            <Field orientation="horizontal">
+                <SellerHeader>
+                    Add New Products
+                </SellerHeader>
+                <Button onClick={handleSubmit}>
+                    Create Product
+                </Button>
+            </Field>
+
+            <Field orientation="horizontal" style={{ alignItems: "stretch" }}>
+
                 <Field>
-                    <AddProductHeader />
-                    <ProductVariantPanel />
+
+                    <AddProductHeader
+                        data={productInfo}
+                        onChange={(patch) =>
+                            setProductInfo(prev => ({ ...prev, ...patch }))
+                        }
+                        specifications={specifications}
+                        onSpecChange={setSpecifications}
+                    />
+
+                    <ProductVariantPanel
+                        onChange={setVariantData}
+                    />
+
                 </Field>
-                <ProductSettingPanel />
+
+                <ProductSettingPanel
+                    data={productSettings}
+                    onChange={(patch) =>
+                        setProductSettings(prev => ({ ...prev, ...patch }))
+                    }
+                />
+
             </Field>
+
+            <ProductDataField
+                onChange={setProductData}
+                hasVariant={variantData.hasVariant}
+                variants={variantData.variants}
+            />
+
         </SellerLayout>
-    )
-}
+    );
+};
 
-const ProductSettingPanel: React.FC = () => {
-    return (
-        <SellerContent style={{width: "fit-content", minWidth: "300px"}}>
-            <FieldLegend style={{margin: 0}}>Product Settings</FieldLegend>
-            <FieldSeparator />
-            <Field orientation={"horizontal"}>
-                <FieldLabel htmlFor="product-active">Activate</FieldLabel>
-                <Switch id="product-active" />
-            </Field>
-            <Field orientation={"horizontal"}>
-                <FieldLabel htmlFor="product-free-shipping">Free Shipping</FieldLabel>
-                <Switch id="product-free-shipping" />
-            </Field>
-            <FieldSeparator/>
-            <Field>
-                <FieldLabel htmlFor="product-category">category</FieldLabel>
-                <Combobox id="product-category">
-                    <ComboboxInput placeholder="Search Category" />
-                    <ComboboxContent>
-                        <ComboboxEmpty>No category found.</ComboboxEmpty>
-                        <ComboboxList>
-                            {/* Will fetch from `BE` later */}
-                            <ComboboxItem value="electronics">Electronics</ComboboxItem>
-                            <ComboboxItem value="clothing">Clothing</ComboboxItem>
-                            <ComboboxItem value="books">Books</ComboboxItem>
-                            <ComboboxItem value="home">Home & Garden</ComboboxItem>
-                            <ComboboxItem value="toys">Toys & Games</ComboboxItem>
-                        </ComboboxList>
-                    </ComboboxContent>
-                </Combobox>
-            </Field>
-            <Field>
-                <FieldLabel htmlFor="product-shop-category">Shop Category</FieldLabel>
-                <FieldDescription>Shop category is used to group products in your shop.</FieldDescription>
-                <Combobox id="product-shop-category">
-                    <ComboboxInput placeholder="Search Category" />
-                    <ComboboxContent>
-                        <ComboboxEmpty>No category found.</ComboboxEmpty>
-                        <ComboboxList>
-                            {/* Will fetch from `BE` later */}
-                            <ComboboxItem value="electronics">Electronics</ComboboxItem>
-                            <ComboboxItem value="clothing">Clothing</ComboboxItem>
-                            <ComboboxItem value="books">Books</ComboboxItem>
-                            <ComboboxItem value="home">Home & Garden</ComboboxItem>
-                            <ComboboxItem value="toys">Toys & Games</ComboboxItem>
-                        </ComboboxList>
-                    </ComboboxContent>
-                </Combobox>
-            </Field>
-            <FieldSeparator />
-            <Field>
-                <FieldLabel htmlFor="product-price">Global Price</FieldLabel>
-                <FieldDescription>
-                    Default price for the product and variant.
-                </FieldDescription>
-                <Input
-                    id="product-price"
-                    placeholder="Enter product price"
-                    type="number"
-                    min={0}
-                />
-            </Field>
-            <Field>
-                <FieldLabel htmlFor="product-sku">Product SKU Number</FieldLabel>
-                <Input
-                    id="product-sku"
-                    placeholder="Enter product SKU number"
-                />
-            </Field>
-        </SellerContent>
-    )
-}
-const AddProductHeader: React.FC = () => {
-
-    const product_urls = [
-        "https://placehold.co/600x400",
-        "https://placehold.co/600x500",
-        "https://placehold.co/600x600",
-    ];
-
-    const onChangeProductUrls = (urls: (File | string)[]) => {
-        console.log(urls);
-    }
+const AddProductHeader: React.FC<{
+    data: {
+        name: string;
+        description: string;
+        images: (File | string)[];
+    };
+    onChange: (patch: Partial<{
+        name: string;
+        description: string;
+        images: (File | string)[];
+    }>) => void;
+    specifications: Specification[];
+    onSpecChange: (specs: Specification[]) => void;
+}> = ({ data, onChange, specifications, onSpecChange }) => {
 
     return (
         <SellerContent>
-            <Form action={""} className={s.form}>
-                <FieldGroup>
+            <FieldGroup>
 
-                    <FieldLegend style={{margin: 0}}>Product Information</FieldLegend>
-                    <FieldSeparator/>
+                <FieldLegend style={{ margin: 0 }}>
+                    Product Information
+                </FieldLegend>
 
-                    <Field>
-                        <FieldLabel htmlFor="product-name">
-                            Product Name
-                        </FieldLabel>
-                        <Input
-                            id="product-name"
-                            placeholder="Enter product name"
-                        />
-                    </Field>
+                <FieldSeparator />
 
-                    <Field>
-                        <FieldLabel htmlFor="product-about">
-                            About product
-                        </FieldLabel>
+                <Field>
+                    <FieldLabel>Product Name</FieldLabel>
+                    <Input
+                        className={s.input}
+                        value={data.name}
+                        onChange={(e) =>
+                            onChange({ name: e.target.value })
+                        }
+                    />
+                </Field>
 
-                        <FieldDescription>
-                            Enter detailed information about the product (can be use with markdown)
-                        </FieldDescription>
+                <Field>
+                    <FieldLabel>About product</FieldLabel>
+                    <FieldDescription>
+                        Enter detailed information about the product.
+                    </FieldDescription>
+                    <Textarea
+                        className={s.textarea}
+                        value={data.description}
+                        onChange={(e) =>
+                            onChange({ description: e.target.value })
+                        }
+                    />
+                </Field>
 
-                        <Textarea
-                            id="product-about"
-                            placeholder="Enter product about information"
-                        />
-                    </Field>
-                    
-                    <ProductSpecificationTable/>
+                <ProductSpecificationTable
+                    value={specifications}
+                    onChange={onSpecChange}
+                />
 
-                    <Field className={s.productImagesField}>
-                        <FieldLabel htmlFor="product-images">
-                            Product Images
-                        </FieldLabel>
+                <Field className={s.productImagesField}>
+                    <FieldLegend variant="label">
+                        Product Images
+                    </FieldLegend>
 
-                        <FieldDescription>
-                            Upload product images (you can upload up to 5 images)
-                        </FieldDescription>
+                    <FieldDescription>
+                        Upload up to 5 images.
+                    </FieldDescription>
 
-                        <FieldDescription>
-                            These images will be appended to the last image in the variant.
-                        </FieldDescription>
+                    <ImageUploader
+                        min={1}
+                        accept="image/jpeg, image/png"
+                        value={data.images}
+                        onChange={(urls) =>
+                            onChange({ images: urls })
+                        }
+                    />
+                </Field>
 
-                        <ImageUploader
-                            min={1}
-                            accept={"image/jpeg, image/png"}
-                            value={product_urls}
-                            onChange={onChangeProductUrls}
-                        />
-                    </Field>
+            </FieldGroup>
+        </SellerContent>
+    );
+};
 
-                    <ButtonGroup>
-                        <ButtonGroup>
-                            <Button type="submit" size={"sm"}>
-                                Save Product
-                            </Button>
-                        </ButtonGroup>
+const ProductSettingPanel: React.FC<{
+    data: {
+        isActive: boolean;
+        freeShipping: boolean;
+        category: string;
+        shopCategory: string;
+    };
+    onChange: (patch: Partial<{
+        isActive: boolean;
+        freeShipping: boolean;
+        category: string;
+        shopCategory: string;
+    }>) => void;
+}> = ({ data, onChange }) => {
 
-                        <ButtonGroup>
-                            <Button variant={"outline"} size={"sm"}>
-                                Cancel
-                            </Button>
-                        </ButtonGroup>
-                    </ButtonGroup>
+    return (
+        <SellerContent style={{ width: "fit-content", minWidth: 300 }}>
 
-                </FieldGroup>
-            </Form>
+            <FieldLegend>Product Settings</FieldLegend>
+
+            <FieldSeparator />
+
+            <Field orientation="horizontal">
+                <FieldLabel>Activate</FieldLabel>
+                <Switch
+                    checked={data.isActive}
+                    onCheckedChange={(v) =>
+                        onChange({ isActive: Boolean(v) })
+                    }
+                />
+            </Field>
+
+            <Field orientation="horizontal">
+                <FieldLabel>Free Shipping</FieldLabel>
+                <Switch
+                    checked={data.freeShipping}
+                    onCheckedChange={(v) =>
+                        onChange({ freeShipping: Boolean(v) })
+                    }
+                />
+            </Field>
+
+            <FieldSeparator />
+
+            <Field>
+                <FieldLabel>Category</FieldLabel>
+                <Combobox
+                    value={data.category}
+                    onValueChange={(v) =>
+                        onChange({ category: v || "" })
+                    }
+                >
+                    <ComboboxInput placeholder="Search Category" />
+                    <ComboboxContent>
+                        <ComboboxEmpty>No category found.</ComboboxEmpty>
+                        <ComboboxList>
+                            <ComboboxItem value="electronics">Electronics</ComboboxItem>
+                            <ComboboxItem value="clothing">Clothing</ComboboxItem>
+                            <ComboboxItem value="books">Books</ComboboxItem>
+                            <ComboboxItem value="home">Home & Garden</ComboboxItem>
+                            <ComboboxItem value="toys">Toys & Games</ComboboxItem>
+                        </ComboboxList>
+                    </ComboboxContent>
+                </Combobox>
+            </Field>
+
+            <Field>
+                <FieldLabel>Shop Category</FieldLabel>
+                <Combobox
+                    value={data.shopCategory}
+                    onValueChange={(v) =>
+                        onChange({ shopCategory: v || "" })
+                    }
+                >
+                    <ComboboxInput placeholder="Search Category" />
+                    <ComboboxContent>
+                        <ComboboxEmpty>No category found.</ComboboxEmpty>
+                        <ComboboxList>
+                            <ComboboxItem value="electronics">Electronics</ComboboxItem>
+                            <ComboboxItem value="clothing">Clothing</ComboboxItem>
+                            <ComboboxItem value="books">Books</ComboboxItem>
+                            <ComboboxItem value="home">Home & Garden</ComboboxItem>
+                            <ComboboxItem value="toys">Toys & Games</ComboboxItem>
+                        </ComboboxList>
+                    </ComboboxContent>
+                </Combobox>
+            </Field>
+
         </SellerContent>
     );
 };

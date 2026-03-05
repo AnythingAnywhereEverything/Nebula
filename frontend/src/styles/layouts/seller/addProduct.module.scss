@@ -21,3 +21,54 @@
     white-space: nowrap;
     border: 0;
 }
+
+.productField {
+    padding: calc(var(--spacing) * 4 );
+}
+
+.productDataSettings {
+    background-color: color-mix(in oklab, var(--muted) 30%, transparent);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-medium);
+    padding: calc(var(--spacing) * 4 );
+    [data-theme=dark] & {
+        background-color: color-mix(in oklab, var(--input) 30%, transparent);
+    }
+}
+
+.status {
+    width: calc(var(--spacing) * 1.5 );
+    height: calc(var(--spacing) * 1.5 );
+    border-radius: var(--radius-small);
+    background-color: var(--muted-foreground);
+
+    &.active {
+        background-color: var(--success);
+    }
+
+    &.low {
+        background-color: var(--warning);
+    }
+
+    &.out {
+        background-color: var(--destructive);
+    }
+}
+
+.productPanel {
+    flex-shrink: 0;
+    width: 250px;
+    padding: calc(var(--spacing) * 4 );
+    background-color: color-mix(in oklab, var(--muted) 30%, transparent);
+    border-right: 1px solid var(--border);
+}
+
+.productDataField {
+    background-color: color-mix(in oklab, var(--muted) 30%, transparent);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-medium);
+
+    [data-theme=dark] & {
+        background-color: color-mix(in oklab, var(--input) 30%, transparent);
+    }
+}

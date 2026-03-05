@@ -1,6 +1,7 @@
 .fieldSet {
     display: flex;
     flex-direction: column;
+    width: 100%;
     gap: calc(var(--spacing) * 4);
     &:has(>[data-component="checkbox-group"]),
     &:has(>[data-component="radio-group"]){
@@ -109,9 +110,9 @@
         background-color: color-mix(in oklab, var(--primary) 5%, transparent);
         border: 1px solid var(--primary);
     }
-    
-    .fieldBase[data-disabled=true] & {
-        opacity: 0.5;
+
+    .fieldSet:disabled & {
+        opacity: .5;
     }
 
     * {
@@ -163,11 +164,6 @@
 
     &[data-invalid="true"] {
         color: var(--destructive);
-    }
-
-    &[data-stretch="true"] {
-        flex: 1;
-        align-items: stretch;
     }
 
     &.spacebetween {
@@ -237,5 +233,10 @@
                 }
             }
         }
+    }
+
+    &[data-stretch="true"] {
+        flex: 1;
+        align-items: stretch;
     }
 }

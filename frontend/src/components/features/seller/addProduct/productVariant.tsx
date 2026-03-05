@@ -6,30 +6,53 @@ import { Field, FieldGroup, FieldLabel, FieldLegend, FieldSeparator } from "@com
 import { Icon } from "@components/ui/Nebula/icon";
 import { Input } from "@components/ui/Nebula/input";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@components/ui/Nebula/input-group";
-import { useState } from "react";
-
+import { useEffect, useState } from "react";
 import s from "@styles/layouts/seller/addProduct.module.scss"
 
 
-type VariantGroup = {
+export interface VariantGroup {
     id: string;
     name: string;
     options: string[];
 };
 
-const ProductVariantPanel: React.FC = () => {
-    const [hasVariant, setHasVariant] = useState(false);
+export interface ProductVariantResponse {
+    hasVariant: boolean;
+    variants: VariantGroup[];
+};
 
+type AddProductVariantProps = {
+    onChange: (value: ProductVariantResponse) => void;
+};
+
+const ProductVariantPanel: React.FC<AddProductVariantProps> = ({ onChange }) => {
+    const [hasVariant, setHasVariant] = useState(false);
     const [variants, setVariants] = useState<VariantGroup[]>([]);
+
+    // * notify parent whenever state changes
+    useEffect(() => {
+        if (!hasVariant) {
+            onChange({
+                hasVariant: false,
+                variants: []
+            });
+            return;
+        }
+
+        onChange({
+            hasVariant: true,
+            variants
+        });
+    }, [hasVariant, variants, onChange]);
 
     const addVariantGroup = () => {
         setVariants(prev => [
-        ...prev,
-        {
-            id: crypto.randomUUID(),
-            name: "",
-            options: []
-        }
+            ...prev,
+            {
+                id: crypto.randomUUID(),
+                name: "",
+                options: []
+            }
         ]);
     };
 
@@ -39,9 +62,9 @@ const ProductVariantPanel: React.FC = () => {
 
     const updateVariantName = (id: string, name: string) => {
         setVariants(prev =>
-        prev.map(v =>
-            v.id === id ? { ...v, name } : v
-        )
+            prev.map(v =>
+                v.id === id ? { ...v, name } : v
+            )
         );
     };
 
@@ -49,27 +72,27 @@ const ProductVariantPanel: React.FC = () => {
         if (!value.trim()) return;
 
         setVariants(prev =>
-        prev.map(v =>
-            v.id === id
-            ? { ...v, options: [...v.options, value] }
-            : v
-        )
+            prev.map(v =>
+                v.id === id
+                    ? { ...v, options: [...v.options, value] }
+                    : v
+            )
         );
     };
 
     const removeOption = (id: string, index: number) => {
         setVariants(prev =>
-        prev.map(v =>
-            v.id === id
-            ? {
-                ...v,
-                options: v.options.filter((_, i) => i !== index)
-                }
-            : v
-        )
+            prev.map(v =>
+                v.id === id
+                    ? {
+                        ...v,
+                        options: v.options.filter((_, i) => i !== index)
+                    }
+                    : v
+            )
         );
     };
-
+    
     return (
         <SellerContent>
 
@@ -175,20 +198,6 @@ const ProductVariantPanel: React.FC = () => {
 
             </FieldGroup>
         )}
-
-        <ButtonGroup>
-            <ButtonGroup>
-                <Button type="submit" size={"sm"}>
-                    Save Variants
-                </Button>
-            </ButtonGroup>
-
-            <ButtonGroup>
-                <Button variant="outline" type="button" size={"sm"}>
-                    Cancel
-                </Button>
-            </ButtonGroup>
-        </ButtonGroup>
 
         </SellerContent>
     );
