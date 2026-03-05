@@ -3,10 +3,17 @@ use std::path::PathBuf;
 use axum::extract::Multipart;
 use infer;
 use libvips::{VipsImage, ops};
+use serde::de::DeserializeOwned;
 
 use crate::application::service::{
     errors::MediaServiceError, snowflake_service::SnowflakeGenerator,
 };
+
+pub struct ExtractedPayload<T> {
+    pub payload: T,
+    pub files: Vec<Vec<u8>>
+}
+
 
 pub enum ImageTransform {
     Resize {
@@ -46,6 +53,48 @@ impl MediaService {
             media_root,
             snowflake,
         }
+    }
+
+    pub async fn extract_payload_with_type<T: DeserializeOwned> (
+        mut multipart: Multipart,
+        file_max_size: usize
+    ) -> Result<ExtractedPayload<T>, MediaServiceError> {
+        let mut files = Vec::new();
+        let mut payload: Option<T> = None;
+
+        while let Some(field) = multipart.next_field().await? {
+            let name = field.name().unwrap_or("").to_string();
+
+            match name.as_str() {
+                "payload" => {
+                    let raw = field.text().await
+                        .map_err(|_| MediaServiceError::UnableToExtract)?;
+
+                    payload = Some(
+                        serde_json::from_str(&raw)
+                            .map_err(|_| MediaServiceError::UnableToExtract)?
+                    );
+                }
+
+                _ => {
+                    let bytes = field.bytes().await?;
+    
+                    if bytes.len() > file_max_size {
+                        return Err(MediaServiceError::SizeTooLarge);
+                    }
+    
+                    files.push(bytes.to_vec());
+                }
+            }
+        }
+
+        let payload = payload.ok_or(MediaServiceError::UnableToExtract)?;
+
+        let extracted = ExtractedPayload {
+            payload,
+            files,
+        };
+        Ok(extracted)
     }
 
     pub async fn extract_multipart_bytes(

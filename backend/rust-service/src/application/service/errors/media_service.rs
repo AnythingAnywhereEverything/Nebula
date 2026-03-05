@@ -14,6 +14,9 @@ pub enum MediaServiceError {
     #[error("File too large.")]
     SizeTooLarge,
 
+    #[error("Unable to extract payload.")]
+    UnableToExtract,
+
     #[error("Internal system error.")]
     InternalServer,
 }

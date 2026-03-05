@@ -11,6 +11,7 @@ impl From<MediaServiceError> for APIError {
             MediaServiceError::SizeTooLarge => StatusCode::PAYLOAD_TOO_LARGE,
             MediaServiceError::MediaMissing => StatusCode::BAD_REQUEST,
             MediaServiceError::InternalServer => StatusCode::INTERNAL_SERVER_ERROR,
+            MediaServiceError::UnableToExtract => StatusCode::BAD_REQUEST
         };
 
         let error = APIErrorEntry::new(&err.to_string())
