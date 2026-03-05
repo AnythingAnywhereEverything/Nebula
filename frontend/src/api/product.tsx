@@ -20,6 +20,23 @@ export type FinalPayload = {
     images: (File | string)[];
 }
 
+export type ProductData = {
+    id: string;
+    name: string;
+    description: string;
+    has_variant: boolean;
+    is_active: boolean;
+    free_shipping: boolean;
+
+    image_url: string;
+    variant_count: number;
+    total_stock: number;
+
+    created_at: string;
+    updated_at: string;
+    deleted_at: string;
+}
+
 function buildProductFormData(product: FinalPayload) {
     const formData = new FormData()
 
@@ -49,6 +66,28 @@ function buildProductFormData(product: FinalPayload) {
     })
 
     return formData
+}
+
+export async function getShopProducts(shop_id: String): Promise<ProductData[]> {
+
+    const res = await fetchWithAuth(`/api/v2/products/${shop_id}/`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+
+    const data = await res.json();
+
+    console.log(data)
+
+    if (!res.ok) {
+        const errorMessage =
+        data?.errors?.[0]?.message || "Failed to update Username";
+        throw new Error(errorMessage);
+    }
+
+    return data;
 }
 
 export async function createProduct(payload: FinalPayload, shop_id: String) {

@@ -5,9 +5,63 @@ use sqlx::{Postgres, QueryBuilder, Transaction};
 use crate::{
     application::{repository::RepositoryResult, state::AppState},
     domain::models::product::{
-        CreateAttributesDto, CreateSpecificationDto, CreateVariantDto, ProductInfo,
+        CreateAttributesDto, CreateSpecificationDto, CreateVariantDto, GetShopProduct, ProductInfo
     },
 };
+
+pub async fn get_shop_products(
+    tx: &mut Transaction<'_, Postgres>,
+    shop_id: i64,
+) -> RepositoryResult<Vec<GetShopProduct>> {
+    let products = sqlx::query_as::<_, GetShopProduct>(
+        r#"
+        SELECT
+            p.id::text as id,
+            p.name,
+            p.description,
+            p.has_variants,
+            p.is_active,
+            p.free_shipping,
+
+            img.image_url,
+
+            COALESCE(v.variant_count, 0) as variant_count,
+            COALESCE(v.total_stock, 0) as total_stock,
+
+            p.created_at,
+            p.updated_at,
+            p.deleted_at
+
+        FROM products p
+
+        LEFT JOIN LATERAL (
+            SELECT image_url
+            FROM product_images
+            WHERE product_id = p.id
+            ORDER BY position ASC
+            LIMIT 1
+        ) img ON TRUE
+
+        LEFT JOIN LATERAL (
+            SELECT
+                COUNT(*) as variant_count,
+                COALESCE(SUM(stock_quantity), 0) as total_stock
+            FROM product_variants
+            WHERE product_id = p.id
+            AND deleted_at IS NULL
+        ) v ON TRUE
+
+        WHERE p.shop_id = $1
+        AND p.deleted_at IS NULL
+        ORDER BY p.created_at DESC
+        "#
+    )
+    .bind(shop_id)
+    .fetch_all(tx.as_mut())
+    .await?;
+
+    Ok(products)
+}
 
 pub async fn create_product_info(
     tx: &mut Transaction<'_, Postgres>,
