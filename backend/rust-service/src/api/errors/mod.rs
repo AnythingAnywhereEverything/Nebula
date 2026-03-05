@@ -5,3 +5,4 @@ pub mod media_mapping;
 pub mod email_mapping;
 pub mod shop_mapping;
 pub mod password_mapping;
+pub mod product_mapping;

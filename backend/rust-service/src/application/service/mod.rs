@@ -6,3 +6,4 @@ pub mod errors;
 pub mod session_service;
 pub mod email_service;
 pub mod password_service;
+pub mod product_service;
