@@ -207,9 +207,16 @@ pub async fn add_or_update_profile_handler(
 
     let old_profile_path = user.profile_picture_url;
 
+    // * Converting to bytes array before uploading
+    let image_bytes = state.media_service.extract_multipart_bytes(
+        multipart, 
+        Some("file"), 
+        8 * 1024 * 1024)
+        .await?;
+
     let relative_path = state
         .media_service
-        .save_media(multipart, options, old_profile_path)
+        .save_media(&image_bytes[0], options, old_profile_path)
         .await?;
 
     let user_image_path = UserUpdate {

@@ -4,7 +4,9 @@ use axum::extract::Multipart;
 use infer;
 use libvips::{VipsImage, ops};
 
-use crate::application::service::{errors::MediaServiceError, snowflake_service::SnowflakeGenerator};
+use crate::application::service::{
+    errors::MediaServiceError, snowflake_service::SnowflakeGenerator,
+};
 
 pub enum ImageTransform {
     Resize {
@@ -46,29 +48,48 @@ impl MediaService {
         }
     }
 
-    pub async fn save_media(
+    pub async fn extract_multipart_bytes(
         &self,
         mut multipart: Multipart,
+        field_filter: Option<&str>,
+        max_size: usize,
+    ) -> Result<Vec<Vec<u8>>, MediaServiceError> {
+        let mut files = Vec::new();
+
+        while let Some(field) = multipart.next_field().await? {
+            let name = field.name().unwrap_or("");
+
+            if let Some(filter) = field_filter {
+                if name != filter {
+                    continue;
+                }
+            }
+
+            let bytes = field.bytes().await?;
+
+            if bytes.len() > max_size {
+                return Err(MediaServiceError::SizeTooLarge);
+            }
+
+            files.push(bytes.to_vec());
+        }
+
+        if files.is_empty() {
+            return Err(MediaServiceError::MediaMissing);
+        }
+
+        Ok(files)
+    }
+
+    pub async fn save_media(
+        &self,
+        raw: &[u8],
         options: MediaOptions,
         old_relative_path: Option<String>,
     ) -> Result<String, MediaServiceError> {
-        // Extract file
-        let mut raw = None;
-
-        while let Some(field) = multipart.next_field().await? {
-            if field.name() == Some("file") {
-                let bytes = field.bytes().await?;
-
-                if bytes.len() > options.max_size {
-                    return Err(MediaServiceError::SizeTooLarge);
-                }
-
-                raw = Some(bytes);
-                break;
-            }
+        if raw.len() > options.max_size {
+            return Err(MediaServiceError::SizeTooLarge);
         }
-
-        let raw = raw.ok_or(MediaServiceError::MediaMissing)?;
 
         // Byte-level type detection
         let detected = infer::get(&raw).ok_or(MediaServiceError::InvalidMediaType)?;
