@@ -17,9 +17,7 @@ import {
     Input,
     Textarea,
 } from "@components/ui/NebulaUI";
-import React, { useState } from "react";
-import s from "@styles/layouts/seller/addProduct.module.scss";
-
+import React, { useCallback, useState } from "react";
 import ImageUploader from "@components/ui/Nebula/image-uploader";
 import ProductVariantPanel, { ProductVariantResponse } from "./addProduct/productVariant";
 import ProductSpecificationTable, { Specification } from "./addProduct/specTable";
@@ -27,6 +25,7 @@ import ProductDataField from "./addProduct/productData";
 import { VariantRow } from "@/types/product";
 import { useRouter } from "next/router";
 import { createProduct } from "@/api/product";
+import { AddProductHeader } from "./addProduct/addProductHeader";
 
 
 const AddProduct: React.FC = () => {
@@ -62,7 +61,20 @@ const AddProduct: React.FC = () => {
 
     const [specifications, setSpecifications] = useState<Specification[]>([]);
 
+    const handleProductInfo = useCallback((patch: Partial<typeof productInfo>) => {
+        setProductInfo(prev => ({ ...prev, ...patch }));
+    }, []);
+
+    const handleVariantInfo = useCallback((patch: Partial<typeof variantData>) => {
+        setVariantData(prev => ({ ...prev, ...patch }));
+    }, []);
     
+    const handleProductDataChange = React.useCallback((value: {
+        hasVariant: boolean;
+        variants: VariantRow[];
+    }) => {
+        setProductData(value);
+    }, []);
 
     const handleSubmit = () => {
 
@@ -98,15 +110,15 @@ const AddProduct: React.FC = () => {
 
                     <AddProductHeader
                         data={productInfo}
-                        onChange={(patch) =>
-                            setProductInfo(prev => ({ ...prev, ...patch }))
-                        }
+
+                        onChange={handleProductInfo}
+
                         specifications={specifications}
                         onSpecChange={setSpecifications}
                     />
 
                     <ProductVariantPanel
-                        onChange={setVariantData}
+                        onChange={handleVariantInfo}
                     />
 
                 </Field>
@@ -121,7 +133,7 @@ const AddProduct: React.FC = () => {
             </Field>
 
             <ProductDataField
-                onChange={setProductData}
+                onChange={handleProductDataChange}
                 hasVariant={variantData.hasVariant}
                 variants={variantData.variants}
             />
@@ -130,86 +142,7 @@ const AddProduct: React.FC = () => {
     );
 };
 
-const AddProductHeader: React.FC<{
-    data: {
-        name: string;
-        description: string;
-        images: (File | string)[];
-    };
-    onChange: (patch: Partial<{
-        name: string;
-        description: string;
-        images: (File | string)[];
-    }>) => void;
-    specifications: Specification[];
-    onSpecChange: (specs: Specification[]) => void;
-}> = ({ data, onChange, specifications, onSpecChange }) => {
-
-    return (
-        <SellerContent>
-            <FieldGroup>
-
-                <FieldLegend style={{ margin: 0 }}>
-                    Product Information
-                </FieldLegend>
-
-                <FieldSeparator />
-
-                <Field>
-                    <FieldLabel>Product Name</FieldLabel>
-                    <Input
-                        className={s.input}
-                        value={data.name}
-                        onChange={(e) =>
-                            onChange({ name: e.target.value })
-                        }
-                    />
-                </Field>
-
-                <Field>
-                    <FieldLabel>About product</FieldLabel>
-                    <FieldDescription>
-                        Enter detailed information about the product.
-                    </FieldDescription>
-                    <Textarea
-                        className={s.textarea}
-                        value={data.description}
-                        onChange={(e) =>
-                            onChange({ description: e.target.value })
-                        }
-                    />
-                </Field>
-
-                <ProductSpecificationTable
-                    value={specifications}
-                    onChange={onSpecChange}
-                />
-
-                <Field className={s.productImagesField}>
-                    <FieldLegend variant="label">
-                        Product Images
-                    </FieldLegend>
-
-                    <FieldDescription>
-                        Upload up to 5 images.
-                    </FieldDescription>
-
-                    <ImageUploader
-                        min={1}
-                        accept="image/jpeg, image/png"
-                        value={data.images}
-                        onChange={(urls) =>
-                            onChange({ images: urls })
-                        }
-                    />
-                </Field>
-
-            </FieldGroup>
-        </SellerContent>
-    );
-};
-
-const ProductSettingPanel: React.FC<{
+interface SettingPanelProps {
     data: {
         isActive: boolean;
         freeShipping: boolean;
@@ -222,8 +155,12 @@ const ProductSettingPanel: React.FC<{
         category: string;
         shopCategory: string;
     }>) => void;
-}> = ({ data, onChange }) => {
+}
 
+const ProductSettingPanel = React.memo(({
+    data,
+    onChange
+}: SettingPanelProps) => {
     return (
         <SellerContent style={{ width: "fit-content", minWidth: 300 }}>
 
@@ -299,6 +236,6 @@ const ProductSettingPanel: React.FC<{
 
         </SellerContent>
     );
-};
+});
 
 export default AddProduct;
