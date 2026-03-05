@@ -219,7 +219,7 @@ const MultiProductField = ({
 
     React.useEffect(() => {
         setDraft(data);
-    }, [data]);
+    }, [data.id]);
 
     React.useEffect(() => {
         const t = setTimeout(() => {
@@ -496,7 +496,7 @@ const SingleProductField = ({
 
     React.useEffect(() => {
         setDraft(data);
-    }, [data]);
+    }, [data.id]);
 
     React.useEffect(() => {
         const t = setTimeout(() => {
