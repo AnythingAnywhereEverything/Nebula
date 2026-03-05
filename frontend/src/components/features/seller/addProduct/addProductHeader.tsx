@@ -16,10 +16,9 @@ import s from "@styles/layouts/seller/addProduct.module.scss";
 
 import { useRef, useState } from "react";
 
-const NAME_MIN = 20;
+const NAME_MIN = 10;
 const NAME_MAX = 255;
 const DESC_MAX = 2000;
-const MAX_IMAGES = 5;
 
 export const AddProductHeader: React.FC<{
     data: {
