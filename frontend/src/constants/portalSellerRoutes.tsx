@@ -49,16 +49,6 @@ export const portalSellerAllowedList: Record<string, {
     "/finance/my_balance":{
         component: () => <p>my balance</p>
     },
-    "/finance/bank_account":{
-        component: () => <p>bank account</p>
-    },
-    
-    "/data/businate_insight":{
-        component: () => <p>bank account</p>
-    },
-    "/data/account_health":{
-        component: () => <p>bank account</p>
-    },
 
 
     // Setting

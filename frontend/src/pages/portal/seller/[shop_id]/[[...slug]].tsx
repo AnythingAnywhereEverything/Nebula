@@ -150,17 +150,8 @@ export const SellerSideBar: React.FC = () => {
             items: [
                 { icon: "", name: "My income", link: "/finance/my_income"},
                 { icon: "", name: "My balance", link: "/finance/my_balance"},
-                { icon: "", name: "Bank account", link: "/finance/bank_account"},
             ]
         },
-        {
-        description: "Data",
-        items: [
-                { icon: "", name: "Bussinate insight", link: "/data/businate_insight"},
-                { icon: "󱕎", name: "Account health", link: "/data/account_health"},
-            ]
-        },
-        
 
     ];
 
