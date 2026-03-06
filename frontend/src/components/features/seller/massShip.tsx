@@ -38,16 +38,6 @@ export default function MassShipPage (){
                                 <Button size={'sm'}>Within 24h (0)</Button>
                                 <Button size={'sm'}>Beyond 24h (0)</Button>
                             </SellerToolbarRow>
-        
-                            <SellerToolbarRow>
-                                <div>
-                                    <span>Shipping Channel :</span>
-                                </div>
-                                <Button size={'sm'}>NBX (0)</Button>
-                                <Button size={'sm'}>NBX Express Instant (0)</Button>
-                                <Button size={'sm'}>J&T (0)</Button>
-                                <Button size={'sm'}>FBN (0)</Button>
-                            </SellerToolbarRow>
 
                             <MassShipShowMore isOpen={showMore}/>
                             <SellerToolbarRow>
