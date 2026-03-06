@@ -13,6 +13,14 @@ export interface Shop {
   is_brand: boolean;
   created_at: string;
   updated_at: string;
+  shop_profile_url: string;
+  shop_banner_url: string;
+}
+
+export interface UpdateShopInfo {
+    id: string;
+    name: string;
+    description:string;
 }
 
 export interface ShopsResponse {
@@ -54,4 +62,68 @@ export const requestCreateShop = async (payload : CreateShopRequest) => {
         },
         body: JSON.stringify(payload)
     })
+}
+export const getCurrentShopInfo = async (shopId: string) => {
+    const token = getToken();
+    if (!token) throw new Error("No token found");
+
+    const res = await fetchWithAuth(`/api/v2/shops/${shopId}/info`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        },
+    })
+    const data = await res.json()
+    if (!res.ok) {
+        const errorMessage =
+        data?.errors?.[0]?.message || "Failed to request";
+        throw new Error(errorMessage);
+    }
+    
+    return data;
+}
+
+export const updateShopInfo = async ( payload: UpdateShopInfo ) =>{
+    const token = getToken()
+    if (!token) throw new Error("No token found");
+
+    await fetchWithAuth(`/api/v2/shops/${payload.id}/info`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload)
+    })
+}
+
+export const updateShopProfile = async (shopId:string ,file: File) => {
+    const token = getToken();
+    if (!token) throw new Error("No token found");
+
+    const formData = new FormData();
+    formData.append("file", file); // key must match backend field name
+
+  for (const [key, value] of formData.entries()) {
+    console.log(key, value);
+  }
+  const res = await fetchWithAuth(`/api/v2/shops/${shopId}/profile`, {
+    method: "PATCH",
+    body: formData,
+  });
+
+}
+export const updateShopBanner = async (shopId:string ,file: File) => {
+    const token = getToken();
+    if (!token) throw new Error("No token found");
+
+    const formData = new FormData();
+    formData.append("file", file); // key must match backend field name
+
+  for (const [key, value] of formData.entries()) {
+    console.log(key, value);
+  }
+  const res = await fetchWithAuth(`/api/v2/shops/${shopId}/banner`, {
+    method: "PATCH",
+    body: formData,
+  });
 }
