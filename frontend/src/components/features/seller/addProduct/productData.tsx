@@ -21,7 +21,7 @@ import { cn } from "@lib/utils";
 import s from "@styles/layouts/seller/addProduct.module.scss";
 import { ProductVariantResponse } from "./productVariant";
 import { generateVariantMatrix } from "@lib/productVariant";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { VariantRow } from "@/types/product";
 
 export type ProductDataFieldProps = ProductVariantResponse & {
@@ -38,6 +38,8 @@ const ProductDataField = ({
 }: ProductDataFieldProps) => {
     const [matrix, setMatrix] = useState<VariantRow[]>([]);
     const [selectedId, setSelectedId] = useState<string | null>(null);
+
+    const lastPayload = React.useRef<string>("");
 
     const [singleVariant, setSingleVariant] = useState<VariantRow>({
         id: crypto.randomUUID(),
@@ -94,23 +96,35 @@ const ProductDataField = ({
     }, [variants, hasVariant]);
 
     useEffect(() => {
+
+        let payload;
+
         if (!hasVariant) {
-            onChange({
+            payload = {
                 hasVariant: false,
-                variants: [singleVariant] // * always one
-            });
-            return;
+                variants: [singleVariant]
+            };
+        } else {
+            const enabledVariants = matrix.filter(v => v.isEnabled);
+
+            payload = {
+                hasVariant: true,
+                variants: enabledVariants
+            };
         }
 
-        const enabledVariants = matrix.filter(v => v.isEnabled);
+        const serialized = JSON.stringify(payload);
 
-        onChange({
-            hasVariant: true,
-            variants: enabledVariants
-        });
+        if (lastPayload.current === serialized) {
+            return;
+            // * prevents infinite loop when parent rerenders with same data
+        }
+
+        lastPayload.current = serialized;
+
+        onChange(payload);
 
     }, [matrix, singleVariant, hasVariant, onChange]);
-
     const updateVariant = (id: string, patch: Partial<VariantRow>) => {
         setMatrix(prev =>
             prev.map(row =>
@@ -201,11 +215,31 @@ const MultiProductField = ({
     onRemove: () => void;
 }) => {
 
-    const sellingPrice = Number(
-        data.onSale ? data.salePrice : data.price
-    ) || 0;
+    const [draft, setDraft] = React.useState(data);
 
-    const cost = Number(data.cost) || 0;
+    React.useEffect(() => {
+        setDraft(data);
+    }, [data.id]);
+
+    React.useEffect(() => {
+        const t = setTimeout(() => {
+            onChange(draft);
+        }, 40);
+
+        return () => clearTimeout(t);
+    }, [draft]);
+
+    const toNumber = (v: string | undefined) => {
+        if (v === "") return "";
+        if (!/^\d*\.?\d*$/.test(v || "")) return null;
+        return v;
+    };
+
+    const sellingPrice = Number(
+        toNumber(draft.onSale ? draft.salePrice : draft.price || "")
+        || 0
+    );
+    const cost = Number(toNumber(draft.cost) || 0);
 
     const profit = sellingPrice - cost;
 
@@ -213,7 +247,6 @@ const MultiProductField = ({
         sellingPrice > 0
             ? (profit / sellingPrice) * 100
             : 0;
-
     return (
         <FieldGroup className={s.productField}>
             <Field className={s.productDataSettings}>
@@ -252,10 +285,14 @@ const MultiProductField = ({
                                     </InputGroupAddon>
                                     <InputGroupInput
                                         placeholder="500"
-                                        value={data.salePrice}
-                                        onChange={(e) =>
-                                            onChange({ salePrice: e.target.value })
-                                        }
+                                        type="number"
+                                        inputMode="decimal"
+                                        value={draft.salePrice}
+                                        onChange={(e) => {
+                                            const v = toNumber(e.target.value);
+                                            if (v === null) return;
+                                            setDraft(p => ({ ...p, salePrice: e.target.value }))
+                                        }}
                                     />
                                 </InputGroup>
                             </Field>
@@ -268,10 +305,13 @@ const MultiProductField = ({
                                 </InputGroupAddon>
                                 <InputGroupInput
                                     placeholder="250"
-                                    value={data.cost}
-                                    onChange={(e) =>
-                                        onChange({ cost: e.target.value })
-                                    }
+                                    inputMode="decimal"
+                                    value={draft.cost}
+                                    onChange={(e) => {
+                                        const v = toNumber(e.target.value);
+                                        if (v === null) return;
+                                        setDraft(p => ({ ...p, cost: e.target.value }))
+                                    }}
                                 />
                             </InputGroup>
                         </Field>
@@ -315,12 +355,15 @@ const MultiProductField = ({
                                 <InputGroupAddon align="inline-start">
                                     <InputGroupText>$</InputGroupText>
                                 </InputGroupAddon>
-                                <InputGroupInput 
+                                <InputGroupInput
                                     placeholder="700"
-                                    value={data.price}
-                                    onChange={(e) =>
-                                        onChange({ price: e.target.value })
-                                    }
+                                    value={draft.price}
+                                    inputMode="decimal"
+                                    onChange={(e) => {
+                                        const v = toNumber(e.target.value);
+                                        if (v === null) return;
+                                        setDraft(p => ({ ...p, price: e.target.value }))
+                                    }}
                                 />
                             </InputGroup>
                         </Field>
@@ -329,7 +372,9 @@ const MultiProductField = ({
                                 id="on-sale"
                                 checked={data.onSale}
                                 onCheckedChange={(v) => {
-                                    onChange({ onSale: Boolean(v) });
+                                    if (typeof v !== "boolean") return;
+
+                                    onChange({ onSale: v });
                                 }}
                             />
                             <FieldLabel htmlFor="on-sale">Set product on sale</FieldLabel>
@@ -343,32 +388,37 @@ const MultiProductField = ({
                 <FieldSeparator />
                 <FieldGroup>
                     <Field>
-                        <FieldLabel>Stock Quantity</FieldLabel>
-                        <Input 
-                            placeholder="0" 
-                            value={data.stock}
-                            onChange={(e) =>
-                                onChange({ stock: e.target.value })
-                            }
+                        <FieldLabel htmlFor="stock">Stock Quantity</FieldLabel>
+                        <Input
+                            id="stock"
+                            inputMode="decimal"
+                            value={draft.stock}
+                            onChange={(e) =>{
+                                const v = toNumber(e.target.value);
+                                if (v === null) return;
+                                setDraft(p => ({ ...p, stock: e.target.value }))
+                            }}
                         />
                     </Field>
                     <Field orientation={"horizontal"}>
                         <Field>
-                            <FieldLabel>SKU Number</FieldLabel>
+                            <FieldLabel htmlFor="sku">SKU Number</FieldLabel>
                             <Input
-                                value={data.sku}
+                                id="sku"
+                                value={draft.sku}
                                 onChange={(e) =>
-                                    onChange({ sku: e.target.value })
+                                    setDraft(p => ({ ...p, sku: e.target.value }))
                                 }
                             />
                         </Field>
                         <FieldSeparator />
                         <Field>
-                            <FieldLabel>Barcode</FieldLabel>
+                            <FieldLabel htmlFor="barcode">Barcode</FieldLabel>
                             <Input
-                                value={data.barcode}
+                                id="barcode"
+                                value={draft.barcode}
                                 onChange={(e) =>
-                                    onChange({ barcode: e.target.value })
+                                    setDraft(p => ({ ...p, barcode: e.target.value }))
                                 }
                             />
                         </Field>
@@ -434,7 +484,6 @@ const MultiProductPanel = ({
     );
 };
 
-
 const SingleProductField = ({
     data,
     onChange
@@ -443,11 +492,31 @@ const SingleProductField = ({
     onChange: (patch: Partial<VariantRow>) => void;
 }) => {
 
+    const [draft, setDraft] = React.useState(data);
+
+    React.useEffect(() => {
+        setDraft(data);
+    }, [data.id]);
+
+    React.useEffect(() => {
+        const t = setTimeout(() => {
+            onChange(draft);
+        }, 40);
+
+        return () => clearTimeout(t);
+    }, [draft, onChange]);
+
+    const toNumber = (v: string) => {
+        if (v === "") return "";
+        if (!/^\d*\.?\d*$/.test(v)) return null;
+        return v;
+    };
+
     const sellingPrice = Number(
-        data.onSale ? data.salePrice : data.price
+        draft.onSale ? draft.salePrice : draft.price || ""
     ) || 0;
 
-    const cost = Number(data.cost) || 0;
+    const cost = Number(draft.cost) || 0;
 
     const profit = sellingPrice - cost;
 
@@ -462,13 +531,10 @@ const SingleProductField = ({
                 <FieldLegend>Price Setting</FieldLegend>
                 <FieldSeparator />
 
-                <Field
-                    orientation={"horizontal"}
-                    style={{ alignItems: "start" }}
-                >
+                <Field orientation={"horizontal"} style={{ alignItems: "start" }}>
                     <FieldGroup>
 
-                        <FieldSet disabled={!data.onSale}>
+                        <FieldSet disabled={!draft.onSale}>
                             <Field>
                                 <FieldLabel htmlFor="sale-price">
                                     Sale Price
@@ -478,10 +544,12 @@ const SingleProductField = ({
                                         <InputGroupText>$</InputGroupText>
                                     </InputGroupAddon>
                                     <InputGroupInput
-                                        value={data.salePrice}
-                                        onChange={(e) =>
-                                            onChange({ salePrice: e.target.value })
-                                        }
+                                        value={draft.salePrice}
+                                        onChange={(e) => {
+                                            const v = toNumber(e.target.value);
+                                            if (v === null) return;
+                                            setDraft(p => ({ ...p, salePrice: v }));
+                                        }}
                                     />
                                 </InputGroup>
                             </Field>
@@ -494,10 +562,12 @@ const SingleProductField = ({
                                     <InputGroupText>$</InputGroupText>
                                 </InputGroupAddon>
                                 <InputGroupInput
-                                    value={data.cost}
-                                    onChange={(e) =>
-                                        onChange({ cost: e.target.value })
-                                    }
+                                    value={draft.cost}
+                                    onChange={(e) => {
+                                        const v = toNumber(e.target.value);
+                                        if (v === null) return;
+                                        setDraft(p => ({ ...p, cost: v }));
+                                    }}
                                 />
                             </InputGroup>
                         </Field>
@@ -545,20 +615,23 @@ const SingleProductField = ({
                                     <InputGroupText>$</InputGroupText>
                                 </InputGroupAddon>
                                 <InputGroupInput
-                                    value={data.price}
-                                    onChange={(e) =>
-                                        onChange({ price: e.target.value })
-                                    }
+                                    value={draft.price}
+                                    onChange={(e) => {
+                                        const v = toNumber(e.target.value);
+                                        if (v === null) return;
+                                        setDraft(p => ({ ...p, price: v }));
+                                    }}
                                 />
                             </InputGroup>
                         </Field>
 
                         <Field orientation={"horizontal"}>
                             <Checkbox
-                                checked={data.onSale}
-                                onCheckedChange={(v) =>
-                                    onChange({ onSale: Boolean(v) })
-                                }
+                                checked={draft.onSale}
+                                onCheckedChange={(v) => {
+                                    if (typeof v !== "boolean") return;
+                                    setDraft(p => ({ ...p, onSale: v }));
+                                }}
                             />
                             <FieldLabel>Set product on sale</FieldLabel>
                         </Field>
@@ -574,10 +647,12 @@ const SingleProductField = ({
                     <Field>
                         <FieldLabel>Stock Quantity</FieldLabel>
                         <Input
-                            value={data.stock}
-                            onChange={(e) =>
-                                onChange({ stock: e.target.value })
-                            }
+                            value={draft.stock}
+                            onChange={(e) => {
+                                const v = toNumber(e.target.value);
+                                if (v === null) return;
+                                setDraft(p => ({ ...p, stock: v }));
+                            }}
                         />
                     </Field>
 
@@ -585,9 +660,9 @@ const SingleProductField = ({
                         <Field>
                             <FieldLabel>SKU Number</FieldLabel>
                             <Input
-                                value={data.sku}
+                                value={draft.sku}
                                 onChange={(e) =>
-                                    onChange({ sku: e.target.value })
+                                    setDraft(p => ({ ...p, sku: e.target.value }))
                                 }
                             />
                         </Field>
@@ -597,9 +672,9 @@ const SingleProductField = ({
                         <Field>
                             <FieldLabel>Barcode</FieldLabel>
                             <Input
-                                value={data.barcode}
+                                value={draft.barcode}
                                 onChange={(e) =>
-                                    onChange({ barcode: e.target.value })
+                                    setDraft(p => ({ ...p, barcode: e.target.value }))
                                 }
                             />
                         </Field>
@@ -610,4 +685,4 @@ const SingleProductField = ({
     );
 };
 
-export default ProductDataField;
+export default React.memo(ProductDataField);

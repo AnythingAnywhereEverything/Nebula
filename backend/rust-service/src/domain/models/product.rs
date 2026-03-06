@@ -2,8 +2,30 @@ use std::collections::HashMap;
 
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
+use sqlx::FromRow;
 
-#[derive(Debug, Clone, Serialize, Deserialize, sqlx::FromRow)]
+#[derive(Serialize, FromRow)]
+pub struct GetShopProduct {
+    pub id: String,
+
+    pub name: String,
+    pub description: String,
+
+    pub has_variants: bool,
+    pub is_active: bool,
+    pub free_shipping: bool,
+
+    pub image_url: Option<String>,
+
+    pub variant_count: i64,
+    pub total_stock: i64,
+
+    pub created_at: NaiveDateTime,
+    pub updated_at: NaiveDateTime,
+    pub deleted_at: Option<NaiveDateTime>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
 pub struct ProductInfo {
     pub id: i64,
     pub shop_id: i64,

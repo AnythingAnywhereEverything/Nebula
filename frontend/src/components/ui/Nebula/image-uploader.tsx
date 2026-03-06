@@ -30,6 +30,7 @@ type ImageItem = {
 };
 
 type ImageUploaderProps = {
+    id?: string;
     min?: number;
     max?: number;
     value?: ImageValue[];
@@ -39,11 +40,11 @@ type ImageUploaderProps = {
 
 /* ---------- Sortable Item ---------- */
 
-const SortableImage: React.FC<{
-    item: ImageItem;
-    index: number;
-    onRemove: () => void;
-}> = ({ item, index, onRemove }) => {
+const SortableImage = React.memo(({
+    item,
+    index,
+    onRemove
+}: { item: ImageItem; index: number; onRemove: () => void }) => {
     const {
         attributes,
         listeners,
@@ -91,9 +92,10 @@ const SortableImage: React.FC<{
             </Button>
         </div>
     );
-};
+});
 
 const ImageUploader: React.FC<ImageUploaderProps> = ({
+    id = "",
     min = 0,
     max = 5,
     value,
@@ -180,37 +182,36 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
     useEffect(() => {
         if (!value) return;
 
-        const mapped: ImageItem[] = value.map(v => {
-            if (typeof v === "string") {
+        setImages(prev => {
+            if (prev.length === value.length) return prev; 
+            // * prevents rebuild when parent rerenders
+
+            const mapped: ImageItem[] = value.map(v => {
+                if (typeof v === "string") {
+                    return {
+                        id: crypto.randomUUID(),
+                        url: v,
+                        preview: v
+                    };
+                }
+
                 return {
                     id: crypto.randomUUID(),
-                    url: v,
-                    preview: v
+                    file: v,
+                    preview: URL.createObjectURL(v)
                 };
-            }
+            });
 
-            return {
-                id: crypto.randomUUID(),
-                file: v,
-                preview: URL.createObjectURL(v)
-            };
+            return mapped;
         });
 
-        setImages(mapped);
-
-        return () => {
-            mapped.forEach(i => {
-                if (i.file) {
-                    URL.revokeObjectURL(i.preview);
-                }
-            });
-        };
     }, [value]);
 
     return (
         <div>
 
             <input
+                id={id}
                 ref={fileInputRef}
                 type="file"
                 accept={accept}
@@ -263,4 +264,4 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
     );
 };
 
-export default ImageUploader;
+export default React.memo(ImageUploader);

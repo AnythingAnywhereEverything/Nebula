@@ -1,0 +1,5 @@
+-- Add migration script here
+ALTER TABLE products
+ADD COLUMN sold BIGINT NOT NULL DEFAULT 0,
+ADD COLUMN rating NUMERIC(3,2) NOT NULL DEFAULT 0,
+ADD COLUMN review_amount BIGINT NOT NULL DEFAULT 0;

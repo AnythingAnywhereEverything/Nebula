@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use axum::extract::Multipart;
 
-use crate::{application::{repository::product_repo, service::{errors::ProductServiceError, media_service::{AllowedMediaType, ImageTransform, MediaOptions}}, state::AppState}, domain::models::product::{CreateAttributesDto, CreateProductDto, CreateVariantDto, ProductInfo}};
+use crate::{application::{repository::product_repo, service::{errors::{MediaServiceError, ProductServiceError}, media_service::{AllowedMediaType, ImageTransform, MediaOptions}}, state::AppState}, domain::models::product::{CreateAttributesDto, CreateProductDto, CreateVariantDto, ProductInfo}};
 
 pub struct ProductService;
 
@@ -57,6 +57,8 @@ impl ProductService {
         let mut product_image_paths: Vec<String> = Vec::new();
         let mut variant_image_paths: HashMap<i64, Vec<String>> = HashMap::new();
 
+        const MAX_IMAGE_SIZE: usize = 8 * 1024 * 1024;
+
         while let Some(field) = multipart.next_field().await? {
             let name = field.name().unwrap_or("").to_string();
 
@@ -64,12 +66,19 @@ impl ProductService {
                 "payload" => {
                     let raw = field.text().await?;
                     payload = Some(
-                        serde_json::from_str(&raw).map_err(|_| ProductServiceError::UnableToExtract)?,
+                        serde_json::from_str(&raw)
+                            .map_err(|_| ProductServiceError::UnableToExtract)?
                     );
                 }
 
                 "images" => {
-                    product_images.push(field.bytes().await?.to_vec());
+                    let bytes = field.bytes().await?;
+
+                    if bytes.len() > MAX_IMAGE_SIZE {
+                        return Err(MediaServiceError::SizeTooLarge.into());
+                    }
+
+                    product_images.push(bytes.to_vec());
                 }
 
                 _ if name.starts_with("variant_images_") => {
@@ -78,10 +87,16 @@ impl ProductService {
                         .parse()
                         .map_err(|_| ProductServiceError::UnableToExtract)?;
 
+                    let bytes = field.bytes().await?;
+
+                    if bytes.len() > MAX_IMAGE_SIZE {
+                        return Err(MediaServiceError::SizeTooLarge.into());
+                    }
+
                     variant_images
                         .entry(idx)
                         .or_default()
-                        .push(field.bytes().await?.to_vec());
+                        .push(bytes.to_vec());
                 }
 
                 _ => {}
@@ -164,7 +179,7 @@ impl ProductService {
                     &img,
                     MediaOptions {
                         folder: "products".into(),
-                        max_size: 5_000_000,
+                        max_size: MAX_IMAGE_SIZE,
                         allowed_types: vec![
                             AllowedMediaType::Jpeg,
                             AllowedMediaType::Png,

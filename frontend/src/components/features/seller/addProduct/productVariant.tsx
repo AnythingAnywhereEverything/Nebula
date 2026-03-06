@@ -8,6 +8,7 @@ import { Input } from "@components/ui/Nebula/input";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@components/ui/Nebula/input-group";
 import { useEffect, useState } from "react";
 import s from "@styles/layouts/seller/addProduct.module.scss"
+import React from "react";
 
 
 export interface VariantGroup {
@@ -25,25 +26,18 @@ type AddProductVariantProps = {
     onChange: (value: ProductVariantResponse) => void;
 };
 
-const ProductVariantPanel: React.FC<AddProductVariantProps> = ({ onChange }) => {
+const ProductVariantPanel = ({ onChange }: AddProductVariantProps) => {
     const [hasVariant, setHasVariant] = useState(false);
     const [variants, setVariants] = useState<VariantGroup[]>([]);
 
-    // * notify parent whenever state changes
     useEffect(() => {
-        if (!hasVariant) {
-            onChange({
-                hasVariant: false,
-                variants: []
-            });
-            return;
-        }
+        if (!hasVariant) return;
 
         onChange({
             hasVariant: true,
             variants
         });
-    }, [hasVariant, variants, onChange]);
+    }, [variants, hasVariant]);
 
     const addVariantGroup = () => {
         setVariants(prev => [
@@ -57,7 +51,9 @@ const ProductVariantPanel: React.FC<AddProductVariantProps> = ({ onChange }) => 
     };
 
     const removeVariantGroup = (id: string) => {
-        setVariants(prev => prev.filter(v => v.id !== id));
+        setVariants(prev =>
+            prev.filter(v => v.id !== id)
+        );
     };
 
     const updateVariantName = (id: string, name: string) => {
@@ -110,7 +106,15 @@ const ProductVariantPanel: React.FC<AddProductVariantProps> = ({ onChange }) => 
             <Checkbox
             id="has-variant"
             checked={hasVariant}
-            onCheckedChange={(v) => setHasVariant(Boolean(v))}
+            onCheckedChange={(v) => {
+                const value = Boolean(v);
+                setHasVariant(value);
+
+                onChange({
+                    hasVariant: value,
+                    variants: value ? variants : []
+                });
+            }}
             />
             <FieldLabel htmlFor="has-variant">
             This product has multiple variants (e.g. sizes or colors)
@@ -203,4 +207,4 @@ const ProductVariantPanel: React.FC<AddProductVariantProps> = ({ onChange }) => 
     );
 };
 
-export default ProductVariantPanel;
+export default React.memo(ProductVariantPanel);

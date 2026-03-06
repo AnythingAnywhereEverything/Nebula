@@ -71,6 +71,7 @@ const SortableRow: React.FC<{
 
             <td>
                 <Input
+                    id={`spec-key-${index}`}
                     value={spec.key}
                     placeholder="Specification key"
                     onChange={(e) =>
@@ -81,6 +82,7 @@ const SortableRow: React.FC<{
 
             <td>
                 <Input
+                    id={`spec-value-${index}`}
                     value={spec.value}
                     placeholder="Specification value"
                     onChange={(e) =>
@@ -116,7 +118,7 @@ const SortableRow: React.FC<{
     Main Table
 ========================================= */
 
-const ProductSpecificationTable: React.FC<Props> = ({
+const ProductSpecificationTable: React.FC<Props> = React.memo(({
     value,
     onChange
 }) => {
@@ -240,6 +242,6 @@ const ProductSpecificationTable: React.FC<Props> = ({
             </Field>
         </FieldGroup>
     );
-};
+});
 
-export default ProductSpecificationTable;
+export default React.memo(ProductSpecificationTable);
