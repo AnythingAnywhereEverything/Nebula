@@ -10,11 +10,14 @@
 
 .storeBanner {
     width: 100%;
+    padding-inline: calc(var(--spacing)*8);
     overflow: hidden;
-    aspect-ratio: 2.7 / 1;
+    aspect-ratio: 3 / 1;
     img {
         width: 100%;
-        aspect-ratio: 2.7 / 1;
+        height: 100%;
+        object-fit: cover;
+        aspect-ratio: 3 / 1;
     }
 }
 
