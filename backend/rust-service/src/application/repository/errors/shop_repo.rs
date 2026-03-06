@@ -16,6 +16,18 @@ pub enum ShopRepoError {
     FailedToCount,
     #[error("Username {0} is already taken.")]
     ShopAlreadyTaken(String),
-    #[error("Failed to get shop")]
-    FailedToGetShop,
+    #[error("Shop not found")]
+    ShopNotFound,
+}
+
+impl From<sqlx::Error> for ShopRepoError {
+    fn from(err: sqlx::Error) -> Self {
+        match err {
+            sqlx::Error::RowNotFound => ShopRepoError::ShopNotFound,
+            _ => {
+                tracing::error!("Database error: {:?}", err); 
+                ShopRepoError::UnableToSaveShop 
+            }
+        }
+    }
 }
