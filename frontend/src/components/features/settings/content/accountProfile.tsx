@@ -5,10 +5,8 @@ import Avatar from "@components/ui/Nebula/avatar";
 import { Badge } from "@components/ui/Nebula/badge";
 import { Button, ButtonGroup, Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, Field, FieldDescription, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSeparator, FieldSet, Icon, Input, Separator } from "@components/ui/NebulaUI";
 import style from "@styles/layouts/usersetting.module.scss";
-import Form from "next/form";
-import Image from "next/image";
 import Link from "next/link";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import {useEffect, useState } from "react";
 
 
 function censorEmail(email: string) {
