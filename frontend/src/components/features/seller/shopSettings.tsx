@@ -22,8 +22,9 @@ import Form from "next/form";
 import { updateShopInfo, UpdateShopInfo, getCurrentShopInfo} from "@/api/shop";
 import { useShopService } from "@/hooks/useShopService";
 import Avatar from "@components/ui/Nebula/avatar";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 export default function ShopSettings() {
+    const router = useRouter();
     const [errors, setErrors] = useState<{
         main: string | null
         profile: string | null
@@ -57,11 +58,12 @@ export default function ShopSettings() {
             try {
                 const res = await getCurrentShopInfo(shop_id)
                 if (res) {
-                    console.log(res)
                     setCurrentShop(res)
+                    setNewStoreName(res?.name)
+                    setNewStoreDescription(res?.description)
                 }
             } catch (e) {
-                console.log(e)
+                console.error(e)
             }
         }
         fetchShop()
@@ -142,6 +144,7 @@ export default function ShopSettings() {
         } finally {
             setLoadingProfile(false);
         }
+        router.refresh() // * cope
     };
 
     const handleBannerSubmit = async () => {
@@ -162,6 +165,7 @@ export default function ShopSettings() {
         } finally {
             setLoadingBanner(false);
         }
+        router.refresh() // * cope
     };
 
     const handleInfoSummit = (e:React.FormEvent) => {
@@ -172,6 +176,7 @@ export default function ShopSettings() {
             description:`${newStoreDescription}`,
         }
         updateShopInfo(payload);
+        router.refresh() // * cope
     }
 
     const pendingProfileChange = !!selectedProfileFile;
@@ -221,9 +226,6 @@ export default function ShopSettings() {
                                                     </ButtonGroup>
                                                 </ButtonGroup>
                                             )}
-                                        <Button onClick={() => console.log(shop_id)}>
-                                            Debug
-                                        </Button>
                                     </Field>
                                     <Field orientation={'horizontal'} style={{gap: "calc(var(--spacing)* 4)"}}>
                                         <FieldGroup className={s.storeBannerContainer}>
@@ -345,9 +347,10 @@ export default function ShopSettings() {
                 <FieldSeparator/>
                 <Field orientation={'horizontal'}>
                     <Field></Field>
-                    <Button variant={'outline'}>Reset</Button>
+                    <Button variant={'outline'} size={"sm"}>Reset</Button>
                     <Button 
                     variant={'default'}
+                    size={"sm"}
                     onClick={handleInfoSummit}
                     >Submit</Button>
                 </Field>
