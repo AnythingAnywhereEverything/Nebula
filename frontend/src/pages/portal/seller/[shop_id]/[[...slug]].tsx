@@ -9,6 +9,7 @@ import s from "@styles/sidebar.module.scss"
 import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, Field, FieldDescription, FieldGroup, FieldLabel, FieldLegend, Icon, Separator } from "@components/ui/NebulaUI";
 import Link from "next/link";
 import { useShop } from "@/hooks/useShop";
+import Avatar from "@components/ui/Nebula/avatar";
 
 const SellerPortal: NextPageWithLayout = () => {
     const router = useRouter();
@@ -171,9 +172,7 @@ export const SellerSideBar: React.FC = () => {
                     <DropdownMenuTrigger asChild>
                         <Button variant={"outline"} asChild>
                             <div className={s.shopSelector}>
-                                <div className={s.imageContainer}>
-                                    <img src="https://placehold.co/50" width={50} height={50} alt="" />
-                                </div>
+                                <Avatar className={s.imageContainer} src={currentShop?.shop_profile_url} fill />
                                 <div className={s.shopInfo}>
                                     {
                                         currentShop ? 
