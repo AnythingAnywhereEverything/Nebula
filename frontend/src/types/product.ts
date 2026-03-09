@@ -4,17 +4,56 @@ export type ProductOption = {
     values: string[];
 };
 
+export interface ProductAttribute {
+    id: string;
+    name: string;
+}
 
-export type ProductVariant = {
-    variantId: string;
+export interface AttributeOption {
+    id: string;
+    attribute_id: string;
+    value: string;
+}
+
+export interface VariantValue {
+    variant_id: string;
+    attribute_option_id: string;
+}
+
+export type Specification = {
+    id: string;
+    key: string;
+    value: string;
+};
+
+
+export interface ProductVariant {
+    id: string;
     sku: string;
-    attributes: Record<string, string>;
-    price: number;
-    discount?: number;
-    stock: number;
-    nsin: string;
-    media: string[];
-    availability: "in_stock" | "out_of_stock" | "low_stock";
+    price: string;
+    salePrice: string | undefined;
+    cost: string;
+    onSale: boolean;
+    stock: string;
+    barcode: string | undefined;
+    isEnabled: boolean;
+}
+
+export interface ProductImage {
+    id: string;
+    product_id: string | null;
+    variant_id: string | null;
+    image_url: string;
+    position: number;
+}
+
+export type MatrixVariant = {
+    id: string;
+    key: string;
+    attribute_option_ids: string[];
+    values: Record<string, string>;
+    isEnabled: boolean;
+    stock: string;
 };
 
 export type Product = {

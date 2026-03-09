@@ -164,7 +164,6 @@ const AccountProfile: React.FC = () => {
                         </Button>
                     </Field>
                     {
-
                         !data?.email_verified ?
                         <TokenRequestDialog title={"Request"} onOpen={requestMailVerification}>
 
@@ -186,6 +185,7 @@ const AccountProfile: React.FC = () => {
                         </FieldLabel>
                     </Button>
                 )}
+
 
                 {hasPendingChange && (
                     <ButtonGroup>

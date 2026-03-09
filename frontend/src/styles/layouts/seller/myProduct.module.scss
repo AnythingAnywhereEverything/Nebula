@@ -13,6 +13,13 @@
     }
 }
 
+.product {
+    padding: calc(var(--spacing) * 2);
+    background-color: color-mix(in oklab, var(--muted) 30%, transparent);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-medium);
+}
+
 .imgContainer{
     width: calc(var(--spacing) * 24);
     overflow: hidden;

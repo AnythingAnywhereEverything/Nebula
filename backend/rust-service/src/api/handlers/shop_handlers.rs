@@ -8,7 +8,7 @@ use serde_json::json;
 use crate::{
     api::{APIError, APIVersion, middleware::user_mw::AuthUser, version},
     application::{
-        repository::{errors::ShopRepoError, shop_repo}, service::media_service::{AllowedMediaType, ImageTransform, MediaOptions}, state::SharedState
+        repository::{errors::ShopRepoError, product_repo, shop_repo}, service::media_service::{AllowedMediaType, ImageTransform, MediaOptions}, state::SharedState
     },
     domain::{models::shop::{AssociateShops, NewShop, Shop, ShopResponse, ShopUpdateData}, shop::shop::ShopName},
 };
@@ -18,6 +18,22 @@ pub struct CreateShopRequest {
     pub name: String,
     pub description: Option<String>,
 }
+
+pub async fn get_shop_products (
+    Extension(_auth): Extension<AuthUser>,
+    State(state): State<SharedState>,
+    Path((version, shop_id)): Path<(String, i64)>,
+) -> Result<impl IntoResponse, APIError> {
+    let api_version: APIVersion = version::parse_version(&version)?;
+    tracing::trace!("api version: {}", api_version);
+
+    let mut tx = state.db_pool.begin().await?;
+
+    let products = product_repo::get_shop_products(&mut tx, shop_id).await?;
+
+    Ok(Json(products))
+}
+
 
 pub async fn create_shop_handler(
     Extension(auth): Extension<AuthUser>,
