@@ -252,6 +252,8 @@ const EditProductDataField = ({
 
                 <SingleProductField
                     data={singleVariant}
+                    shop_id={shop_id}
+                    product_id={product_id}
                 />
 
             )}
@@ -833,10 +835,15 @@ const MultiProductPanel = ({
 };
 
 const SingleProductField = ({
-    data
+    data,
+    shop_id,
+    product_id
 }: {
+    shop_id: string
+    product_id: string
     data: ProductVariant;
 }) => {
+    const router = useRouter()
 
     const [draft, setDraft] = React.useState(data);
     const [old, setOld] = React.useState(data);
@@ -845,6 +852,27 @@ const SingleProductField = ({
         setDraft(data);
         setOld(data);
     }, [data.id]);
+
+    const onSubmitUpdate = async () => {
+        const data = {
+            attribute_options: [],
+            sku: draft.sku,
+            price: draft.price,
+            salePrice: draft.salePrice,
+            cost: draft.cost,
+            onSale: draft.onSale,
+            stock: draft.stock,
+            barcode: draft.barcode,
+            isEnabled: true,
+
+            images: [],
+            files: []
+        }
+
+        await updateProductVariant(shop_id, product_id, draft.id, data);
+        router.refresh()
+    } 
+
 
     const isVariantDifferent = () => {
         const variantChanged =
@@ -875,7 +903,7 @@ const SingleProductField = ({
         <FieldGroup className={s.productField}>
             <Field orientation={"horizontal"}>
                 <Field />
-                <Button size={"sm"} disabled={!isVariantDifferent()}>
+                <Button size={"sm"} onClick={onSubmitUpdate} disabled={!isVariantDifferent()}>
                     Save data
                 </Button>
             </Field>
