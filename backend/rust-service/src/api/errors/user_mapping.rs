@@ -34,6 +34,12 @@ impl From<UserServiceError> for APIError {
                     .kind(APIErrorKind::SystemError)
                     .trace_id(),
             ),
+            UserServiceError::NoUser=> (
+                StatusCode::IM_A_TEAPOT,
+                APIErrorEntry::new("Internal server errror.")
+                    .code(APIErrorCode::SystemError)
+                    .kind(APIErrorKind::ResourceNotFound)
+            )
         };
 
         APIError::from((status, entry))
