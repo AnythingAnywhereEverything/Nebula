@@ -8,9 +8,9 @@ use serde_json::json;
 use crate::{
     api::{APIError, APIVersion, middleware::user_mw::AuthUser, version},
     application::{
-        repository::{errors::ShopRepoError, shop_repo}, service::media_service::{AllowedMediaType, ImageTransform, MediaOptions}, state::SharedState
+        repository::{errors::ShopRepoError, role_repo, shop_repo}, service::media_service::{AllowedMediaType, ImageTransform, MediaOptions}, state::{SharedState}
     },
-    domain::{models::shop::{AssociateShops, NewShop, Shop, ShopResponse, ShopUpdateData}, shop::shop::ShopName},
+    domain::{models::shop::{AssociateShops, NewShop, Shop, ShopMember, ShopResponse, ShopUpdateData}, role::role::{ShopRole, ShopRoleResponse}, shop::shop::ShopName},
 };
 
 #[derive(serde::Deserialize)]
@@ -47,7 +47,17 @@ pub async fn create_shop_handler(
         owner_id: user_id,
     };
 
+    let member_id = state.snowflake_generator.generate_id()?;
+    let member_info = ShopMember {
+        id: member_id,
+        shop_id: new_shop_id,
+        user_id: user_id,
+        role: "Owner".to_string()
+    };
+
     shop_repo::create_shop(&mut tx, new_shop).await?;
+
+    shop_repo::add_shop_member(&mut tx, member_info).await?;
 
     tx.commit().await?;
 
@@ -200,4 +210,70 @@ pub async fn update_shop_banner_handler(
     tx.commit().await?;
 
     Ok(())
+}
+
+pub async fn add_new_member_handler(
+    Extension(auth): Extension<AuthUser>,
+    State(state): State<SharedState>,
+    Path((version, id)): Path<(String, i64)>,
+) -> Result<impl IntoResponse, APIError> {
+    let api_version: APIVersion = version::parse_version(&version)?;
+    tracing::trace!("api version: {}", api_version);
+    let mut tx = state.db_pool.begin().await?;
+
+    let member_id = state.snowflake_generator.generate_id()?;
+    let user_id = auth.user_id;
+
+    let member_info = ShopMember{
+        id: member_id,
+        shop_id: id,
+        user_id: user_id,
+        role: "Member".to_string()
+    };
+
+    if shop_repo::is_member_exist(&mut tx, id, user_id).await? {
+        return Err(ShopRepoError::MemberIsExist.into());
+    }
+    
+    shop_repo::add_shop_member(&mut tx, member_info).await?;
+    tx.commit().await?;
+
+    Ok(())
+}
+
+// * Roles handler
+
+pub async fn get_all_roles_handler(
+    State(state): State<SharedState>,
+    Path((version, id)): Path<(String, i64)>
+) -> Result<impl IntoResponse, APIError> {
+    let api_version: APIVersion = version::parse_version(&version)?;
+    tracing::trace!("api version: {}", api_version);
+
+    let mut tx = state.db_pool.begin().await?;
+    let roles:Vec<ShopRoleResponse> = role_repo::get_all_roles(&mut tx, id).await?;
+    Ok(Json(<Vec<ShopRoleResponse>>::from(roles)))
+}
+
+pub async fn create_new_role_handler(
+    State(state): State<SharedState>,
+    Path((version, id)): Path<(String, i64)>,
+) -> Result<impl IntoResponse, APIError> {
+    let api_version: APIVersion = version::parse_version(&version)?;
+    tracing::trace!("api version: {}", api_version);
+    
+    let mut tx = state.db_pool.begin().await?;
+    
+    let role_id = state.snowflake_generator.generate_id()?;
+    let new_role = ShopRole {
+        id: role_id,
+        shop_id: id,
+        name: "New role".to_string(),
+        description: "".to_string(),
+        permissions: 0,
+    };
+
+    let role:ShopRoleResponse = role_repo::add_new_role(&mut tx, new_role).await?;
+    let _ = tx.commit().await;
+    Ok(Json(ShopRoleResponse::from(role)))   
 }
