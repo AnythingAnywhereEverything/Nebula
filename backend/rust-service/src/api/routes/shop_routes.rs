@@ -1,7 +1,7 @@
 use axum::{Router, middleware, routing::{get, patch, post, put}};
 
 use crate::{
-    api::{handlers::shop_handlers::{create_shop_handler, get_assosiate_shops_handler, get_current_shop_handler, update_shop_banner_handler, update_shop_info_handler, update_shop_profile_handler}, middleware::user_mw}, application::state::SharedState
+    api::{handlers::shop_handlers::{create_new_role_handler, create_shop_handler, get_all_roles_handler, get_assosiate_shops_handler, get_current_shop_handler, update_shop_banner_handler, update_shop_info_handler, update_shop_profile_handler}, middleware::user_mw}, application::state::SharedState
 };
 
 pub fn routes(state: SharedState) -> Router<SharedState> {
@@ -12,6 +12,8 @@ pub fn routes(state: SharedState) -> Router<SharedState> {
         .route("/{id}/profile", patch(update_shop_profile_handler))
         .route("/{id}/banner", patch(update_shop_banner_handler))
         .route("/{id}/info", put(update_shop_info_handler))
+        .route("/{id}/role", post(create_new_role_handler))
+        .route("/{id}/role", get(get_all_roles_handler))
         .layer(middleware::from_fn_with_state(
             state.clone(),
             user_mw::validate_user,
