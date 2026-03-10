@@ -8,4 +8,12 @@ pub enum UserServiceError {
     Validation(#[from] UsernameError),
     #[error(transparent)]
     Repository(#[from] UserRepoError),
+    #[error("No user in database yet")]
+    NoUser
+}
+
+impl From<sqlx::Error> for UserServiceError {
+    fn from(_: sqlx::Error) -> Self {
+        UserServiceError::NoUser
+    }
 }
