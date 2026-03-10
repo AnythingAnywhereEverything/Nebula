@@ -5,3 +5,4 @@ pub mod repository;
 pub mod security;
 pub mod service;
 pub mod state;
+pub mod init_repo;
