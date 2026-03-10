@@ -8,9 +8,9 @@ use serde_json::json;
 use crate::{
     api::{APIError, APIVersion, middleware::user_mw::AuthUser, version},
     application::{
-        repository::{errors::ShopRepoError, role_repo, product_repo, shop_repo}, service::media_service::{AllowedMediaType, ImageTransform, MediaOptions}, state::{SharedState}
+        repository::{errors::ShopRepoError, product_repo, role_repo, shop_repo}, service::media_service::{AllowedMediaType, ImageTransform, MediaOptions}, state::SharedState
     },
-    domain::{models::shop::{AssociateShops, NewShop, Shop, ShopMember, ShopResponse, ShopUpdateData}, role::role::{ShopRole, ShopRoleResponse}, shop::shop::ShopName},
+    domain::{models::shop::{AssociateShops, NewShop, Shop, ShopMember, ShopResponse, ShopUpdateData}, role::role::{CreateShopRole, ShopRole, ShopRoleResponse}, shop::shop::ShopName},
 };
 
 #[derive(serde::Deserialize)]
@@ -274,22 +274,27 @@ pub async fn get_all_roles_handler(
 pub async fn create_new_role_handler(
     State(state): State<SharedState>,
     Path((version, id)): Path<(String, i64)>,
+    Json(payload): Json<CreateShopRole>,
 ) -> Result<impl IntoResponse, APIError> {
+
     let api_version: APIVersion = version::parse_version(&version)?;
     tracing::trace!("api version: {}", api_version);
-    
+
     let mut tx = state.db_pool.begin().await?;
-    
+
     let role_id = state.snowflake_generator.generate_id()?;
+
     let new_role = ShopRole {
         id: role_id,
         shop_id: id,
-        name: "New role".to_string(),
-        description: "".to_string(),
-        permissions: 0,
+        name: payload.name,
+        description: Some(payload.description.expect("")),
+        permissions: payload.permissions,
     };
+    tracing::debug!("{:?}", new_role);
 
-    let role:ShopRoleResponse = role_repo::add_new_role(&mut tx, new_role).await?;
-    let _ = tx.commit().await;
-    Ok(Json(ShopRoleResponse::from(role)))   
+    let role: ShopRoleResponse = role_repo::add_new_role(&mut tx, new_role).await?;
+    tx.commit().await?;
+
+    Ok(Json(role))
 }
