@@ -1,0 +1,31 @@
+import { SellerPanel } from "@components/layouts/sellerPageLayout";
+import { Button, ButtonGroup, Field } from "@components/ui/NebulaUI";
+import Link from "next/link";
+import { useParams, usePathname } from "next/navigation";
+import React from "react";
+
+const ShopSettingsCompo:React.FC = () => {
+    const {shop_id} = useParams();
+    return (
+        <SellerPanel>
+            <ButtonGroup>
+                <div>
+                    <Link href={`/portal/seller/${shop_id}/settings`}>
+                        <Button>
+                            Basic info
+                        </Button>
+                    </Link>
+                </div>
+                <div>
+                    <Link href={`/portal/seller/${shop_id}/settings/role`}>
+                        <Button>
+                            Role
+                        </Button>
+                    </Link>
+                </div>
+            </ButtonGroup>
+        </SellerPanel>
+    )
+}
+
+export default ShopSettingsCompo;
