@@ -10,6 +10,7 @@ import SellerNotificationSetting from "@components/features/seller/order/shippin
 import SellerSettingPayment from "@components/features/seller/order/shippingSetting/payment";
 import SellerSettingProduct from "@components/features/seller/order/shippingSetting/product";
 import SellerSettingVacation from "@components/features/seller/order/shippingSetting/vacation";
+import RoleComponent from "@components/features/seller/settings/role";
 import ShippingSetting from "@components/features/seller/shippingSetting";
 import ShopSettings from "@components/features/seller/shopSettings";
 
@@ -22,6 +23,11 @@ export const portalSellerAllowedList: Record<string, {
     "/settings": {
         component: ShopSettings
     },
+    
+    "/settings/role":{
+        component: RoleComponent
+    },
+    
     "/canceled": {
         component: CancelRefunedReturn
     },
@@ -35,6 +41,7 @@ export const portalSellerAllowedList: Record<string, {
     "/order/setting":{
         component: ShippingSetting
     },
+    
 
     "/products/product_list": {
         component: MyProduct
