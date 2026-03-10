@@ -9,48 +9,61 @@ import { createNewRole, getShopRole, RequestNewRole, UpdateShopRole } from "@/ap
 import { useParams } from "next/navigation";
 import { randomUUID } from "crypto";
 import { error } from "console";
+import next from "next";
 
+const sellerLayoutStyle: React.CSSProperties = {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    margin: '0 auto',
+    gap: 'calc(var(--spacing) * 4)',
+    padding: 'calc(var(--spacing) * 4)',
+    boxSizing: "border-box"
+};
 
-const RoleComponent : React.FC = () => {
+export default function RoleComponent() {
     return (
-        <SellerLayout>
+        <Field style={sellerLayoutStyle}>
             <SellerHeader>Role Editor</SellerHeader>
             <ShopSettingsCompo/>
             <Field orientation={'horizontal'}  style={{ alignItems: "stretch"}}>
                 <RoleMain/>
             </Field>
-        </SellerLayout>
+        </Field>
     )
 }
 
 const RoleMain : React.FC = () => {
     const {shop_id} = useParams();
-    const [countRoles, setCountRoles] = useState(1);
+    const [cooldown, setCooldown] = useState(false);
     const MAXROLES = 15;
+    const [selectedRole, setSelectedRole] = useState<roleInfo | null>(null);
+    const [allRoles, setAllRoles] = useState<roleInfo[]>();
 
-    function sendRequestNewRole(id: string | string[] | undefined) {
+
+    async function sendRequestNewRole(id: string | string[] | undefined) {
         if (!id || Array.isArray(id)) return;
         if (allRoles === undefined) return;
-        
         if (allRoles?.length >= MAXROLES) {
             return console.error("Reached max roles")
         }
-        const nextCount = countRoles + allRoles.length
+        const nextCount = (1 + allRoles.length)
+        setCooldown(true)
 
-        setCountRoles(nextCount);
         const sendRequestPayload:RequestNewRole = {
-            id: id,
-            name: `New role ${countRoles}`,
+            name: `New role ${nextCount}`,
             description: "",
-            permission: 0
+            permissions: 0
         }
-        createNewRole(sendRequestPayload);
-        return;
+        await createNewRole(id ,sendRequestPayload);
+        const data = await getShopRole(id);
+        setAllRoles(data);
+
+        setTimeout(() => {
+            setCooldown(false);
+        }, 500);
     }
 
-    const [selectedRole, setSelectedRole] = useState<roleInfo>();
-    const [allRoles, setAllRoles] = useState<roleInfo[]>();
-    
     useEffect(() => {
         if (!shop_id || Array.isArray(shop_id)) return;
         
@@ -58,7 +71,6 @@ const RoleMain : React.FC = () => {
             try{
                 const data = await getShopRole(shop_id);
                 setAllRoles(data);
-                setCountRoles(data.length + 1)
             } catch (e) {
                 console.log(e)
             }
@@ -66,58 +78,37 @@ const RoleMain : React.FC = () => {
         fetchRole()
     }, [shop_id]);
 
-     
-
     return (
-        <Field orientation={'horizontal'}>
-            <SellerContent style={{width: '400px', height: "100%"}}>
-                
+        <Field orientation={'horizontal'} stretch>
+            <SellerContent style={{width: '400px'}}>
                 <Field>
                     <Field orientation={'horizontal'}>
                         <FieldLabel>
                             Current Role: {allRoles?.length}
                         </FieldLabel>
 
-                        {countRoles < MAXROLES ? (
-                            <Button 
-                            size={'sm'} 
-                            variant={'ghost'}
-                            onClick={() => sendRequestNewRole(shop_id)}>
-                                <Icon>
-                                    
-                                </Icon>
-                            </Button>    
-                        ) : (
-                            <></>
+                        {/* // * What a mess */}
+                        {allRoles?.length != undefined && allRoles?.length <= MAXROLES && cooldown === false && (
+                            <Button size={'sm'} variant={'ghost'}
+                            onClick={() => sendRequestNewRole(shop_id)}
+                            >
+                                <Icon></Icon>
+                            </Button>
                         )}
                         
+                        {cooldown && (
+                            <Button size={'sm'} variant={'ghost'}>
+                                <Icon>󰇘</Icon>
+                            </Button>
+                        )}
                     </Field>
                 </Field>
 
-                <Field className={s.roleContainer}>
-                    <Field orientation={'horizontal'}>
-                        <Field>
-                            <Link href="#">
-                                Role Name
-                            </Link>
-                        </Field>
-
-                        <Button 
-                        size={'xs'} 
-                        variant={'ghost'}
-                        onClick={() => console.log(allRoles?.length)}
-                        >
-                            <Icon>
-                                
-                            </Icon>
-                        </Button>
-                    </Field>
-
-                </Field>
                     <>
                         {allRoles?.map((item) => (
                             <Field orientation={'horizontal'} key={item.id}>
-                                <Button variant={'destructive'}>
+                                <Button variant={'destructive'}
+                                onClick={() => setSelectedRole(item)}>
                                     <Field>
                                         {item.name}
                                     </Field>
@@ -134,10 +125,10 @@ const RoleMain : React.FC = () => {
                                 </Button>
                             </Field>
                         ))}
-                        {selectedRole && <RoleRightSide {...selectedRole} />}
                     </>
             </SellerContent>
 
+            {selectedRole && <RoleRightSide {...selectedRole} />}
         </Field>
     )
 }
@@ -187,7 +178,7 @@ const RoleRightSide: React.FC<roleInfo> = (payload) => {
     const [newBit, setNewBit] = useState<number | null>(null);
 
     return (
-        <SellerContent style={{alignItems: "stretch"}}>
+        <SellerContent>
             <Field>
                 <FieldLabel>
                     Permission
@@ -204,12 +195,6 @@ const RoleRightSide: React.FC<roleInfo> = (payload) => {
                             />    
                         </Field>
 
-                        <FieldLabel>Description :</FieldLabel>
-                        <Textarea 
-                        placeholder="Role description"
-                        value={roleDescription}
-                        onChange={(e) => setRoleDescription(e.target.value)}
-                        />
                     </Field>            
         
                     <FieldSeparator/>
@@ -228,7 +213,11 @@ const RoleRightSide: React.FC<roleInfo> = (payload) => {
                     </Field>
                 </Form>
             </Field>
+
+            <FieldSeparator/>
+            <Field>
+
+            </Field>
         </SellerContent>
     )
 }
-export default RoleComponent;
