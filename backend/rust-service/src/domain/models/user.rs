@@ -1,6 +1,6 @@
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
-use sqlx::prelude::FromRow;
+use sqlx::{prelude::FromRow};
 
 #[derive(Debug, FromRow, Serialize, Deserialize, PartialEq, Eq, Clone)]
 pub struct User {
@@ -10,10 +10,9 @@ pub struct User {
 
     pub email: String,
     pub email_verified: bool,
-
     pub profile_picture_url: Option<String>,
     pub password_hash: Option<String>,
-    
+    pub role_id: Option<i64>,
     pub is_active: bool,
 
     pub last_login: Option<NaiveDateTime>,
@@ -61,6 +60,43 @@ pub struct PasswordUpdate {
     pub old_password: Option<String>,
     pub new_password: Option<String>,
     pub confirm_password: Option<String>
+}
+
+#[derive(Debug, FromRow, Serialize, Deserialize, PartialEq, Eq, Clone)]
+pub struct WishListUpdate {
+    pub product_id: i64,
+    pub user_id: i64,
+    pub added_at: NaiveDateTime
+}
+
+#[derive(Debug, FromRow, Serialize, Deserialize, PartialEq, Eq, Clone)]
+pub struct UserRole {
+    pub id: i64,
+    pub display_name: String,
+    pub username: String,
+
+    pub role_id: Option<i64>,
+    pub email: String,
+    pub email_verified: bool,
+    pub profile_picture_url: Option<String>,
+    pub password_hash: Option<String>,
+    pub is_active: bool,
+
+    pub last_login: Option<NaiveDateTime>,
+    pub created_at: Option<NaiveDateTime>,
+    pub updated_at: Option<NaiveDateTime>,
+}
+
+#[derive(Debug, FromRow, Serialize, Deserialize, PartialEq, Eq, Clone)]
+
+pub struct RoleResponse{
+    id: i64,
+    name: String,
+    description: String,
+    permissions: i64,
+    created_at: NaiveDateTime,
+    updated_at: NaiveDateTime,
+    is_superuser: bool
 }
 
 impl From<User> for UserResponse {
