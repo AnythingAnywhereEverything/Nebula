@@ -12,4 +12,34 @@
 
 .navSearchBox{
     flex: 0.8 !important;
+    position: relative;
+}
+
+.resultBox {
+    position: absolute;
+    top: 110%;
+    left: 0;
+    width: 100%;
+    background: var(--popover);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-medium);
+    overflow: hidden;
+    z-index: 50;
+    transition: background 0.5s;
+}
+
+.resultItem {
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: var(--text-small);
+
+    &:hover {
+        background: var(--muted);
+    }
+}
+
+.resultFooter {
+    font-size: var(--text-small);
+    padding: 8px 12px;
+    font-weight: 500;
 }

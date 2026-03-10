@@ -24,7 +24,7 @@ use tower_http::cors::{Any, CorsLayer};
 use crate::{
     api::{
         error::APIError,
-        routes::{auth_routes, dev_routes, product_routes, shop_routes, user_routes},
+        routes::{auth_routes, dev_routes, product_routes, search_routes, shop_routes, user_routes},
     },
     application::{security::jwt::AccessClaims, state::SharedState},
 };
@@ -63,6 +63,9 @@ pub async fn start(state: SharedState) {
         .nest("/{version}/shops", shop_routes::routes(Arc::clone(&state)))
         // Nest Product routes
         .nest("/{version}/products", product_routes::routes(Arc::clone(&state)))
+        // Nest Search routes
+        // * This is public API
+        .nest("/{version}/search", search_routes::routes())
         
         .fallback(error_404_handler)
         .layer(cors_layer)
