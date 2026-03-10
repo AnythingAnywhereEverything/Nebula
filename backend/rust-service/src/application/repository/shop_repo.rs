@@ -1,6 +1,6 @@
 use sqlx::{Postgres, Transaction};
 
-use crate::{application::repository::errors::ShopRepoError, domain::models::shop::{NewShop, Shop, ShopUpdateData}};
+use crate::{application::repository::errors::ShopRepoError, domain::{models::shop::{NewShop, Shop, ShopMember, ShopUpdateData}}};
 
 pub async fn is_shop_exist (
     tx: &mut Transaction<'_, Postgres>,
@@ -164,4 +164,48 @@ pub async fn update_banner_shop(
     .map(|_| ShopRepoError::ShopNotFound);
 
     Ok(())
+}
+
+pub async fn add_shop_member(
+    tx: &mut Transaction<'_, Postgres>,
+    payload: ShopMember
+) -> Result<(), ShopRepoError> {
+    let now = chrono::Utc::now().naive_utc();
+    let _ = sqlx::query(
+        r#"
+        INSERT INTO shop_members
+        (id, shop_id, user_id, role, created_at, updated_at)
+        VALUES ($1, $2 ,$3, $4, $5, $6)
+        "#
+    )
+    .bind(payload.id)
+    .bind(payload.shop_id)
+    .bind(payload.user_id)
+    .bind(payload.role)
+    .bind(now)
+    .bind(now)
+    .execute(tx.as_mut())
+    .await
+    .map_err(|_| ShopRepoError::ShopNotFound);
+
+    Ok(())
+}
+
+pub async fn is_member_exist(
+    tx: &mut Transaction<'_, Postgres>,
+    shop_id: i64,
+    user_id: i64
+) -> Result<bool, ShopRepoError> {
+    let count: i64 = sqlx::query_scalar(
+        r#"SELECT COUNT(*)
+            FROM shop_members 
+            WHERE shop_id = $1 AND user_id = $2"#
+    )
+        .bind(shop_id)
+        .bind(user_id)
+        .fetch_one(tx.as_mut())
+        .await
+        .map_err(|_| ShopRepoError::MemberIsExist)?;
+
+    Ok(count > 0)
 }

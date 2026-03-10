@@ -31,6 +31,7 @@ pub struct Shop {
 }
 
 pub struct ShopMember {
+    pub id: i64,
     pub shop_id: i64,
     pub user_id: i64,
     pub role: String,

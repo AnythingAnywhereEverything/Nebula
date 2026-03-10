@@ -18,6 +18,8 @@ pub enum ShopRepoError {
     ShopAlreadyTaken(String),
     #[error("Shop not found")]
     ShopNotFound,
+    #[error("Member already in current shop")]
+    MemberIsExist,
 }
 
 impl From<sqlx::Error> for ShopRepoError {
