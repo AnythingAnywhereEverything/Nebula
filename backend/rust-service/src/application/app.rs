@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use crate::{
     api::server,
-    application::{config, service::{media_service::MediaService, snowflake_service::{SnowflakeGenerator, SnowflakeKind}}, state::AppState},
+    application::{config, init_repo, service::{media_service::MediaService, snowflake_service::{SnowflakeGenerator, SnowflakeKind}}, state::AppState},
     infrastructure::{database::Database, redis},
 };
 
@@ -29,6 +29,10 @@ pub async fn run() {
         SnowflakeGenerator::new(config.server_worker_id, SnowflakeKind::Image).expect("Failed to create snowflake generator for media")
     );
 
+    // ? I hope this wont break anything in other machine 
+    let _ = init_repo::init_roles(&db_pool.clone()).await;
+
+    let _ = init_repo::init_superuser(&db_pool).await;
     // Build the application state.
     let shared_state = Arc::new(AppState {
         config,
@@ -37,5 +41,7 @@ pub async fn run() {
         snowflake_generator: snowflake_generator,
         media_service: media_service
     });
-    server::start(shared_state).await;
+
+    server::start(shared_state.clone()).await;
+
 }
