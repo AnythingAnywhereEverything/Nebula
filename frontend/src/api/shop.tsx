@@ -27,6 +27,19 @@ export interface ShopsResponse {
   owned: Shop[];
   associate: Shop[];
 }
+export interface RequestNewRole {
+    id: string,
+    name: string
+    description: string,
+    permission: number
+}
+
+export interface UpdateShopRole {
+    id: string;
+    name: string;
+    description: string;
+    permissions: number;
+}
 
 export const getAssociateShops = async (): Promise<ShopsResponse> => {
     const token = getToken();
@@ -126,4 +139,57 @@ export const updateShopBanner = async (shopId:string ,file: File) => {
     method: "PATCH",
     body: formData,
   });
+}
+
+export const getShopRole = async ( shop_id:string ) => {
+    const token = getToken();
+    if(!token) throw new Error("No token found");
+
+    const res = await fetchWithAuth(`/api/v2/shops/${shop_id}/role`, {
+      method: "GET",
+      headers: {
+          "Content-Type": "application/json",
+      },
+    })
+    const data = await res.json();
+    if (!res.ok) {
+        const errorMessage =
+        data?.errors?.[0]?.message || "Failed to request";
+        throw new Error(errorMessage);
+    }
+    return data;
+}
+
+
+export const createNewRole = async (payload : RequestNewRole) => {
+    const token = getToken();
+    if (!token) throw new Error("No token found");
+    
+    const res = await fetchWithAuth(`/api/v2/shops/${payload.id}/role`,{
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+
+    const data = await res.json()
+    if (!res.ok) {
+        const errorMessage =
+        data?.errors?.[0]?.message || "Failed to request";
+        throw new Error(errorMessage);
+    }
+    return data;
+}
+
+export const updateRole = async (shop_id : string, payload:UpdateShopRole) => {
+    const token = getToken();
+    if (!token) throw new Error("No token found");
+
+    const res = await fetchWithAuth(`/api/v2/shops/${shop_id}/role`,{
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload)
+    })
 }
