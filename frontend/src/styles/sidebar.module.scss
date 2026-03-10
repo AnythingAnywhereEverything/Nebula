@@ -84,9 +84,7 @@
         height: 50px;
         border-radius: var(--radius-small);
         overflow: hidden;
-        img {
-            display: block;
-        }
+        position: relative;
     }
 }
 

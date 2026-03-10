@@ -21,7 +21,7 @@ export default function MyProduct() {
         };
 
         fetchProducts();
-    }, [shop_id]); // runs only when shop_id changes
+    }, [shop_id]);
 
 
     return (
@@ -53,7 +53,8 @@ export default function MyProduct() {
                     {products?.map((product) => (
                         <SellerProductComponent
                         key={product.id}
-                        {...product}
+                        shop_id={shop_id?.toString() ?? ""}
+                        props={product}
                         />
                     ))}
                 </Field>

@@ -1,9 +1,7 @@
 import { SellerContent, SellerHeader, SellerLayout } from "@components/layouts/sellerPageLayout";
 import {
-    FieldDescription,
     Field,
     FieldLabel,
-    FieldGroup,
     Button,
     FieldSeparator,
     Switch,
@@ -14,13 +12,10 @@ import {
     ComboboxList,
     ComboboxEmpty,
     FieldLegend,
-    Input,
-    Textarea,
 } from "@components/ui/NebulaUI";
 import React, { useCallback, useState } from "react";
-import ImageUploader from "@components/ui/Nebula/image-uploader";
 import ProductVariantPanel, { ProductVariantResponse } from "./addProduct/productVariant";
-import ProductSpecificationTable, { Specification } from "./addProduct/specTable";
+import { Specification } from "./addProduct/specTable";
 import ProductDataField from "./addProduct/productData";
 import { VariantRow } from "@/types/product";
 import { useRouter } from "next/router";

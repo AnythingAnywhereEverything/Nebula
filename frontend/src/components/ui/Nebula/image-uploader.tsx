@@ -19,6 +19,7 @@ import {
 } from "@dnd-kit/sortable";
 
 import { CSS } from "@dnd-kit/utilities";
+import Image from "next/image";
 
 type ImageValue = File | string;
 
@@ -69,9 +70,10 @@ const SortableImage = React.memo(({
             {...listeners}
             className={s.imageWrapper}
         >
-            <img
+            <Image
                 src={item.preview}
                 alt=""
+                fill
                 style={{
                     width: "100%",
                     height: "100%",
@@ -182,16 +184,13 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
     useEffect(() => {
         if (!value) return;
 
-        setImages(prev => {
-            if (prev.length === value.length) return prev; 
-            // * prevents rebuild when parent rerenders
-
+        setImages(() => {
             const mapped: ImageItem[] = value.map(v => {
                 if (typeof v === "string") {
                     return {
                         id: crypto.randomUUID(),
                         url: v,
-                        preview: v
+                        preview: `/cdn/${v}`
                     };
                 }
 

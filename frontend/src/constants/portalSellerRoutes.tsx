@@ -1,6 +1,7 @@
 import AddNewProduct from "@components/features/seller/addProduct";
 import CancelRefunedReturn from "@components/features/seller/cancelProduct";
 import ShopDashboard from "@components/features/seller/dashboard";
+import EditProduct from "@components/features/seller/editProduct";
 import MassShipPage from "@components/features/seller/massShip";
 import myOrder from "@components/features/seller/myOrder";
 import MyProduct from "@components/features/seller/myProduct";
@@ -45,6 +46,9 @@ export const portalSellerAllowedList: Record<string, {
 
     "/products/product_list": {
         component: MyProduct
+    },
+    "/products/edit_product": {
+        component: EditProduct
     },
     "/products/new_product": {
         component: AddNewProduct

@@ -1,4 +1,4 @@
-use std::path::PathBuf;
+use std::{fmt::Debug, path::PathBuf};
 
 use axum::extract::Multipart;
 use infer;
@@ -55,7 +55,7 @@ impl MediaService {
         }
     }
 
-    pub async fn extract_payload_with_type<T: DeserializeOwned> (
+    pub async fn extract_payload_with_type<T: DeserializeOwned + Debug> (
         mut multipart: Multipart,
         file_max_size: usize
     ) -> Result<ExtractedPayload<T>, MediaServiceError> {
@@ -72,7 +72,10 @@ impl MediaService {
 
                     payload = Some(
                         serde_json::from_str(&raw)
-                            .map_err(|_| MediaServiceError::UnableToExtract)?
+                            .map_err(|e| {
+                                tracing::error!("Payload deserialize error: {}", e);
+                                MediaServiceError::UnableToExtract
+                            })?
                     );
                 }
 
@@ -260,7 +263,7 @@ impl MediaService {
         Ok(relative)
     }
 
-    async fn delete_old_file(&self, relative_path: &str) {
+    pub async fn delete_old_file(&self, relative_path: &str) {
         let mut full = PathBuf::from(&self.media_root);
         full.push(relative_path);
 
