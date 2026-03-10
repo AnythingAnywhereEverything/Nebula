@@ -148,7 +148,7 @@ const ProductPageLayout: React.FC<ProductPageLayoutProps> = ({variant_id}) => {
             </div>
 
             <div className={style.commentContainer}>
-                <ProductComment />
+                <ProductComment product_id={product.id} />
             </div>
         </>
     )

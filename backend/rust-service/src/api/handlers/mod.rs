@@ -5,3 +5,4 @@ pub mod session_handlers;
 pub mod shop_handlers;
 pub mod product_handler;
 pub mod search_handler;
+pub mod review_handler;

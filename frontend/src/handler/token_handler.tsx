@@ -64,3 +64,12 @@ export function fetchWithAuth(url: string, options: RequestInit = {}): Promise<R
 
     return fetch(url, { ...options, headers });
 }
+
+export function fetchWithOptionAuth(url: string, options: RequestInit = {}): Promise<Response> {
+    const token = getToken();
+
+    const headers = new Headers(options.headers || {});
+    headers.set("token", `${token}`);
+
+    return fetch(url, { ...options, headers });
+}

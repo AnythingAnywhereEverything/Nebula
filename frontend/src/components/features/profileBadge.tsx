@@ -26,11 +26,19 @@ export function ProfileBadge() {
     useEffect(() => 
         {setMounted(true)},
     []);
-
-    const displayName = data?.display_name ?? "Guest";
-    const username = data ? "@" + data.username : "@guest";
     
     if (!mounted || !resolvedTheme) return null;
+    
+    
+    if (!data && !isLoading) {
+        router.push("/auth/signin")
+        return
+    }
+
+    if (!data) return;
+    
+    const displayName = data.display_name;
+    const username = "@" + data.username;
     
     return (
         <DropdownMenu>
