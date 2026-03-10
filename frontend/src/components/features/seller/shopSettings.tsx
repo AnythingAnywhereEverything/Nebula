@@ -23,6 +23,8 @@ import { updateShopInfo, UpdateShopInfo, getCurrentShopInfo} from "@/api/shop";
 import { useShopService } from "@/hooks/useShopService";
 import Avatar from "@components/ui/Nebula/avatar";
 import { useParams } from "next/navigation";
+import ShopSettingsCompo from "./settings/settings";
+
 export default function ShopSettings() {
     const [errors, setErrors] = useState<{
         main: string | null
@@ -180,6 +182,7 @@ export default function ShopSettings() {
     return (
         <SellerLayout>
             <SellerHeader>Shop Settings</SellerHeader>
+            <ShopSettingsCompo/>
             <SellerPanel>
                 <SellerPanelHeader>Shop basic information</SellerPanelHeader>
                 <FieldSeparator />
