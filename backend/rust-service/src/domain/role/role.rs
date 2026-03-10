@@ -1,6 +1,7 @@
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
+use serde_aux::field_attributes::deserialize_number_from_string;
 
 #[derive(Debug, FromRow, Clone)]
 pub struct Role {
@@ -14,8 +15,8 @@ pub struct Role {
 }
 
 #[derive(Debug, FromRow, Serialize, Deserialize, PartialEq, Eq, Clone,Default)]
-
 pub struct ShopRole {
+    #[serde(deserialize_with = "deserialize_number_from_string")]
     pub id: i64,
     pub name: String,
     pub description: Option<String>,
