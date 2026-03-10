@@ -286,15 +286,35 @@ pub async fn create_new_role_handler(
 
     let new_role = ShopRole {
         id: role_id,
-        shop_id: id,
         name: payload.name,
         description: Some(payload.description.expect("")),
         permissions: payload.permissions,
     };
     tracing::debug!("{:?}", new_role);
 
-    let role: ShopRoleResponse = role_repo::add_new_role(&mut tx, new_role).await?;
+    let role: ShopRoleResponse = role_repo::add_new_role(&mut tx, id, new_role).await?;
     tx.commit().await?;
 
     Ok(Json(role))
+}
+
+pub async fn update_role_handler(
+    State(state): State<SharedState>,
+    Path((version, id)): Path<(String, i64)>,
+    Json(payload): Json<ShopRole>
+) -> Result<impl IntoResponse, APIError> {
+    let api_version: APIVersion = version::parse_version(&version)?;
+    tracing::trace!("api version: {}", api_version);
+
+    let mut tx = state.db_pool.begin().await?;
+    let updated_role = ShopRole {
+        id: payload.id,
+        name: payload.name,
+        description: payload.description,
+        permissions: payload.permissions,
+    };
+    role_repo::update_ship_role(&mut tx, id, updated_role).await?;
+    tx.commit().await?;
+
+    Ok(())
 }

@@ -4,24 +4,11 @@
     align-items: center;
     margin: 0 auto;
     gap: calc(var(--spacing) * 4);
-    padding: calc(var(--spacing) * 8 ) calc(var(--spacing) * 4 );
-    overflow: hidden;
-
-    .sellerToolbar,.sellerPanel{
-        width: 100%;
-        display: flex;
-        padding: calc(var(--spacing) * 4);
-        gap: calc(var(--spacing) * 4);
-        padding-block: calc(var(--spacing) * 4);
-        background-color: color-mix(in oklab, var(--muted) 30%, transparent);
-        border: 1px solid var(--border);
-        border-radius: var(--radius-medium);
-        overflow: hidden;
-
-        [data-theme=dark] & {
-            background-color: color-mix(in oklab, var(--input) 30%, transparent);
-        }
-    }
+    padding-inline: calc(var(--spacing) * 4);
+    padding-block: calc(var(--spacing) * 8);
+    box-sizing: border-box;
+    
+    
     .sellerToolbarRow{
         gap: calc(var(--spacing) * 2);
     }
@@ -37,3 +24,17 @@
     border-collapse: collapse;
     width: 100%;
 }
+
+.sellerToolbar,.sellerPanel{
+        width: 100%;
+        display: flex;
+        padding: calc(var(--spacing) * 4);
+        gap: calc(var(--spacing) * 4);
+        padding-block: calc(var(--spacing) * 4);
+        background-color: color-mix(in oklab, var(--muted) 30%, transparent);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-medium);
+        [data-theme=dark] & {
+            background-color: color-mix(in oklab, var(--input) 30%, transparent);
+        }
+    }

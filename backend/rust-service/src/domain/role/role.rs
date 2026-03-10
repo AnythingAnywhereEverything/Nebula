@@ -17,7 +17,6 @@ pub struct Role {
 
 pub struct ShopRole {
     pub id: i64,
-    pub shop_id: i64,
     pub name: String,
     pub description: Option<String>,
     pub permissions: i64,
@@ -31,8 +30,7 @@ pub struct CreateShopRole {
 
 #[derive(Debug, Serialize, Deserialize, PartialEq, Eq, Clone, Default, FromRow)]
 pub struct ShopRoleResponse {
-    pub id: i64,
-    pub shop_id: i64,
+    pub id: String,
     pub name: String,
     pub description: Option<String>,
     pub permissions: i64,
@@ -41,8 +39,7 @@ pub struct ShopRoleResponse {
 impl From<ShopRole> for ShopRoleResponse {
     fn from(role: ShopRole) -> Self {
         Self {
-            id: role.id,
-            shop_id: role.shop_id,
+            id: role.id.to_string(),
             name: role.name,
             description: role.description,
             permissions: role.permissions,

@@ -5,7 +5,7 @@ import { Button, Field, FieldDescription, FieldLabel, FieldSeparator, Icon, Inpu
 import s from "@styles/layouts/seller/rolesetting.module.scss"
 import Link from "next/link";
 import Form from "next/form";
-import { createNewRole, getShopRole, RequestNewRole, UpdateShopRole } from "@/api/shop";
+import { createNewRole, getShopRole, RequestNewRole, updateRole, UpdateShopRole } from "@/api/shop";
 import { useParams } from "next/navigation";
 import { randomUUID } from "crypto";
 import { error } from "console";
@@ -23,13 +23,15 @@ const sellerLayoutStyle: React.CSSProperties = {
 
 export default function RoleComponent() {
     return (
-        <Field style={sellerLayoutStyle}>
+        <SellerLayout>
             <SellerHeader>Role Editor</SellerHeader>
-            <ShopSettingsCompo/>
+            <Field>
+                <ShopSettingsCompo/>
+            </Field>
             <Field orientation={'horizontal'}  style={{ alignItems: "stretch"}}>
                 <RoleMain/>
             </Field>
-        </Field>
+        </SellerLayout>
     )
 }
 
@@ -107,12 +109,12 @@ const RoleMain : React.FC = () => {
                     <>
                         {allRoles?.map((item) => (
                             <Field orientation={'horizontal'} key={item.id}>
+                                <Field>
                                 <Button variant={'destructive'}
                                 onClick={() => setSelectedRole(item)}>
-                                    <Field>
                                         {item.name}
-                                    </Field>
                                 </Button>
+                                    </Field>
 
                                 <Button 
                                 size={'xs'} 
@@ -127,8 +129,24 @@ const RoleMain : React.FC = () => {
                         ))}
                     </>
             </SellerContent>
+            {!selectedRole && (
+                <SellerContent>
+                    <Field orientation={'horizontal'}>
+                        <Field></Field>
+                        <Field>
+                            Select role to edit
+                        </Field>
+                        <Field></Field>
+                    </Field>
+                </SellerContent>
+            )}
 
-            {selectedRole && <RoleRightSide {...selectedRole} />}
+            {selectedRole?.id && (
+                <RoleRightSide
+                    key={selectedRole.id}
+                    {...selectedRole}
+                />
+            )}
         </Field>
     )
 }
@@ -140,16 +158,12 @@ type roleInfo = {
     permission: number
 }
 const RoleRightSide: React.FC<roleInfo> = (payload) => {
+    const {shop_id} = useParams();
     const [roleName, setRoleName] = useState(payload.name)
     const [roleDescription, setRoleDescription] = useState(payload.description)
     const [bit, setBit] = useState<number | null>(payload.permission)
-
-
-    useEffect(() => {
-        setRoleName(payload.name)
-        setRoleDescription(payload.description)
-        setBit(payload.permission)
-    }, [payload])
+    const MAXTEXTS = 20;
+    
     
     const permissionList =[{
             Name: "Manage shop",
@@ -174,9 +188,44 @@ const RoleRightSide: React.FC<roleInfo> = (payload) => {
         }]
 
     const [newRoleName, setNewRoleName] = useState('');
-    const [newRoleDescription, setNewRoleDescription] = useState('');
-    const [newBit, setNewBit] = useState<number | null>(null);
+    const [newBit, setNewBit] = useState<number>(0);
+    const [enabledBits, setEnabledBits] = useState<number[]>([]);
 
+    function checkPermission(currentBit: number, permissionBit: number): boolean {
+        return (currentBit & permissionBit) !== 0;
+    }
+    const togglePermission = (bit: number, checked: boolean) => {
+        let updated;
+        if (checked) {
+            updated = [...enabledBits, bit];
+        } else {
+            updated = enabledBits.filter((b) => b !== bit);
+        }
+        setEnabledBits(updated);
+        const calculated = updated.reduce((acc, b) => acc | b, 0); 
+        setNewBit(calculated);
+    };
+
+    useEffect(() => {
+        setRoleName(payload.name);
+        setRoleDescription(payload.description);
+        setBit(payload.permission);
+        
+        setNewBit(payload.permission);
+    }, [payload]);
+
+    async function sumbitRoleUpdate(id: string | string[] | undefined) {
+    if (!id || Array.isArray(id)) return;
+
+        const finalPayload: UpdateShopRole = {
+            id: payload.id,
+            name: newRoleName || roleName,
+            description: roleDescription,
+            permissions: newBit
+        };
+        console.log(finalPayload)
+        await updateRole(id, finalPayload)
+    }
     return (
         <SellerContent>
             <Field>
@@ -187,14 +236,17 @@ const RoleRightSide: React.FC<roleInfo> = (payload) => {
                 <Form action={"#"}>
                     <Field style={{paddingBlock: 'calc(var(--spacing) * 4)'}}>
                         <Field style={{marginBottom: 'calc(var(--spacing) * 2)'}}>
-                            <FieldLabel>Name :</FieldLabel>
-                            <Input 
-                            placeholder="Role name"
-                            value={roleName}
-                            onChange={(e) => setRoleName(e.target.value)}
-                            />    
+                            <FieldLabel>Name : {roleName}</FieldLabel>
+                            <Input
+                                placeholder="Role name"
+                                value={newRoleName}
+                                maxLength={MAXTEXTS}
+                                onChange={(e) => {
+                                    const value = e.target.value.slice(0, MAXTEXTS); 
+                                    setNewRoleName(value);
+                                }}
+                            />
                         </Field>
-
                     </Field>            
         
                     <FieldSeparator/>
@@ -207,7 +259,10 @@ const RoleRightSide: React.FC<roleInfo> = (payload) => {
                                     <FieldLabel>{item.Name}</FieldLabel>
                                     <FieldDescription>{item.Description}</FieldDescription>
                                 </Field>
-                                <Switch value={item.bit} />
+                                <Switch
+                                    checked={checkPermission(newBit, item.bit)}
+                                    onCheckedChange={(checked) => togglePermission(item.bit, checked)}
+                                />
                             </Field>
                         ))}
                     </Field>
@@ -215,8 +270,17 @@ const RoleRightSide: React.FC<roleInfo> = (payload) => {
             </Field>
 
             <FieldSeparator/>
-            <Field>
-
+            <Field orientation={'horizontal'}>
+                <Field></Field>
+                <Button variant={'outline'}
+                >
+                    Reset
+                </Button>
+                <Button variant={'default'}
+                onClick={() => sumbitRoleUpdate(shop_id)}
+                >
+                    Submit
+                </Button>
             </Field>
         </SellerContent>
     )

@@ -28,10 +28,9 @@ export interface ShopsResponse {
   associate: Shop[];
 }
 export interface RequestNewRole {
-    id: string,
     name: string
     description: string,
-    permission: number
+    permissions: number
 }
 
 export interface UpdateShopRole {
@@ -161,15 +160,16 @@ export const getShopRole = async ( shop_id:string ) => {
 }
 
 
-export const createNewRole = async (payload : RequestNewRole) => {
+export const createNewRole = async (shop_id: string ,payload : RequestNewRole) => {
     const token = getToken();
     if (!token) throw new Error("No token found");
     
-    const res = await fetchWithAuth(`/api/v2/shops/${payload.id}/role`,{
+    const res = await fetchWithAuth(`/api/v2/shops/${shop_id}/role`,{
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
+        body: JSON.stringify(payload)
     })
 
     const data = await res.json()

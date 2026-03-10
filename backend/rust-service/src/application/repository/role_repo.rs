@@ -103,7 +103,7 @@ pub async fn get_all_roles(
 
     let roles = sqlx::query_as::<_, ShopRoleResponse>(
         r#"
-        SELECT *
+        SELECT id::text as id, name, description, permissions
         FROM shop_roles
         WHERE shop_id = $1
         "#
@@ -117,6 +117,7 @@ pub async fn get_all_roles(
 
 pub async fn add_new_role(
     tx: &mut Transaction<'_, Postgres>,
+    shop_id: i64,
     payload: ShopRole
 ) -> Result<ShopRoleResponse, ShopRepoError> {
     let now = chrono::Utc::now().naive_utc();
@@ -129,7 +130,7 @@ pub async fn add_new_role(
         "#
     )
     .bind(payload.id)
-    .bind(payload.shop_id)
+    .bind(shop_id)
     .bind(payload.name)
     .bind(payload.description)
     .bind(payload.permissions)
@@ -139,4 +140,28 @@ pub async fn add_new_role(
     .await?;
 
     Ok(role.into())
+}
+
+pub async fn update_ship_role(
+    tx: &mut Transaction<'_, Postgres>,
+    shop_id: i64,
+    payload: ShopRole
+) -> Result<(), ShopRepoError> {
+    sqlx::query(
+        r#"
+            UPDATE shop_roles
+            SET name = $1, description = $2, permissions = $3, updated_at = $4
+            WHERE id = $5 AND shop_id = $6
+        "#
+    )
+    .bind(payload.name)
+    .bind(payload.description)
+    .bind(payload.permissions)
+    .bind(chrono::Utc::now().naive_utc())
+    .bind(payload.id)
+    .bind(shop_id)
+    .execute(tx.as_mut())
+    .await?;
+
+    Ok(())
 }

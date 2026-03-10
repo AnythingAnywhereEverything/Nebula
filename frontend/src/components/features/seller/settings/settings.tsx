@@ -7,8 +7,8 @@ import React from "react";
 const ShopSettingsCompo:React.FC = () => {
     const {shop_id} = useParams();
     return (
-        <SellerPanel>
-            <ButtonGroup>
+        <Field orientation={'horizontal'}>
+            <ButtonGroup style={{gap: 'calc(var(--spacing) * 2)'}}>
                 <div>
                     <Link href={`/portal/seller/${shop_id}/settings`}>
                         <Button>
@@ -24,7 +24,7 @@ const ShopSettingsCompo:React.FC = () => {
                     </Link>
                 </div>
             </ButtonGroup>
-        </SellerPanel>
+        </Field>
     )
 }
 
