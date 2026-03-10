@@ -21,8 +21,8 @@ const ProductImageViewer: React.FC<ProductImageViewerProps> = ({mediaLists}) => 
             <div className={style.multimediaContainer}>
                 {/* Contain multiple media in a row, maximum at 5*/}
                 {mediaLists.map((media, index) => {
-                    if (index > 4) return null;
-                    if (index == 4) return (
+                    if (index > 5) return null;
+                    if (index == 5) return (
                         <div 
                             key={index} 
                             className={style.mediaItem}
@@ -31,7 +31,7 @@ const ProductImageViewer: React.FC<ProductImageViewerProps> = ({mediaLists}) => 
                             <div className={style.moreMediaIndicator}>
                                 <p>+{mediaLists.length - 5}</p>
                             </div>
-                            <img src={media} alt={`Product Media ${index + 1}`} />
+                            <img src={`/cdn/${media}`} alt={`Product Media ${index + 1}`} />
                         </div>
                     );
                     return(
@@ -43,13 +43,13 @@ const ProductImageViewer: React.FC<ProductImageViewerProps> = ({mediaLists}) => 
                             `}
                             onClick={() => setPreviewImage(media)}
                         >
-                            <img src={media} alt={`Product Media ${index + 1}`} />
+                            <img src={`/cdn/${media}`} alt={`Product Media ${index + 1}`} />
                         </div>
                     )
                 })}
             </div>
             <div className={style.currentPreviewMedia}>
-                {previewImage && <img src={previewImage} alt="Product Media Preview" />}
+                {previewImage && <img src={`/cdn/${previewImage}`} alt="Product Media Preview" />}
             </div>
         </div>
     )

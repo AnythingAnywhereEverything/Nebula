@@ -1,8 +1,9 @@
 import React from 'react';
 import style from '@styles/features/searchbar.module.scss';
 import Form from 'next/form';
-import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput, Icon, FieldSeparator } from '@components/ui/NebulaUI';
+import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput, Icon, FieldSeparator, Button, ButtonGroup } from '@components/ui/NebulaUI';
 import { QueryProductValues, searchOnType } from '@/api/search';
+import Link from 'next/link';
 
 const SearchBar: React.FC = () => {
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -17,21 +18,31 @@ const SearchBar: React.FC = () => {
 
     const [results, setResults] = React.useState<QueryProductValues[]>([]);
     const [open, setOpen] = React.useState(false);
+    const [current, setCurrent] = React.useState("");
+
+    const debounceRef = React.useRef<NodeJS.Timeout | null>(null);
 
     const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
 
-        if (value.length < 2) {
-            setOpen(false);
-            return;
+        setCurrent(value)
+
+        if (debounceRef.current) {
+            clearTimeout(debounceRef.current);
         }
 
-        const res = await searchOnType(value)
+        debounceRef.current = setTimeout(async () => {
+            if (value.trim().length < 2) {
+                setResults([]);
+                setOpen(false);
+                return;
+            }
 
-        console.log(res)
+            const data = await searchOnType(value);
 
-        setResults(res);
-        setOpen(true);
+            setResults(data);
+            setOpen(true);
+        }, 300);
     };
 
     return (
@@ -48,6 +59,7 @@ const SearchBar: React.FC = () => {
                     onBlur={() => {
                         setTimeout(() => setOpen(false), 150);
                     }}
+                    value={current}
                     style={{ color: "#000" }}
                     autoComplete='off'
                 />
@@ -60,19 +72,23 @@ const SearchBar: React.FC = () => {
             </InputGroup>
 
             {open && results.length > 0 && (
-                <div className={style.resultBox}>
+                <ButtonGroup orientation={"vertical"} style={{width: "100%"}} className={style.resultBox}>
                     {results.map((r) => (
-                        <div key={r.id} className={style.resultItem}>
-                            {r.name}
-                        </div>
+                        <Button asChild style={{width: "100%", justifyContent:"start"}} variant={"ghost"} key={r.id}>
+                            <Link href={`/search?q=${r.name}`}>
+                                {r.name}
+                            </Link>
+                        </Button>
                     ))}
 
                     <FieldSeparator/>
 
-                    <div className={style.resultFooter}>
-                        View all results
-                    </div>
-                </div>
+                    <Button asChild style={{width: "100%", justifyContent:"start"}} variant={"link"}>
+                        <Link href={`/search?q=${current}`}>
+                            View all results
+                        </Link>
+                    </Button>
+                </ButtonGroup>
             )}
         </Form>
     )

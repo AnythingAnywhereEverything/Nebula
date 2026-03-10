@@ -13,6 +13,25 @@ use crate::{
     },
 };
 
+pub async fn get_product_id_from_variant(
+    tx: &mut Transaction<'_, Postgres>,
+    variant_id: i64,
+) -> RepositoryResult<i64> {
+    let product_id: i64 = sqlx::query_scalar(
+        r#"
+        SELECT product_id
+        FROM product_variants
+        WHERE id = $1
+        AND deleted_at IS NULL
+        "#
+    )
+    .bind(variant_id)
+    .fetch_one(tx.as_mut())
+    .await?;
+
+    Ok(product_id)
+}
+
 pub async fn update_product_settings(
     tx: &mut Transaction<'_, Postgres>,
     id: i64,

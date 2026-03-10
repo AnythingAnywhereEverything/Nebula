@@ -316,6 +316,37 @@ impl From<sqlx::Error> for APIError {
     }
 }
 
+impl From<deadpool_redis::PoolError> for APIError {
+    fn from(error: deadpool_redis::PoolError) -> Self {
+        let (status, entry) = match error {
+            _ => (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                APIErrorEntry::new("Pool Error")
+                    .code(APIErrorCode::RedisError)
+                    .kind(APIErrorKind::RedisError)
+            )
+        };
+        APIError::from((status, entry))
+    }
+}
+
+impl From<serde_json::Error> for APIError {
+    fn from(error: serde_json::Error) -> Self {
+        let (status, entry) = match error {
+            _ => (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                APIErrorEntry::new("Serde Error")
+                    .code(APIErrorCode::RedisError)
+                    .kind(APIErrorKind::RedisError)
+            )
+        };
+        APIError::from((status, entry))
+    }
+}
+
+
+
+
 impl From<MultipartError> for APIError {
     fn from(error: MultipartError) -> Self {
         Self {

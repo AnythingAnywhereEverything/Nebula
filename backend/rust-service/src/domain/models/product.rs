@@ -77,7 +77,7 @@ pub struct EditVariantRow {
     pub is_enabled: bool,
 }
 
-#[derive(Debug, Serialize, FromRow)]
+#[derive(Debug, Serialize, Deserialize, FromRow)]
 pub struct ReturnProductSpecification {
     pub id: String,
     pub key: String,

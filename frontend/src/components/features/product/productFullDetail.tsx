@@ -3,7 +3,7 @@ import style from '@styles/layouts/productlayout.module.scss';
 import ReactMarkdown from 'react-markdown';
 
 interface ProductFullDetailProps {
-    specs?: {id: number, name:string, info:string}[];
+    specs?: {id: string, key:string, value:string}[];
     about?: string;
 }
 
@@ -27,10 +27,10 @@ const ProductFullDetail: React.FC<ProductFullDetailProps> = ({specs, about}) => 
                             return (
                                 <tr key={spec.id}>
                                     <td className={style.specName}>
-                                        <p>{spec.name}</p>
+                                        <p>{spec.key}</p>
                                     </td>
                                     <td className={style.specInfo}>
-                                        <p>{spec.info}</p>
+                                        <p>{spec.value}</p>
                                     </td>
                                 </tr>
                             )

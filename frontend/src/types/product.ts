@@ -1,8 +1,4 @@
-export type ProductOption = {
-    order: number;
-    name: string;
-    values: string[];
-};
+
 
 export interface ProductAttribute {
     id: string;
@@ -56,34 +52,45 @@ export type MatrixVariant = {
     stock: string;
 };
 
+export type ProductOption = {
+    name: string;
+    values: string[];
+};
+
 export type Product = {
     id: string;
-    productStoreName: string;
-    productStoreID: string;
-
+    store_name: string;
+    store_id: string;
+    // * products information
+    free_shipping: boolean;
     name: string;
-    currency: string;
+    description: string;
+    specification?: { id:string, key: string; value: string }[];
 
-    rating: number;
-    reviewsCount: number;
-    soldAmount: number;
+    rating: string;
+    review_amount: string;
+    sold: string;
 
-    section?: string;
-    category?: string;
-
-    productTag?: string;
-    productTagColor?: string;
-
-    shippingCost: number;
-    warranty?: number;
+    // * Add post production
+    // section?: string;
+    // category?: string;
 
     options?: ProductOption[];
-    variants: ProductVariant[];
+    variants: ProductPageVariant[];
+};
 
-    productDetail: {
-        specification?: { id:number, name: string; info: string }[];
-        about: string;
-    };
+export type ProductPageVariant = {
+    id: string;
+
+    price: string;
+    sale_price?: string;
+    on_sale: boolean;
+
+    stock: string;
+
+    images: string[];
+
+    attributes: Record<string, string>;
 };
 
 export type AttributePayload = {

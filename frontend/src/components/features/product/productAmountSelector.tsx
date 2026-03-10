@@ -3,7 +3,7 @@ import style from '@styles/layouts/productlayout.module.scss';
 import { Field, FieldDescription, Icon, InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from '@components/ui/NebulaUI';
 
 interface ProductAmountSelectorProps {
-    stock: number;
+    stock: string;
     availability: "in_stock" | "low_stock" | "out_of_stock";
 }
 
@@ -38,7 +38,7 @@ const ProductAmountSelector: React.FC<ProductAmountSelectorProps> = ({ stock, av
     };
 
     const commitValue = () => {
-        setValue(Math.max(1, Math.min(stock, Number(value))));
+        setValue(Math.max(1, Math.min(Number(stock), Number(value))));
     };
 
     useEffect(() => {
@@ -46,10 +46,10 @@ const ProductAmountSelector: React.FC<ProductAmountSelectorProps> = ({ stock, av
             const numeric = Number(prev);
 
             if (!numeric || Number.isNaN(numeric)) {
-                return Math.min(1, stock);
+                return Math.min(1, Number(stock));
             }
 
-            return Math.min(numeric, stock);
+            return Math.min(numeric, Number(stock));
         });
     }, [stock]);
 
@@ -71,7 +71,7 @@ const ProductAmountSelector: React.FC<ProductAmountSelectorProps> = ({ stock, av
                     <InputGroupAddon align='inline-end'>
                         <InputGroupButton 
                             size={"icon-xs"}
-                            onClick={() => setValue((v) => Math.min(stock, Number(v) + 1))}
+                            onClick={() => setValue((v) => Math.min(Number(stock), Number(v) + 1))}
                         >
                             <Icon></Icon>
                         </InputGroupButton>
@@ -90,7 +90,7 @@ const ProductAmountSelector: React.FC<ProductAmountSelectorProps> = ({ stock, av
                 </InputGroup>
                 <FieldDescription className={config.className}>
                 {typeof config.text === "function"
-                    ? config.text(stock)
+                    ? config.text(Number(stock))
                     : config.text}
                 </FieldDescription>
             </Field>

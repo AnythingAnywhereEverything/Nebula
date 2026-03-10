@@ -17,7 +17,7 @@
 
 .resultBox {
     position: absolute;
-    top: 110%;
+    top: calc(100% + calc(var(--spacing) * 2 ));
     left: 0;
     width: 100%;
     background: var(--popover);
@@ -26,20 +26,4 @@
     overflow: hidden;
     z-index: 50;
     transition: background 0.5s;
-}
-
-.resultItem {
-    padding: 8px 12px;
-    cursor: pointer;
-    font-size: var(--text-small);
-
-    &:hover {
-        background: var(--muted);
-    }
-}
-
-.resultFooter {
-    font-size: var(--text-small);
-    padding: 8px 12px;
-    font-weight: 500;
 }

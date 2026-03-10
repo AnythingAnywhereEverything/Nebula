@@ -1,13 +1,13 @@
 import React from 'react';
 import style from '@styles/layouts/productlayout.module.scss';
-import type { ProductOption, ProductVariant } from "@/types/product";
+import type { ProductOption, ProductPageVariant, ProductVariant } from "@/types/product";
 import router from 'next/router';
 import { Button, Field, FieldDescription, FieldSet } from '@components/ui/NebulaUI';
 
 interface ProductVariantSelectorProps {
     options?: ProductOption[];
-    variants: ProductVariant[];
-    nsin: string;
+    variants: ProductPageVariant[];
+    variant_id: string;
     prodName: string;
 }
 
@@ -15,7 +15,7 @@ interface ProductVariantSelectorProps {
 const ProductVariantSelector: React.FC<ProductVariantSelectorProps> = ({
     options,
     variants,
-    nsin,
+    variant_id,
     prodName
 }) => {
     const [selected, setSelected] = React.useState<Record<string, string>>({});
@@ -29,7 +29,7 @@ const ProductVariantSelector: React.FC<ProductVariantSelectorProps> = ({
     const findVariantForValue = (optionName: string, value: string) =>
         variants.find(
         (variant) =>
-            variant.stock > 0 &&
+            Number(variant.stock) > 0 &&
             variant.attributes[optionName] === value
         );
 
@@ -37,7 +37,7 @@ const ProductVariantSelector: React.FC<ProductVariantSelectorProps> = ({
         const variant = findVariantForValue(optionName, value);
         if (!variant) return;
 
-        router.push(`/product/${variant.nsin}/${encodeURIComponent(prodName)}`)
+        router.push(`/product/${variant.id}/${encodeURIComponent(prodName)}`)
     };
 
     const getValueState = (
@@ -52,7 +52,7 @@ const ProductVariantSelector: React.FC<ProductVariantSelectorProps> = ({
 
         const keepsSelection = variants.some(
             (v) =>
-            v.stock > 0 &&
+            Number(v.stock) > 0 &&
             v.attributes[optionName] === value &&
             Object.entries(currentVariant.attributes).every(
                 ([key, val]) =>
@@ -63,7 +63,7 @@ const ProductVariantSelector: React.FC<ProductVariantSelectorProps> = ({
 
         const alternativeAvailable = variants.some(
             (v) =>
-            v.stock > 0 &&
+            Number(v.stock) > 0 &&
             v.attributes[optionName] === value
         );
         if (alternativeAvailable) return "alternative";
@@ -73,8 +73,8 @@ const ProductVariantSelector: React.FC<ProductVariantSelectorProps> = ({
 
 
     const currentVariant = React.useMemo(
-        () => variants.find((v) => v.nsin === nsin),
-        [variants, nsin]
+        () => variants.find((v) => v.id === variant_id),
+        [variants, variant_id]
     );
 
     React.useEffect(() => {
@@ -87,7 +87,6 @@ const ProductVariantSelector: React.FC<ProductVariantSelectorProps> = ({
     return (
         <FieldSet>
         {[...options]
-            .sort((a, b) => a.order - b.order)
             .map((option) => (
             <Field key={option.name}>
                 <FieldDescription>

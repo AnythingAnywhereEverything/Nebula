@@ -10,11 +10,12 @@ import Link from "next/link";
 
 import s from "@styles/ui/Nebula/productfield.module.scss";
 import { cn } from "@/lib/utils";
+import { ProductDatas } from "@/api/search";
 
 
 type NebulaProductFieldProps = {
     max_rows?: number;
-    item_display?: ProductItemProps.ProductItem[];
+    item_display?: ProductDatas[];
 }
 
 function ProductContainer({
@@ -68,37 +69,40 @@ function ProductField({
     NebulaProductFieldProps) {
 
     const { containerRef, columnCount } = useGridColumnCount();
-    const [products, setProducts] = useState<ProductItemProps.ProductItem[]>([]);
+    const [products, setProducts] = useState<ProductDatas[]>([]);
 
     useEffect(() => {
         if (columnCount === 0) return;
 
         const visibleCount = columnCount * max_rows;
 
-        setProducts(
-            Array.from(item_display ? item_display : ProductItemExamples ).slice(0, visibleCount)
-        );
-    }, [columnCount, max_rows]);
+        if (max_rows < 1) {
+            setProducts(
+                Array.from(item_display)
+            );
+        }else {
+            setProducts(
+                Array.from(item_display ? item_display : ProductItemExamples ).slice(0, visibleCount)
+            );
+        }
+
+    }, [columnCount, max_rows, item_display]);
 
     return (
         <ul className={s.productField} ref={containerRef}>
             {products.map((item) => (
                 <li>
                     <ProductItem>
-                        <ProductImage src={item.itemimageurl}/>
+                        <ProductImage src={item.product_image}/>
                         <ProductContent>
                             <ProductHeader asChild>
-                                <Link href={`/product/${item.nsin}/${encodeURIComponent(item.itemtitle)}`}>
-                                    {(item.itemtagcolor && item.itemtag) &&
-                                        <Badge color={item.itemtagcolor} size={"xs"}>{item.itemtag}</Badge>
-                                    }
-                                    {item.itemtitle}
+                                <Link href={`/product/${item.id}/${encodeURIComponent(item.name)}`}>
+                                    {item.name}
                                 </Link>
                             </ProductHeader>
                             <ProductFooter>
-                                <ProductPrice base={item.itemprice_usd}/>
-                                <ProductStars stars={item.itemrating}/>
-                                <ProductLocation location={item.productLocation}/>
+                                <ProductPrice base={Number(item.price)}/>
+                                <ProductStars stars={Number(item.rating)}/>
                             </ProductFooter>
                         </ProductContent>
                     </ProductItem>
