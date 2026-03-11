@@ -51,6 +51,7 @@
     .shopInfo {
         width: 100%;
         text-align: start;
+        overflow: hidden;
 
         .shopname, .shoplabel {
             display: -webkit-box;
