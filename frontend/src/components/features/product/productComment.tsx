@@ -111,7 +111,7 @@ const Reply: React.FC<ReplyProps> = ({
             </div>
             <div className={s.commentContent}>
                 <Field orientation={"horizontal"}>
-                    <FieldLegend variant="label">@{display_name}</FieldLegend>
+                    <FieldLegend variant="label">{display_name}</FieldLegend>
                     <FieldDescription>
                         {timeAgo(created_at)}
                     </FieldDescription>
@@ -249,7 +249,7 @@ const Comment: React.FC<CommentProps & {product_id: string}> = ({
                 <div className={s.parentContainer}>
                     <div className={s.commentContent}>
                         <Field orientation={"horizontal"}>
-                            <FieldLegend>@{display_name}</FieldLegend>
+                            <FieldLegend>{display_name}</FieldLegend>
                             <FieldDescription>
                                 {timeAgo(created_at)}
                             </FieldDescription>
@@ -395,8 +395,6 @@ const ProductComment: React.FC<ProductCommentProp> = ({product_id}) => {
         setLoading(true)
 
         const data = await queryReviews(product_id, pageNumber);
-
-        console.log(data)
 
         setReviews(prev => [...prev, ...data.reviews])
         setHasMore(data.has_more)
