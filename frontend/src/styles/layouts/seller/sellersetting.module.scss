@@ -2,14 +2,14 @@
     .storeBannerContainer{
         width: 550px !important ; 
         overflow: hidden;
-        aspect-ratio: 2 / 1;
+        aspect-ratio: 96 / 31;
         border-radius: var(--radius);
         img{
             width: 100%;
             height: 100%;
             object-position: center;
             object-fit: cover;
-            aspect-ratio: 2 / 1;
+            aspect-ratio: 96 / 31;
         }
     }
     .storeProfileContainer {

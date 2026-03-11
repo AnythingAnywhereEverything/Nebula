@@ -13,8 +13,10 @@ export interface Shop {
   is_brand: boolean;
   created_at: string;
   updated_at: string;
-  shop_profile_url: string;
-  shop_banner_url: string;
+  shop_profile_url: string | null;
+  shop_banner_url: string | null;
+  rating:string;
+  review_amount: string;
 }
 
 export interface UpdateShopInfo {
@@ -75,7 +77,9 @@ export const requestCreateShop = async (payload : CreateShopRequest) => {
         body: JSON.stringify(payload)
     })
 }
-export const getCurrentShopInfo = async (shopId: string) => {
+export const getCurrentShopInfo = async (
+    shopId: string
+): Promise<Shop> => {
     const token = getToken();
     if (!token) throw new Error("No token found");
 
@@ -157,6 +161,26 @@ export const getShopRole = async ( shop_id:string ) => {
         throw new Error(errorMessage);
     }
     return data;
+}
+
+export const getShopTotalProducts = async (
+    shop_id:string
+): Promise<number> => {
+    const res = await fetchWithAuth(`/api/v2/shops/${shop_id}/product_total`, {
+      method: "GET",
+      headers: {
+          "Content-Type": "application/json",
+      },
+    })
+
+    const data = await res.json()
+    if (!res.ok) {
+        const errorMessage =
+        data?.errors?.[0]?.message || "Failed to request";
+        throw new Error(errorMessage);
+    }
+    return data;
+
 }
 
 

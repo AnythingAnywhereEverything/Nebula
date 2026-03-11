@@ -1,6 +1,6 @@
 use sqlx::{Postgres, Transaction};
 
-use crate::{application::repository::errors::ShopRepoError, domain::{models::shop::{NewShop, Shop, ShopMember, ShopUpdateData}}};
+use crate::{application::repository::{RepositoryResult, errors::ShopRepoError}, domain::models::shop::{NewShop, Shop, ShopMember, ShopUpdateData}};
 
 pub async fn is_shop_exist (
     tx: &mut Transaction<'_, Postgres>,
@@ -12,6 +12,26 @@ pub async fn is_shop_exist (
         .await
         .map_err(|_| ShopRepoError::FailedToCreateShop)?;
     Ok(count > 0)
+}
+
+pub async fn get_shop_product_total(
+    tx: &mut Transaction<'_, Postgres>,
+    shop_id: i64,
+) -> RepositoryResult<i64> {
+    let total: (i64,) = sqlx::query_as(
+        r#"
+        SELECT COUNT(*)
+        FROM products
+        WHERE
+            shop_id = $1
+            AND deleted_at IS NULL
+        "#
+    )
+    .bind(shop_id)
+    .fetch_one(tx.as_mut())
+    .await?;
+
+    Ok(total.0)
 }
 
 pub async fn create_shop(
@@ -43,7 +63,7 @@ pub async fn get_shop_by_owner_id(
 ) -> Result<Vec<Shop>, ShopRepoError> {
     let shops = sqlx::query_as::<_, Shop>(
         r#"
-        SELECT id, name, description, owner_id, is_brand, created_at, updated_at, shop_profile_url, shop_banner_url
+        SELECT *
         FROM shops
         WHERE owner_id = $1
         "#,
