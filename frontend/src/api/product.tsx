@@ -106,6 +106,35 @@ export type CreateNewProductVariant = {
     files: File[]
 }
 
+export interface AddToCartRequest{
+    product_id: string,
+    product_variants_id: string,
+    quantity: number
+}
+
+export type GetCartItemsUsers = {
+    product_id: string;
+    product_variants_id: string | null;
+    name: string;
+    price: number;
+    quantity: number;
+    is_active: boolean;
+    on_sale: boolean;
+    sale_price: number | null;
+    free_shipping: boolean;
+    stock_quantity: number;
+    is_enabled: boolean;
+    is_selected: boolean;
+    image_url: string | null;
+    product_variants: { name: string; value: string }[];
+};
+
+export interface SelectedCartItemsRequest{
+    product_id: string,
+    product_variants_id: string | null,
+    is_selected: boolean
+}
+
 export const updateProductSetting = async (
     shop_id: string,
     product_id:string,
@@ -351,4 +380,84 @@ export async function getProductInfo(
     }
 
     return data;
+}
+
+// * Cart
+
+export async function getCartItems() {
+    const token = getToken();
+    if(!token) throw new Error("No token found");
+
+    const res = await fetchWithAuth(`/api/v2/products/cart`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+
+    const data = await res.json();
+    console.log(data); // * check actual API response
+
+    if (!res.ok) {
+        const errorMessage =
+            data?.errors?.[0]?.message || "Failed to fetch cart";
+        throw new Error(errorMessage);
+    }
+
+    return data; // * adjust depending on structure (data.items / data.data etc)
+}
+export async function addToCart(payload: AddToCartRequest){
+    const token = getToken();
+    if(!token) throw new Error("No token found");
+
+    const res = await fetchWithAuth(`/api/v2/products/cart/add`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload)
+    })
+    return;
+}
+
+export async function selectedCartItems(payload:SelectedCartItemsRequest) {
+    const token = getToken();
+    if(!token) throw new Error("No token found");
+
+    const res = await fetchWithAuth(`/api/v2/products/cart/selected`,{
+        method:"PATCH",
+        headers:{
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload)
+    })
+    return;
+}
+
+export async function updateCartQuantity(payload:AddToCartRequest) {
+    const token = getToken();
+    if(!token) throw new Error("No token found");
+
+    const res = await fetchWithAuth(`/api/v2/products/cart/quantity`, {
+        method: "PATCH",
+        headers:{
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+    })
+    return;
+}
+
+export async function deleteCartItems(payload: AddToCartRequest){
+    const token = getToken();
+    if(!token) throw new Error("No token found");
+
+    const res = await fetchWithAuth(`/api/v2/products/cart`, {
+        method: "DELETE",
+        headers:{
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+    })
+    return;
 }
