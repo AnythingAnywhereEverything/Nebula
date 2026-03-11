@@ -10,3 +10,5 @@ media/*
 !media/.gitkeep
 .vscode/
 .next/
+
+.certificates/

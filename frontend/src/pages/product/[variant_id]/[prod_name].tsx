@@ -12,8 +12,6 @@ export default function ProductPage() {
 
     useEffect(() => {
         if (!router.isReady) return;
-
-        console.log(variant_id);
     }, [router.isReady, variant_id]);
 
     if (!router.isReady) return null;
