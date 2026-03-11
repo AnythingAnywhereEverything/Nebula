@@ -2,24 +2,9 @@ import { SellerContent, SellerHeader, SellerLayout } from "@components/layouts/s
 import React, { useEffect, useState } from "react";
 import ShopSettingsCompo from "./settings";
 import { Button, Field, FieldDescription, FieldLabel, FieldSeparator, Icon, Input, Switch, Textarea } from "@components/ui/NebulaUI";
-import s from "@styles/layouts/seller/rolesetting.module.scss"
-import Link from "next/link";
 import Form from "next/form";
-import { createNewRole, getShopRole, RequestNewRole, updateRole, UpdateShopRole } from "@/api/shop";
-import { useParams } from "next/navigation";
-import { randomUUID } from "crypto";
-import { error } from "console";
-import next from "next";
-
-const sellerLayoutStyle: React.CSSProperties = {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    margin: '0 auto',
-    gap: 'calc(var(--spacing) * 4)',
-    padding: 'calc(var(--spacing) * 4)',
-    boxSizing: "border-box"
-};
+import { createNewRole, deleteRole, getShopRole, RequestNewRole, updateRole, UpdateShopRole } from "@/api/shop";
+import { useParams, useRouter } from "next/navigation";
 
 export default function RoleComponent() {
     return (
@@ -41,7 +26,7 @@ const RoleMain : React.FC = () => {
     const MAXROLES = 15;
     const [selectedRole, setSelectedRole] = useState<roleInfo | null>(null);
     const [allRoles, setAllRoles] = useState<roleInfo[]>();
-
+    const router = useRouter();
 
     async function sendRequestNewRole(id: string | string[] | undefined) {
         if (!id || Array.isArray(id)) return;
@@ -80,6 +65,12 @@ const RoleMain : React.FC = () => {
         fetchRole()
     }, [shop_id]);
 
+    async function deleteRoleRequest(id: string | string[] | undefined, role_id: string) {
+        if (!id || Array.isArray(id)) return;
+        await deleteRole(id, role_id);
+        router.refresh();
+    }
+
     return (
         <Field orientation={'horizontal'} stretch>
             <SellerContent style={{width: '400px'}}>
@@ -110,7 +101,7 @@ const RoleMain : React.FC = () => {
                         {allRoles?.map((item) => (
                             <Field orientation={'horizontal'} key={item.id}>
                                 <Field>
-                                <Button variant={'destructive'}
+                                <Button variant={'ghost'}
                                 onClick={() => setSelectedRole(item)}>
                                         {item.name}
                                 </Button>
@@ -119,7 +110,7 @@ const RoleMain : React.FC = () => {
                                 <Button 
                                 size={'xs'} 
                                 variant={'ghost'}
-                                onClick={() => console.log(allRoles?.length)}
+                                onClick={() => deleteRoleRequest(shop_id, item.id)}
                                 >
                                     <Icon>
                                         
@@ -158,6 +149,8 @@ type roleInfo = {
     permission: number
 }
 const RoleRightSide: React.FC<roleInfo> = (payload) => {
+    const router = useRouter();
+    
     const {shop_id} = useParams();
     const [roleName, setRoleName] = useState(payload.name)
     const [roleDescription, setRoleDescription] = useState(payload.description)
@@ -225,6 +218,8 @@ const RoleRightSide: React.FC<roleInfo> = (payload) => {
         };
         console.log(finalPayload)
         await updateRole(id, finalPayload)
+
+        router.refresh()
     }
     return (
         <SellerContent>

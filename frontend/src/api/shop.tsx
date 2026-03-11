@@ -193,3 +193,16 @@ export const updateRole = async (shop_id : string, payload:UpdateShopRole) => {
         body: JSON.stringify(payload)
     })
 }
+
+export const deleteRole = async (shop_id: string, role_id:string) => {
+    const token = getToken();
+    if (!token) throw new Error("No token found");
+    
+    const res = await fetchWithAuth(`/api/v2/shops/${shop_id}/role/${role_id}`,{
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+
+}
