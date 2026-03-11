@@ -4,10 +4,47 @@ use sqlx::{QueryBuilder, Transaction, query_as};
 use uuid::Uuid;
 
 use crate::application::repository::errors::UserRepoError;
+use crate::application::repository::role_repo;
 use crate::{
     application::{repository::RepositoryResult, state::SharedState},
     domain::models::user::{NewUser, User, UserUpdate},
 };
+
+// * -------------------
+// * INITIALIZATION YAYYY
+// * -------------------
+
+pub async fn has_superuser(
+    tx: &mut Transaction<'_, Postgres>,
+) -> Result<bool, sqlx::Error> {
+    sqlx::query_scalar(
+        r#"
+        SELECT is_success
+        FROM initialization
+        WHERE value = 'has_superuser'
+        LIMIT 1
+        "#
+    )
+    .fetch_one(tx.as_mut())
+    .await
+}
+
+
+pub async fn set_superuser(
+    tx: &mut Transaction<'_, Postgres>,
+) -> Result<bool, sqlx::Error> {
+    sqlx::query_scalar(
+        r#"
+        UPDATE initialization
+        SET is_success = TRUE
+        WHERE value = 'has_superuser'
+        RETURNING is_success
+        "#
+    )
+    .fetch_one(tx.as_mut())
+    .await
+}
+
 
 /// List users with pagination
 pub async fn list(state: &SharedState, limit: i64, offset: i64) -> RepositoryResult<Vec<User>> {
@@ -23,6 +60,8 @@ pub async fn list(state: &SharedState, limit: i64, offset: i64) -> RepositoryRes
 pub async fn add(tx: &mut Transaction<'_, Postgres>, user: NewUser) -> RepositoryResult<User> {
     tracing::trace!("user: {:#?}", user);
     let time_now = Utc::now().naive_utc();
+
+    let has_super = has_superuser(tx).await?;
 
     let user = sqlx::query_as::<_, User>(
         r#"INSERT INTO users (id,
@@ -46,6 +85,12 @@ pub async fn add(tx: &mut Transaction<'_, Postgres>, user: NewUser) -> Repositor
     .bind(time_now)
     .fetch_one(tx.as_mut())
     .await?;
+
+    if !has_super {
+        let role_id = role_repo::get_superuser_role_id(tx, "SUPER_ADMIN").await?;
+        role_repo::set_superadmin(tx, user.id, role_id).await?;
+        set_superuser(tx).await?;
+    }
 
     Ok(user)
 }

@@ -30,10 +30,8 @@ pub async fn run() {
     );
 
     // ? I hope this wont break anything in other machine 
-    let _ = init_repo::init_roles(&db_pool.clone()).await;
+    let _ = init_repo::init_roles(&db_pool).await;
 
-    let _ = init_repo::init_superuser(&db_pool).await;
-    // Build the application state.
     let shared_state = Arc::new(AppState {
         config,
         db_pool,
