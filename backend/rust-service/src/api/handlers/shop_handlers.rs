@@ -102,6 +102,22 @@ pub async fn get_assosiate_shops_handler(
     Ok(Json(json!(result)))
 }
 
+pub async fn get_shop_product_total_handler(
+    State(state): State<SharedState>,
+    Path((version, shop_id)): Path<(String, i64)>,
+) -> Result<impl IntoResponse, APIError> {
+    let api_version: APIVersion = version::parse_version(&version)?;
+    tracing::trace!("api version: {}", api_version);
+
+    let mut tx = state.db_pool.begin().await?;
+
+    let total = shop_repo::get_shop_product_total(&mut tx, shop_id).await?;
+
+    tx.commit().await?;
+
+    Ok(Json(total))
+}
+
 pub async fn get_current_shop_handler(
     State(state): State<SharedState>,
     Path((version, id)): Path<(String, i64)>,
@@ -217,9 +233,9 @@ pub async fn update_shop_banner_handler(
         max_size: 8 * 1024 * 1024,
         allowed_types: vec![AllowedMediaType::Jpeg, AllowedMediaType::Png],
         image_transform: Some(ImageTransform::Crop {
-            max_width: 3078,
-            max_height: 1024,
-            ratio: Some((25, 10)), 
+            max_width: 3840,
+            max_height: 1240,
+            ratio: Some((96, 31)),
         }),
     };
 

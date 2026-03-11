@@ -54,18 +54,3 @@ pub async fn find_first_user(
 
     Ok(first_user.into())
 }
-
-pub async fn init_superuser(pool: &sqlx::PgPool) -> Result<(), Box<dyn std::error::Error>> {
-    let first_user = find_first_user(pool).await?.expect("no user found");
-    let permission = role_repo::get_superuser_id(pool, "SUPER_ADMIN").await;
-    tracing::debug!("First user: {:?}", first_user.id);
-    tracing::debug!("Is superuser found ?: {:?}", permission);
-    let role_id = permission?;
-
-    let is_exist = role_repo::is_superuser_exist(pool, role_id.clone()).await?;
-    tracing::debug!("Is exist: {}", is_exist);
-    if !is_exist {
-        let _ = role_repo::set_superadmin(pool, first_user.id, role_id).await;
-    }
-    Ok(())
-}

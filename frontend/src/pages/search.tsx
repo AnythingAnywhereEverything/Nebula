@@ -49,7 +49,7 @@ export default function searchResult(){
                     <h3>Result of "<span>{query ? query.toString() : ""}</span>"</h3>
                 </header>
                 <FilterBar page={result?.page || 0} totalPages={result?.total_pages || 1}/>
-                <ProductField max_rows={-1} item_display={result?.data}/>
+                <ProductField max_rows={-1} item_display={result?.data || []}/>
             </section>
         </div>
     )

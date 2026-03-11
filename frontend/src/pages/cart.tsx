@@ -37,7 +37,6 @@ export default function Cart() {
                 setIsChecked(selectedCount);
                 checkPrice(data);
             } catch (e) {
-                console.error(e)
             }
         }
         fetchItem();

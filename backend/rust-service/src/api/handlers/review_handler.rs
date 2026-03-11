@@ -13,21 +13,25 @@ pub async fn create_review_handler(
 ) -> Result<impl IntoResponse, APIError> {
     let api_version: APIVersion = version::parse_version(&version)?;
     tracing::trace!("api version: {}", api_version);
-    
+
     let mut tx = state.db_pool.begin().await?;
 
     let id = state.snowflake_generator.generate_id()?;
 
+    let rating = payload.rating.clamp(1, 5);
+
     let result = review_repo::create_product_review(
-        &mut tx, 
-        auth.user_id, 
-        id, 
-        product_id, 
-        payload.content, 
-        payload.rating
+        &mut tx,
+        auth.user_id,
+        id,
+        product_id,
+        payload.content,
+        rating
     ).await?;
-    
-    review_repo::update_product_review(&mut tx, product_id, payload.rating).await?;
+
+    review_repo::update_product_review(&mut tx, product_id, rating).await?;
+
+    review_repo::update_shop_review(&mut tx, product_id, rating).await?;
 
     tx.commit().await?;
 

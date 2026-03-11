@@ -29,7 +29,6 @@ const ProductPageLayout: React.FC<ProductPageLayoutProps> = ({variant_id}) => {
         const load = async () => {
             const data = await getProductViaVariantId(variant_id)
             setProduct(data)
-            console.log(data)
         }
         load()
     }, [variant_id])

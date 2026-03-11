@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import style from '@styles/layouts/authLayout.module.scss';
 import { NextPageWithLayout } from "@/types/global";
 import AuthLayout from "@components/layouts/main-layouts/authLayout";
@@ -10,6 +10,7 @@ import GoogleAuthButton from "@components/ui/GoogleLoginBtn";
 import { cn } from "@lib/utils";
 import { register } from "@/api/auth";
 import { useRouter } from "next/router";
+import { useUser } from "@/hooks/useUser";
 
 
 const SignIn: NextPageWithLayout = () => {
@@ -17,8 +18,15 @@ const SignIn: NextPageWithLayout = () => {
     const [revealPassword, setRevealPassword] = useState(false);
     const [revealConfirm, setRevealConfirm] = useState(false);
 
+    const { data, isLoading } = useUser();
     const router = useRouter();
 
+    useEffect(() => {
+        if (!isLoading && data) {
+            router.replace("/");
+        }
+    }, [isLoading, data, router]);
+    
     type Errors = Partial<{
         username: string;
         email: string;
@@ -79,8 +87,6 @@ const SignIn: NextPageWithLayout = () => {
         e.preventDefault();
 
         if (!validate()) return;
-
-        console.log("Submitting", values);
 
         register(values).then(response => {
             router.push("/auth/signin");

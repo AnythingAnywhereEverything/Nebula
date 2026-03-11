@@ -106,6 +106,37 @@ pub async fn update_product_review(
     Ok(())
 }
 
+pub async fn update_shop_review(
+    tx: &mut Transaction<'_, Postgres>,
+    product_id: i64,
+    rating: i32
+) -> RepositoryResult<()> {
+    let _ = sqlx::query(
+r#"
+        UPDATE shops
+        SET
+            rating = (
+                (rating * review_amount + $1)::numeric
+                /
+                (review_amount + 1)
+            ),
+            review_amount = review_amount + 1,
+            updated_at = NOW()
+        WHERE id = (
+            SELECT shop_id
+            FROM products
+            WHERE id = $2
+        )
+    "#
+    )
+    .bind(rating)
+    .bind(product_id)
+    .execute(tx.as_mut())
+    .await?;
+
+    Ok(())
+}
+
 pub async fn create_review_reply(
     tx: &mut Transaction<'_, Postgres>,
     id: i64,

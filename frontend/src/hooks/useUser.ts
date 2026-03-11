@@ -3,15 +3,12 @@ import { useQuery } from "@tanstack/react-query";
 import { getUser } from "@/api/user";
 
 export const useUser = () => {
-  return useQuery({
-    queryKey: ["user"],
-    queryFn: async () => {
-      try {
-        return await getUser();
-      } catch {
-        return null;
-      }
-    },
-    staleTime: 5 * 60 * 1000,
-  });
+    return useQuery({
+        queryKey: ["user"],
+        queryFn: async () => {
+            return await getUser();
+        },
+        staleTime: 5 * 60 * 1000,
+        retry: false,
+    });
 };

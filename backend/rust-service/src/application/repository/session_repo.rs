@@ -49,6 +49,26 @@ pub async fn delete_all_sessions_by_user_id(
     Ok(())
 }
 
+pub async fn get_session_by_session_id(
+    tx: &mut Transaction<'_, Postgres>, 
+    id: i64,
+) -> Result<Session, SessionRepoError> {
+    let session = sqlx::query_as::<_,Session>(
+        r#"
+        SELECT id, created_at ,agent
+        FROM sessions
+        WHERE id = $1
+        "#
+    )
+    .bind(id)
+    .fetch_one(tx.as_mut())
+    .await
+    .map_err(|_| SessionRepoError::FailedToGetSession)?;
+
+    Ok(session)
+}
+
+
 pub async fn get_all_sessions_by_user_id(
     tx: &mut Transaction<'_, Postgres>, 
     user_id: i64,
@@ -87,7 +107,6 @@ pub async fn delete_session_by_user(
     .map_err(|_| SessionRepoError::FailedToDeleteSession)?;
     Ok(())
 }
-
 
 pub async fn delete_session_by_token(
     tx: &mut Transaction<'_, Postgres>,

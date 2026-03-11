@@ -3,7 +3,7 @@ import { clearCacheUserId, clearToken, setCacheUserId, setToken } from "@/handle
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export const useAuthService = () => {
-  const queryClient = useQueryClient();
+    const queryClient = useQueryClient();
 
     const loginMut = useMutation({
         mutationFn: login,
@@ -19,12 +19,12 @@ export const useAuthService = () => {
         onSuccess: () => {
             clearToken();
             clearCacheUserId();
-            queryClient.setQueryData(["user"], null);
+            queryClient.removeQueries({ queryKey: ["user"] });
         },
     });
 
-  return {
-    login: loginMut.mutateAsync,
-    logout: logoutMut.mutateAsync,
-  };
+    return {
+        login: loginMut.mutateAsync,
+        logout: logoutMut.mutateAsync,
+    };
 };

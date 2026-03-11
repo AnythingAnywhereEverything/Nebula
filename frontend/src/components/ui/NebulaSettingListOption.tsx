@@ -15,7 +15,6 @@ type NebulaSettingListItemProps = {
 const NebulaSettingListItem: React.FC<NebulaSettingListItemProps> = ({ title, main_link, sub_lists }) => {
     const pathname = usePathname(); // current path
     const mainPath = `/user${main_link}`;
-    console.log(pathname)
 
     // check if any sublink is active
     const activeSubLink = sub_lists?.find(sub => pathname.startsWith(`/user${sub.link}`));

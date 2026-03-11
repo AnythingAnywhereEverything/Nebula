@@ -6,7 +6,7 @@ use crate::{
         repository::session_repo, security::argon, service::errors::SessionServiceError,
         state::AppState,
     },
-    domain::{models::{session::Session}, session::session_token::SessionToken},
+    domain::{models::session::Session, session::session_token::SessionToken},
 };
 
 pub struct SessionService {}
@@ -47,8 +47,6 @@ impl SessionService {
 
         let mut conn = state.redis.get().await?;
         let key = format!("session_active:{}:{}", user_id, token.timestamp);
-
-        tracing::trace!("Setting session key in Redis: {}", key);
 
         let _: () = conn.set_ex(key, "1", expiration).await?;
         Ok(token)
@@ -120,8 +118,6 @@ impl SessionService {
         let mut conn = state.redis.get().await?;
         let key = format!("session_active:{}:{}", user_id, created_time);
 
-        tracing::trace!("Validating session key: {}", key);
-
         // if key exist make cache longer as user stays
         if conn.exists(&key).await? {
             conn.expire(&key, expiration_extend).await?;
@@ -160,17 +156,24 @@ impl SessionService {
     pub async fn delete_session_user(state: &AppState, session_id: String, user_id: i64) -> Result<(), SessionServiceError> {
         let mut tx = state.db_pool.begin().await?;
         let ses_id = session_id.parse::<i64>().map_err(|_| SessionServiceError::InvalidSessionID)?;
-        session_repo::delete_session_by_user(&mut tx, ses_id, user_id).await?;
-        tx.commit().await?;
 
-        // TODO: Delete in Redis please
+        let session_token = session_repo::get_session_by_session_id(&mut tx, ses_id).await?;
+        session_repo::delete_session_by_user(&mut tx, ses_id, user_id).await?;
         
-        // let mut conn = state.redis.get().await?;
-        // let key = format!(
-            // "session_active:{}:{}",
-            // session_token.user_id, session_token.timestamp
-        // );
-        // let _: usize = conn.del(key).await?;
+        
+        tx.commit().await?;
+        
+        let mut conn = state.redis.get().await?;
+        let created_ts = session_token
+        .created_at
+        .and_utc()
+        .timestamp_millis();
+    
+        let key = format!(
+            "session_active:{}:{}",
+            user_id, created_ts
+        );
+        let _: usize = conn.del(key).await?;
 
         return Ok(())
     }

@@ -244,6 +244,17 @@ export const SellerSideBar: React.FC = () => {
                 </DropdownMenu>
             </Field>
             <FieldGroup className={s.sidebarContent}>
+                <Button
+                    size={"sm"}
+                    variant={"ghost"}
+                    justify={"start"}
+                    asChild
+                >
+                    <Link href={`/store/${shop_id}`}>
+                        <Icon value={""} />
+                        View your shop
+                    </Link>
+                </Button>
                 {ListMapping.map((section, index) => (
                     <Field key={index}>
                         {section.description && (

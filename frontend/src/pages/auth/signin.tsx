@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import style from '@styles/layouts/authLayout.module.scss';
 import { NextPageWithLayout } from "@/types/global";
 import AuthLayout from "@components/layouts/main-layouts/authLayout";
@@ -10,33 +10,41 @@ import { useRouter } from "next/router";
 import GoogleAuthButton from "@components/ui/GoogleLoginBtn";
 import { setCacheUserId, setToken } from "@/handler/token_handler";
 import { useAuthService } from "@/hooks/useAuthService";
+import { useUser } from "@/hooks/useUser";
 
 const SignIn: NextPageWithLayout = () => {
 
     const [reveal, setReveal] = useState(false);
     const [error, setError] = useState<string | null>(null);
-
+    
+    const { data, isLoading } = useUser();
     const router = useRouter();
+
+    useEffect(() => {
+        if (!isLoading && data) {
+            router.replace("/");
+        }
+    }, [isLoading, data, router]);
     
     const { login } = useAuthService();
     
+    
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        login({
-            username_or_email: (e.currentTarget.elements.namedItem("username") as HTMLInputElement).value,
-            password: (e.currentTarget.elements.namedItem("password") as HTMLInputElement).value,
-        }).then(response => {
+        try {
+            await login({
+                username_or_email: (e.currentTarget.elements.namedItem("username") as HTMLInputElement).value,
+                password: (e.currentTarget.elements.namedItem("password") as HTMLInputElement).value,
+            });
+
             setError(null);
-            setToken(response.token);
-            setCacheUserId(response.user_id);
             router.push("/");
-        }).catch(error => {
-            console.log(error);
+        } catch (error: any) {
             setError(error.message);
-        });
-    }
+        }
+    };
 
     return(
         <>

@@ -71,7 +71,7 @@ const AddProduct: React.FC = () => {
         setProductData(value);
     }, []);
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
 
         const finalPayload = {
             ...productInfo,
@@ -83,7 +83,9 @@ const AddProduct: React.FC = () => {
         };
         
         if (typeof shop_id === 'string') {
-            createProduct(finalPayload, shop_id);
+            await createProduct(finalPayload, shop_id);
+
+            router.push(`/portal/seller/${shop_id}/products/product_list`)
         }
     };
 

@@ -1,4 +1,5 @@
 use chrono::NaiveDateTime;
+use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
 
@@ -28,6 +29,8 @@ pub struct Shop {
     pub updated_at: Option<NaiveDateTime>,
     pub shop_profile_url: Option<String>,
     pub shop_banner_url: Option<String>,
+    pub review_amount: i64,
+    pub rating: Decimal,
 }
 #[derive(Debug, FromRow, Serialize, Deserialize, PartialEq, Eq, Clone,Default)]
 pub struct ShopMember {
@@ -48,6 +51,8 @@ pub struct ShopResponse {
     pub updated_at: Option<NaiveDateTime>,
     pub shop_profile_url: Option<String>,
     pub shop_banner_url: Option<String>,
+    pub review_amount: String,
+    pub rating: String,
 }
 #[derive(Debug, FromRow, Serialize, Deserialize, PartialEq, Eq, Clone,Default)]
 
@@ -83,6 +88,8 @@ impl From<Shop> for ShopResponse {
             updated_at: shop.updated_at,
             shop_profile_url: shop.shop_profile_url,
             shop_banner_url: shop.shop_banner_url,
+            review_amount: shop.review_amount.to_string(),
+            rating: shop.rating.to_string(),
         }
     }
 }

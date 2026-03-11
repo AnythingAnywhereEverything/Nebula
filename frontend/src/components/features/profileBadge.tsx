@@ -18,25 +18,26 @@ export function ProfileBadge() {
 
     const router = useRouter();
 
-    const { data, isLoading } = useUser();
+    const { data, isLoading, isError } = useUser();
     const { data: shopData } = useShop();
     const { logout } = useAuthService();
-    
 
-    useEffect(() => 
-        {setMounted(true)},
-    []);
-    
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    useEffect(() => {
+        if (isError) {
+            router.push("/auth/signin");
+        }
+    }, [isError, router]);
+
     if (!mounted || !resolvedTheme) return null;
-    
-    
-    if (!data && !isLoading) {
-        router.push("/auth/signin")
-        return
-    }
 
-    if (!data) return;
-    
+    if (isLoading) return null;
+
+    if (!data) return null;
+        
     const displayName = data.display_name;
     const username = "@" + data.username;
     

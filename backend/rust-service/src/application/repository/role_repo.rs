@@ -39,8 +39,8 @@ pub async fn insert_if_missing(
     Ok(())
 }
 
-pub async fn get_superuser_id(
-    pool: &sqlx::PgPool,
+pub async fn get_superuser_role_id(
+    tx: &mut Transaction<'_, Postgres>,
     name: &str
 ) -> Result<i64, sqlx::Error> {
     let item = sqlx::query_scalar(
@@ -50,7 +50,7 @@ pub async fn get_superuser_id(
         "#
     )
     .bind(name)
-    .fetch_one(pool)
+    .fetch_one(tx.as_mut())
     .await?;
 
     Ok(item)
@@ -77,7 +77,7 @@ pub async fn is_superuser_exist(
 }
 
 pub async fn set_superadmin(
-    pool: &sqlx::PgPool,
+    tx: &mut Transaction<'_, Postgres>,
     user_id: i64,
     role_id: i64
 ) -> Result<(),  sqlx::Error> {
@@ -90,7 +90,7 @@ pub async fn set_superadmin(
     )
     .bind(role_id)
     .bind(user_id)
-    .execute(pool)
+    .execute(tx.as_mut())
     .await?;
 
     Ok(())
