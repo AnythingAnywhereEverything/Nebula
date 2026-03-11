@@ -10,7 +10,7 @@ use crate::{
     application::{
         repository::{errors::ShopRepoError, product_repo, role_repo, shop_repo}, service::media_service::{AllowedMediaType, ImageTransform, MediaOptions}, state::SharedState
     },
-    domain::{models::shop::{AssociateShops, NewShop, Shop, ShopMember, ShopResponse, ShopUpdateData}, role::role::{CreateShopRole, ShopRole, ShopRoleResponse}, shop::shop::ShopName},
+    domain::{models::{shop::{AssociateShops, MemberResponse, NewShop, Shop, ShopResponse, ShopUpdateData}}, role::role::{CreateShopRole, ShopRole, ShopRoleResponse}, shop::shop::ShopName},
 };
 
 #[derive(serde::Deserialize)]
@@ -63,17 +63,17 @@ pub async fn create_shop_handler(
         owner_id: user_id,
     };
 
-    let member_id = state.snowflake_generator.generate_id()?;
-    let member_info = ShopMember {
-        id: member_id,
-        shop_id: new_shop_id,
-        user_id: user_id,
-        role: "Owner".to_string()
-    };
+    // let member_id = state.snowflake_generator.generate_id()?;
+    // let member_info = ShopMember {
+    //     id: member_id,
+    //     shop_id: new_shop_id,
+    //     user_id: user_id,
+    //     role: "Owner".to_string()
+    // };
 
     shop_repo::create_shop(&mut tx, new_shop).await?;
 
-    shop_repo::add_shop_member(&mut tx, member_info).await?;
+    // shop_repo::add_shop_member(&mut tx, member_info).await?;
 
     tx.commit().await?;
 
@@ -115,14 +115,21 @@ pub async fn get_current_shop_handler(
 }
 
 pub async fn update_shop_info_handler(
+    Extension(auth): Extension<AuthUser>,
     State(state): State<SharedState>,
     Path((version, id)): Path<(String, i64)>,
     Json(payload): Json<CreateShopRequest>, 
 ) -> Result<impl IntoResponse, APIError> {
     let api_version: APIVersion = version::parse_version(&version)?;
     tracing::trace!("api version: {}", api_version);
-
+    let user_id = auth.user_id;
     let mut tx = state.db_pool.begin().await?;
+
+    let is_owner = shop_repo::is_owner_shop(&mut tx, id, user_id).await?;
+    if !is_owner {
+        return Err(ShopRepoError::NotShopOwner.into());
+    }
+
     let new_info  = ShopUpdateData {
         name: payload.name,
         description: payload.description,
@@ -135,6 +142,7 @@ pub async fn update_shop_info_handler(
 } 
 
 pub async fn update_shop_profile_handler(
+    Extension(auth): Extension<AuthUser>,
     Path((version, id)): Path<(String, i64)>,
     State(state): State<SharedState>,
     multipart: Multipart,
@@ -142,7 +150,15 @@ pub async fn update_shop_profile_handler(
     
     let api_version: APIVersion = version::parse_version(&version)?;
     tracing::trace!("api version: {}", api_version);
+
+    let user_id = auth.user_id;
+    let mut tx = state.db_pool.begin().await?;
     
+    let is_owner = shop_repo::is_owner_shop(&mut tx, id, user_id).await?;
+    if !is_owner {
+        return Err(ShopRepoError::NotShopOwner.into());
+    }
+
     // !TODO: permission check
     let profile_options = MediaOptions {
         folder: "shop_profile".into(),
@@ -154,7 +170,7 @@ pub async fn update_shop_profile_handler(
             ratio: Some((1, 1)),
         }),
     };
-    let mut tx = state.db_pool.begin().await?;
+    
     let shop = shop_repo::get_current_shop_by_shop_id(&mut tx
         , id).await?;
 
@@ -181,13 +197,20 @@ pub async fn update_shop_profile_handler(
 }
 
 pub async fn update_shop_banner_handler(
+    Extension(auth): Extension<AuthUser>,
     Path((version, id)): Path<(String, i64)>,
     State(state): State<SharedState>,
     multipart: Multipart,
 ) -> Result<impl IntoResponse, APIError> {
     let api_version: APIVersion = version::parse_version(&version)?;
     tracing::trace!("api version: {}", api_version);
-    
+    let user_id = auth.user_id;
+    let mut tx = state.db_pool.begin().await?;
+
+    let is_owner = shop_repo::is_owner_shop(&mut tx, id, user_id).await?;
+    if !is_owner {
+        return Err(ShopRepoError::NotShopOwner.into());
+    }
     // !TODO: permission check
     let banner_options = MediaOptions {
         folder: "shop_banner".into(),
@@ -200,7 +223,6 @@ pub async fn update_shop_banner_handler(
         }),
     };
 
-    let mut tx = state.db_pool.begin().await?;
     let shop = shop_repo::get_current_shop_by_shop_id(&mut tx
         , id).await?;
         
@@ -237,21 +259,21 @@ pub async fn add_new_member_handler(
     tracing::trace!("api version: {}", api_version);
     let mut tx = state.db_pool.begin().await?;
 
-    let member_id = state.snowflake_generator.generate_id()?;
+    // let member_id = state.snowflake_generator.generate_id()?;
     let user_id = auth.user_id;
 
-    let member_info = ShopMember{
-        id: member_id,
-        shop_id: id,
-        user_id: user_id,
-        role: "Member".to_string()
-    };
+    // let member_info = ShopMember{
+    //     id: member_id,
+    //     shop_id: id,
+    //     user_id: user_id,
+    //     role: "Member".to_string()
+    // };
 
     if shop_repo::is_member_exist(&mut tx, id, user_id).await? {
         return Err(ShopRepoError::MemberIsExist.into());
     }
     
-    shop_repo::add_shop_member(&mut tx, member_info).await?;
+    // shop_repo::add_shop_member(&mut tx, member_info).await?;
     tx.commit().await?;
 
     Ok(())
@@ -260,6 +282,7 @@ pub async fn add_new_member_handler(
 // * Roles handler
 
 pub async fn get_all_roles_handler(
+    Extension(auth): Extension<AuthUser>,
     State(state): State<SharedState>,
     Path((version, id)): Path<(String, i64)>
 ) -> Result<impl IntoResponse, APIError> {
@@ -267,11 +290,20 @@ pub async fn get_all_roles_handler(
     tracing::trace!("api version: {}", api_version);
 
     let mut tx = state.db_pool.begin().await?;
+    let user_id = auth.user_id;
+
+    let is_owner = shop_repo::is_owner_shop(&mut tx, id, user_id).await?;
+    
+    if !is_owner {
+        return Err(ShopRepoError::NotShopOwner.into());
+    }
+
     let roles:Vec<ShopRoleResponse> = role_repo::get_all_roles(&mut tx, id).await?;
     Ok(Json(<Vec<ShopRoleResponse>>::from(roles)))
 }
 
 pub async fn create_new_role_handler(
+    Extension(auth): Extension<AuthUser>,
     State(state): State<SharedState>,
     Path((version, id)): Path<(String, i64)>,
     Json(payload): Json<CreateShopRole>,
@@ -281,6 +313,11 @@ pub async fn create_new_role_handler(
     tracing::trace!("api version: {}", api_version);
 
     let mut tx = state.db_pool.begin().await?;
+    let user_id = auth.user_id;
+    let is_owner = shop_repo::is_owner_shop(&mut tx, id, user_id).await?;
+    if !is_owner {
+        return Err(ShopRepoError::NotShopOwner.into());
+    }
 
     let role_id = state.snowflake_generator.generate_id()?;
 
@@ -299,6 +336,7 @@ pub async fn create_new_role_handler(
 }
 
 pub async fn update_role_handler(
+    Extension(auth): Extension<AuthUser>,
     State(state): State<SharedState>,
     Path((version, id)): Path<(String, i64)>,
     Json(payload): Json<ShopRole>
@@ -307,6 +345,12 @@ pub async fn update_role_handler(
     tracing::trace!("api version: {}", api_version);
 
     let mut tx = state.db_pool.begin().await?;
+    let user_id = auth.user_id;
+    let is_owner = shop_repo::is_owner_shop(&mut tx, id, user_id).await?;
+    if !is_owner {
+        return Err(ShopRepoError::NotShopOwner.into());
+    }
+
     let updated_role = ShopRole {
         id: payload.id,
         name: payload.name,
@@ -320,6 +364,7 @@ pub async fn update_role_handler(
 }
 
 pub async fn delete_role_handler(
+    Extension(auth): Extension<AuthUser>,
     State(state): State<SharedState>,
     Path((version, shop_id, role_id)): Path<(String, i64, i64)>,
 ) -> Result<impl IntoResponse, APIError> {
@@ -327,8 +372,41 @@ pub async fn delete_role_handler(
     tracing::trace!("api version: {}", api_version);
 
     let mut tx = state.db_pool.begin().await?;
+    let user_id = auth.user_id;
+    let is_owner = shop_repo::is_owner_shop(&mut tx, shop_id, user_id).await?;
+    if !is_owner {
+        return Err(ShopRepoError::NotShopOwner.into());
+    }
     role_repo::delete_shop_role(&mut tx, shop_id, role_id).await?;
     tx.commit().await?;
 
     Ok(())
+}
+
+pub async fn get_member_by_shop_id_handler(
+    State(state): State<SharedState>,
+    Path((version, shop_id)): Path<(String, i64)>,
+) -> Result<impl IntoResponse, APIError> {
+    let api_version: APIVersion = version::parse_version(&version)?;
+    tracing::trace!("api version: {}", api_version);
+
+    let mut tx = state.db_pool.begin().await?;
+    let members: Vec<MemberResponse> = shop_repo::get_shop_member_by_shop_id(&mut tx, shop_id).await?;
+    Ok(Json(members))
+}
+
+pub async fn is_owner_shop_handler(
+    Extension(auth): Extension<AuthUser>,
+    State(state): State<SharedState>,
+    Path((version, shop_id)): Path<(String, i64)>,
+) -> Result<impl IntoResponse, APIError> {
+    let api_version: APIVersion = version::parse_version(&version)?;
+    tracing::trace!("api version: {}", api_version);
+
+    let mut tx = state.db_pool.begin().await?;
+    let user_id = auth.user_id;
+
+    let is_owner = shop_repo::is_owner_shop(&mut tx, shop_id, user_id).await?;
+    
+    Ok(Json(is_owner))
 }

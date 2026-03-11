@@ -1,6 +1,6 @@
 use sqlx::{Postgres, Transaction};
 
-use crate::{application::repository::errors::ShopRepoError, domain::{models::shop::{NewShop, Shop, ShopMember, ShopUpdateData}}};
+use crate::{application::repository::errors::ShopRepoError, domain::models::shop::{MemberResponse, NewShop, Shop, ShopUpdateData}};
 
 pub async fn is_shop_exist (
     tx: &mut Transaction<'_, Postgres>,
@@ -166,30 +166,30 @@ pub async fn update_banner_shop(
     Ok(())
 }
 
-pub async fn add_shop_member(
-    tx: &mut Transaction<'_, Postgres>,
-    payload: ShopMember
-) -> Result<(), ShopRepoError> {
-    let now = chrono::Utc::now().naive_utc();
-    let _ = sqlx::query(
-        r#"
-        INSERT INTO shop_members
-        (id, shop_id, user_id, role, created_at, updated_at)
-        VALUES ($1, $2 ,$3, $4, $5, $6)
-        "#
-    )
-    .bind(payload.id)
-    .bind(payload.shop_id)
-    .bind(payload.user_id)
-    .bind(payload.role)
-    .bind(now)
-    .bind(now)
-    .execute(tx.as_mut())
-    .await
-    .map_err(|_| ShopRepoError::ShopNotFound);
+// pub async fn add_shop_member(
+//     tx: &mut Transaction<'_, Postgres>,
+//     payload: ShopMember
+// ) -> Result<(), ShopRepoError> {
+//     let now = chrono::Utc::now().naive_utc();
+//     let _ = sqlx::query(
+//         r#"
+//         INSERT INTO shop_members
+//         (id, shop_id, user_id, role, created_at, updated_at)
+//         VALUES ($1, $2 ,$3, $4, $5, $6)
+//         "#
+//     )
+//     .bind(payload.id)
+//     .bind(payload.shop_id)
+//     .bind(payload.user_id)
+//     .bind(payload.role)
+//     .bind(now)
+//     .bind(now)
+//     .execute(tx.as_mut())
+//     .await
+//     .map_err(|_| ShopRepoError::ShopNotFound);
 
-    Ok(())
-}
+//     Ok(())
+// }
 
 pub async fn is_member_exist(
     tx: &mut Transaction<'_, Postgres>,
@@ -206,6 +206,47 @@ pub async fn is_member_exist(
         .fetch_one(tx.as_mut())
         .await
         .map_err(|_| ShopRepoError::MemberIsExist)?;
+
+    Ok(count > 0)
+}
+
+pub async fn get_shop_member_by_shop_id(
+    tx: &mut Transaction<'_, Postgres>,
+    shop_id: i64
+) -> Result<Vec<MemberResponse>, ShopRepoError> {
+    let members = sqlx::query_as::<_, MemberResponse>(
+        r#"
+        SELECT sm.id, sm.shop_id, sm.role, u.profile_picture_url 
+        FROM shop_members sm
+        INNER JOIN users u ON sm.user_id = u.id
+        INNER JOIN shop_roles sr ON sm.shop_id = sr.shop_id
+        WHERE sm.shop_id = $1
+        "#
+    )
+    .bind(shop_id)
+    .fetch_all(tx.as_mut())
+    .await
+    .map_err(|_| ShopRepoError::ShopNotFound)?;
+
+    Ok(members)
+}
+
+pub async fn is_owner_shop(
+    tx: &mut Transaction<'_, Postgres>,
+    shop_id: i64,
+    user_id: i64
+) -> Result<bool, ShopRepoError> {
+    let count: i64 = sqlx::query_scalar(
+        r#"
+        SELECT COUNT(*)
+            FROM shops 
+            WHERE id = $1 AND owner_id = $2"#
+    )
+        .bind(shop_id)
+        .bind(user_id)
+        .fetch_one(tx.as_mut())
+        .await
+        .map_err(|_| ShopRepoError::ShopNotFound)?;
 
     Ok(count > 0)
 }
