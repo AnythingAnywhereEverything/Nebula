@@ -318,3 +318,17 @@ pub async fn update_role_handler(
 
     Ok(())
 }
+
+pub async fn delete_role_handler(
+    State(state): State<SharedState>,
+    Path((version, shop_id, role_id)): Path<(String, i64, i64)>,
+) -> Result<impl IntoResponse, APIError> {
+    let api_version: APIVersion = version::parse_version(&version)?;
+    tracing::trace!("api version: {}", api_version);
+
+    let mut tx = state.db_pool.begin().await?;
+    role_repo::delete_shop_role(&mut tx, shop_id, role_id).await?;
+    tx.commit().await?;
+
+    Ok(())
+}

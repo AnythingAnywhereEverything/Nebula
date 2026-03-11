@@ -165,3 +165,21 @@ pub async fn update_ship_role(
 
     Ok(())
 }
+pub async fn delete_shop_role(
+    tx: &mut Transaction<'_, Postgres>,
+    shop_id: i64,
+    role_id: i64
+) -> Result<(), ShopRepoError> {
+    sqlx::query(
+        r#"
+            DELETE FROM shop_roles
+            WHERE id = $1 AND shop_id = $2
+        "#
+    )
+    .bind(role_id)
+    .bind(shop_id)
+    .execute(tx.as_mut())
+    .await?;
+
+    Ok(())
+}
