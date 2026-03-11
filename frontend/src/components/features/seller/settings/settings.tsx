@@ -23,6 +23,13 @@ const ShopSettingsCompo:React.FC = () => {
                         </Button>
                     </Link>
                 </div>
+                <div>
+                    <Link href={`/portal/seller/${shop_id}/settings/member`}>
+                        <Button>
+                            Member
+                        </Button>
+                    </Link>
+                </div>
             </ButtonGroup>
         </Field>
     )

@@ -28,6 +28,9 @@ export const portalSellerAllowedList: Record<string, {
     "/settings/role":{
         component: RoleComponent
     },
+    "/settings/member":{
+        component: RoleComponent
+    },
     
     "/canceled": {
         component: CancelRefunedReturn
