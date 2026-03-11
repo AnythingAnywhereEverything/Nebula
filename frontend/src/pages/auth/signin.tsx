@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import style from '@styles/layouts/authLayout.module.scss';
 import { NextPageWithLayout } from "@/types/global";
 import AuthLayout from "@components/layouts/main-layouts/authLayout";
@@ -10,15 +10,24 @@ import { useRouter } from "next/router";
 import GoogleAuthButton from "@components/ui/GoogleLoginBtn";
 import { setCacheUserId, setToken } from "@/handler/token_handler";
 import { useAuthService } from "@/hooks/useAuthService";
+import { useUser } from "@/hooks/useUser";
 
 const SignIn: NextPageWithLayout = () => {
 
     const [reveal, setReveal] = useState(false);
     const [error, setError] = useState<string | null>(null);
-
+    
+    const { data, isLoading } = useUser();
     const router = useRouter();
+
+    useEffect(() => {
+        if (!isLoading && data) {
+            router.replace("/");
+        }
+    }, [isLoading, data, router]);
     
     const { login } = useAuthService();
+    
     
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
