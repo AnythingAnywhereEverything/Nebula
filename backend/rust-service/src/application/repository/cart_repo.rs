@@ -88,45 +88,53 @@ pub async fn get_user_cart_items(
 ) -> Result<Vec<CartItemResponse>, sqlx::Error> {
     let items = sqlx::query_as(
     r#"
-            SELECT 
-                c.product_id::text as product_id,
-                c.product_variants_id::text as product_variants_id,
-                p.name,
-                pv.price::BIGINT as price,
-                c.quantity,
-                p.is_active,
-                pv.on_sale,
-                pv.sale_price::BIGINT as sale_price,
-                p.free_shipping,
-                pv.stock_quantity,
-                pv.is_enabled,
-                c.is_selected,
-                COALESCE(piv.image_url, pip.image_url) AS image_url,
-                COALESCE(va.spec, '[]'::jsonb) as spec
-            FROM carts c
-            INNER JOIN products p
-                ON c.product_id = p.id
-            LEFT JOIN product_variants pv
-                ON c.product_variants_id = pv.id
-            LEFT JOIN LATERAL (
-                SELECT jsonb_agg(
-                    jsonb_build_object(
-                        'name', a.name,
-                        'value', ao.value
-                    )
-                ) as spec
-                FROM variant_attribute_values vav
-                JOIN attribute_options ao
-                    ON ao.id = vav.attribute_option_id
-                JOIN attributes a
-                    ON a.id = ao.attribute_id
-                WHERE vav.variant_id = c.product_variants_id
-            ) va ON TRUE
-            LEFT JOIN product_images piv
-                ON piv.variant_id = c.product_variants_id
-            LEFT JOIN product_images pip
-                ON pip.product_id = c.product_id
-            WHERE c.user_id = $1
+            SELECT
+            c.product_id::text AS product_id,
+            c.product_variants_id::text AS product_variants_id,
+            p.name,
+            pv.price::BIGINT AS price,
+            c.quantity,
+            p.is_active,
+            pv.on_sale,
+            pv.sale_price::BIGINT AS sale_price,
+            p.free_shipping,
+            pv.stock_quantity,
+            pv.is_enabled,
+            c.is_selected,
+            COALESCE(piv.image_url, pip.image_url) AS image_url,
+            COALESCE(va.spec, '[]'::jsonb) AS spec
+        FROM carts c
+        INNER JOIN products p
+            ON c.product_id = p.id
+        LEFT JOIN product_variants pv
+            ON c.product_variants_id = pv.id
+        LEFT JOIN LATERAL (
+            SELECT jsonb_agg(
+                jsonb_build_object(
+                    'name', a.name,
+                    'value', ao.value
+                )
+            ) AS spec
+            FROM variant_attribute_values vav
+            JOIN attribute_options ao
+                ON ao.id = vav.attribute_option_id
+            JOIN attributes a
+                ON a.id = ao.attribute_id
+            WHERE vav.variant_id = c.product_variants_id
+        ) va ON TRUE
+        LEFT JOIN LATERAL (
+            SELECT image_url
+            FROM product_images
+            WHERE variant_id = c.product_variants_id
+            LIMIT 1
+        ) piv ON TRUE
+        LEFT JOIN LATERAL (
+            SELECT image_url
+            FROM product_images
+            WHERE product_id = c.product_id
+            LIMIT 1
+        ) pip ON TRUE
+        WHERE c.user_id = $1;
             "#,
         )
         .bind(user_id)
