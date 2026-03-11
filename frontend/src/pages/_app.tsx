@@ -28,6 +28,26 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
             <meta name="theme-color" content="#000000" />
             <link rel="apple-touch-icon" href="/logo192.png" />
             <link rel="manifest" href="/manifest.json" />
+
+            {/* * Default SEO */}
+            <meta name="description" content="Nebula — discover products and shops however you like." />
+
+            {/* * Open Graph (Facebook / Discord / LinkedIn) */}
+            <meta property="og:type" content="website" />
+            <meta property="og:site_name" content="Nebula" />
+            <meta property="og:title" content="Nebula - Shop However You Like" />
+            <meta property="og:description" content="Discover products, explore shops, and shop however you like with Nebula." />
+            <meta property="og:url" content="https://nebula.zartexvertagen.com" />
+            <meta property="og:image" content="https://nebula.zartexvertagen.com/banner.png" />
+            <meta property="og:image:width" content="553" />
+            <meta property="og:image:height" content="297" />
+
+            {/* * Twitter (also used by some crawlers) */}
+            <meta name="twitter:card" content="summary_large_image" />
+            <meta name="twitter:title" content="Nebula - Shop However You Like" />
+            <meta name="twitter:description" content="Discover products, explore shops, and shop however you like with Nebula." />
+            <meta name="twitter:image" content="https://nebula.zartexvertagen.com/banner.png" />
+
           </Head>
           {getLayout(<Component {...pageProps} />)}
         </GoogleOAuthProvider>
