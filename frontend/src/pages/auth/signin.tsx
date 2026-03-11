@@ -21,21 +21,21 @@ const SignIn: NextPageWithLayout = () => {
     const { login } = useAuthService();
     
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        login({
-            username_or_email: (e.currentTarget.elements.namedItem("username") as HTMLInputElement).value,
-            password: (e.currentTarget.elements.namedItem("password") as HTMLInputElement).value,
-        }).then(response => {
+        try {
+            await login({
+                username_or_email: (e.currentTarget.elements.namedItem("username") as HTMLInputElement).value,
+                password: (e.currentTarget.elements.namedItem("password") as HTMLInputElement).value,
+            });
+
             setError(null);
-            setToken(response.token);
-            setCacheUserId(response.user_id);
             router.push("/");
-        }).catch(error => {
+        } catch (error: any) {
             setError(error.message);
-        });
-    }
+        }
+    };
 
     return(
         <>

@@ -5,7 +5,7 @@ use crate::{
         repository::{errors::UserRepoError, oauth_repo, user_repo},
         security::argon,
         service::{errors::AuthServiceError, session_service::SessionService}, state::AppState,
-    }, domain::{models::user::{NewUser, UserUpdate}, session::session_token::SessionToken, user::username::Username}, infrastructure::database::Database
+    }, domain::{models::user::{NewUser, UserUpdate}, user::username::Username}, infrastructure::database::Database
 };
 
 #[derive(Serialize)]
@@ -146,10 +146,8 @@ impl AuthService {
             if user.is_active && is_password_match {
                 tracing::trace!("access granted, user: {}", user.username);
 
-                let token: SessionToken = SessionToken::new(user.id)?;
-
                 // create session
-                SessionService::create_session(
+                let token = SessionService::create_session(
                     &state, 
                     user.id, 
                     &auth_header.user_agent,
