@@ -39,8 +39,6 @@ export const getAddresses = async (): Promise<AddressResponse[]> => {
 export const editAddress = async (address_id: string, payload: AddressRequest): Promise<AddressResponse> => {
     const userId = getCacheUserId();
 
-    console.log("Editing address with payload in API channel:", payload);
-
     const res = await fetchWithAuth(`/api/v2/users/${userId}/addresses/${address_id}`, {
         method: "PUT",
         headers: {

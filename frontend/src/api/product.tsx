@@ -396,8 +396,6 @@ export async function getCartItems() {
     });
 
     const data = await res.json();
-    console.log(data); // * check actual API response
-
     if (!res.ok) {
         const errorMessage =
             data?.errors?.[0]?.message || "Failed to fetch cart";
