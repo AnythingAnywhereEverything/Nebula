@@ -31,7 +31,7 @@ export default function Wishlist() {
                     <FieldSeparator/>
                     
                     <Field className={s.wishlistItemContainer}>
-                            {hasItems ? (
+                            {/* {hasItems ? (
                                 <>
                                     <CartShopProduct 
                                         nsin="NB00000001"
@@ -68,7 +68,7 @@ export default function Wishlist() {
                                 <div className={s.emptyWish}>
                                     <p>Your wishlist is empty.</p>
                                 </div>
-                            )}
+                            )} */}
                     </Field>
                     
                     {hasItems ? (

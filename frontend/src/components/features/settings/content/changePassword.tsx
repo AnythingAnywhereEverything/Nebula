@@ -63,7 +63,6 @@ At least one special character (e.g., !@#$%()-)`
 
         if (!validateNewPassword()) return;
 
-        console.log("Values", values);
         updatePassword(values)
     }
         

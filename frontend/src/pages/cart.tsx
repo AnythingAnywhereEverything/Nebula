@@ -25,7 +25,6 @@ export default function Cart() {
             }
         }
         setCurrentPrice(total);
-        console.log(currentPrice)
     }
 
     useEffect(() => {
@@ -38,7 +37,7 @@ export default function Cart() {
                 setIsChecked(selectedCount);
                 checkPrice(data);
             } catch (e) {
-                console.log(e)
+                console.error(e)
             }
         }
         fetchItem();
@@ -97,6 +96,7 @@ export default function Cart() {
                                             stock_quantity={item.stock_quantity ?? 0}
                                             image_url={item.image_url ? `${item.image_url}` : null}
                                             product_variants={item.product_variants ?? []}
+                                            is_active={item.is_active}
                                             is_enable={item.is_enabled}
                                             is_selected={item.is_selected}
                                         />
@@ -107,7 +107,7 @@ export default function Cart() {
                         <Separator />
                         <footer className={style.allTotal}>
                             <span>Total ({cartItems?.length})</span>
-                            <strong>${currentPrice}</strong>
+                            <strong>$ {Intl.NumberFormat().format(currentPrice ?? 0)}</strong>
                         </footer>
                     </FieldGroup>
                     <FieldSeparator />

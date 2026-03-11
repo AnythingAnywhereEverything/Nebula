@@ -32,7 +32,6 @@ export default function searchResult(){
                 max_price
             )
             setResult(data)
-            console.log(data)
         }
         load()
     }, [query, page, limit, rating, min_price, max_price])
