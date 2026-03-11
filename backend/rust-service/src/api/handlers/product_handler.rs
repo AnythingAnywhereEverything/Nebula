@@ -1,8 +1,8 @@
-use std::collections::{HashMap, HashSet};
+use std::{collections::{HashMap, HashSet}};
 
 use crate::{
     api::{APIError, APIVersion, middleware::user_mw::AuthUser, version},
-    application::{repository::product_repo, service::{errors::{MediaServiceError, ProductServiceError}, media_service::{AllowedMediaType, ImageTransform, MediaOptions, MediaService}, product_service::ProductService}, state::SharedState}, domain::models::product::{CreateNewVariantDto, ProductImages, UpdateProductInfoDto, UpdateProductSettings, UpdateVariantDto},
+    application::{repository::{cart_repo, product_repo}, service::{errors::{MediaServiceError, ProductServiceError}, media_service::{AllowedMediaType, ImageTransform, MediaOptions, MediaService}, product_service::ProductService}, state::SharedState}, domain::models::{cart::CheckMarkToCart, product::{AddToCartProduct, CreateNewVariantDto, ProductImages, UpdateProductInfoDto, UpdateProductSettings, UpdateVariantDto}},
 };
 use axum::{
     Extension, Json, extract::{Multipart, Path, State}, response::IntoResponse
@@ -413,4 +413,112 @@ pub async fn get_product_variant_info (
     let result = product_repo::get_product_variant(&mut tx, shop_id, product_id, variant_id).await?;
     
     Ok(Json(result))
+}
+
+pub async fn get_cart_handler(
+    Extension(_auth): Extension<AuthUser>,
+    State(state): State<SharedState>,
+    Path(version): Path<String>,
+) -> Result<impl IntoResponse, APIError> {
+    let user_id = _auth.user_id;
+    let api_version: APIVersion = version::parse_version(&version)?;
+    tracing::trace!("api version: {}", api_version);
+
+    let mut tx = state.db_pool.begin().await?;
+
+    let cart_items = cart_repo::get_user_cart_items(&mut tx, user_id).await?;
+
+    tx.commit().await?;
+
+    Ok(Json(cart_items))
+}
+
+pub async fn add_to_cart_handler(
+    Extension(_auth): Extension<AuthUser>,
+    State(state): State<SharedState>,
+    Path(version): Path<String>,
+    Json(payload): Json<AddToCartProduct>,
+) -> Result<impl IntoResponse, APIError> {
+    let user_id = _auth.user_id;
+    let api_version: APIVersion = version::parse_version(&version)?;
+    tracing::trace!("api version: {}", api_version);
+
+    let mut tx = state.db_pool.begin().await?;
+
+    let item = AddToCartProduct {
+        product_id: payload.product_id,
+        product_variants_id: payload.product_variants_id,
+        quantity: payload.quantity,
+    };
+
+    cart_repo::add_to_cart(&mut tx,user_id, item).await?;
+    tx.commit().await?;
+    
+    Ok(Json(()))
+}
+
+pub async fn selected_item_handler(
+    Extension(_auth): Extension<AuthUser>,
+    State(state): State<SharedState>,
+    Path(version): Path<String>,
+    Json(payload): Json<CheckMarkToCart>,
+) -> Result<impl IntoResponse, APIError> {
+    let user_id = _auth.user_id;
+    let api_version: APIVersion = version::parse_version(&version)?;
+    tracing::trace!("api version: {}", api_version);
+
+    let mut tx = state.db_pool.begin().await?;
+
+    let check_mark = crate::domain::models::cart::CheckMarkToCart {
+        product_id: payload.product_id,
+        product_variants_id: payload.product_variants_id,
+        is_selected: payload.is_selected,
+    };
+
+    cart_repo::check_mark_to_cart(&mut tx, user_id, check_mark).await?;
+    tx.commit().await?;
+
+    Ok(())
+}
+
+pub async fn set_new_quantity_handler(
+    Extension(_auth): Extension<AuthUser>,
+    State(state): State<SharedState>,
+    Path(version): Path<String>,
+    Json(payload): Json<AddToCartProduct>,
+) -> Result<impl IntoResponse, APIError> {
+    let user_id = _auth.user_id;
+    let api_version: APIVersion = version::parse_version(&version)?;
+    tracing::trace!("api version: {}", api_version);
+
+    let mut tx = state.db_pool.begin().await?;
+
+    let item = AddToCartProduct {
+        product_id: payload.product_id,
+        product_variants_id: payload.product_variants_id,
+        quantity: payload.quantity,
+    };
+
+    cart_repo::set_amount_on_cart(&mut tx,user_id, item).await?;
+    tx.commit().await?;
+    
+    Ok(Json(()))
+}
+
+pub async fn remove_item_from_cart_handler(
+    Extension(_auth): Extension<AuthUser>,
+    State(state): State<SharedState>,
+    Path(version): Path<String>,
+    Json(payload): Json<AddToCartProduct>,
+) -> Result<impl IntoResponse, APIError> {
+    let user_id = _auth.user_id;
+    let api_version: APIVersion = version::parse_version(&version)?;
+    tracing::trace!("api version: {}", api_version);
+
+    let mut tx = state.db_pool.begin().await?;
+
+    cart_repo::remove_item_from_cart(&mut tx, user_id, payload).await?;
+    tx.commit().await?;
+
+    Ok(Json(()))
 }

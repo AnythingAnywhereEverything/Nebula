@@ -7,5 +7,6 @@ pub mod shop_repo;
 pub mod product_repo;
 pub mod role_repo;
 pub mod search_repo;
+pub mod cart_repo;
 
 pub type RepositoryResult<T> = Result<T, sqlx::Error>;

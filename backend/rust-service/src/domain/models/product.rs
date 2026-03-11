@@ -5,7 +5,7 @@ use serde_aux::prelude::*;
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Deserializer, Serialize};
 use serde_json::Value;
-use sqlx::FromRow;
+use sqlx::{FromRow};
 
 #[derive(Debug, Serialize, FromRow)]
 pub struct GetProductEdit {
@@ -152,6 +152,33 @@ pub struct ProductImages {
     pub variant_id: Option<i64>,
     pub image_url: String,
     pub position: i32,
+}
+#[derive(Debug, Deserialize, Serialize, FromRow)]
+pub struct AddToCartProduct {
+    #[serde(deserialize_with = "deserialize_number_from_string")]
+    pub product_id: i64,
+    #[serde(deserialize_with = "deserialize_option_number_from_string")]
+    pub product_variants_id: Option<i64>,
+    pub quantity: i32,
+}
+
+#[derive(Debug, Deserialize, Serialize, FromRow)]
+pub struct CartItemResponse {
+    pub product_id: String,
+    pub product_variants_id: Option<String>,
+    pub name: String,
+    pub price: i64,
+    pub quantity: i32,
+    pub is_active: bool,
+    pub on_sale: bool,
+    pub sale_price: Option<i64>,
+    pub free_shipping: bool,
+    pub stock_quantity: i32,
+    pub is_enabled: bool,
+    pub is_selected: bool,
+    #[serde(default, rename = "product_variants")]
+    pub spec: sqlx::types::Json<Vec<HashMap<String, String>>>,
+    pub image_url: Option<String>,
 }
 
 // * deserializer :sob:
