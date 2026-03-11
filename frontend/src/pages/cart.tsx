@@ -4,10 +4,45 @@ import CartShopProduct from "@components/features/cart/cartShopProduct";
 import { RecommendPanel } from '@components/features/recommendation';
 import { Button, Field, FieldGroup, FieldLegend, FieldSeparator, FieldSet, Separator } from '@components/ui/NebulaUI';
 import { cn } from '@lib/utils';
+import { useEffect, useState } from 'react';
+import { GetCartItemsUsers, getCartItems } from '@/api/product';
+
 
 export default function Cart() {
-    const hasItems = true; // later from backend
-    const selectedCount: number = 2;
+    const [cartItems, setCartItems] = useState<GetCartItemsUsers[]>();
+    const [isChecked, setIsChecked] = useState<number>();
+    const [currentPrice, setCurrentPrice] = useState<number>();
+
+    async function checkPrice(data: GetCartItemsUsers[]) {
+        let total = 0;
+
+        for (const item of data) {
+            if (item.is_selected) {
+                const price = item.on_sale && item.sale_price
+                    ? item.sale_price
+                    : item.price;
+                total += price * item.quantity;
+            }
+        }
+        setCurrentPrice(total);
+        console.log(currentPrice)
+    }
+
+    useEffect(() => {
+        const fetchItem = async () => {
+            try{
+                const data = await getCartItems();
+                setCartItems(data);
+
+                const selectedCount = data.filter((item: any) => item?.is_selected === true).length;
+                setIsChecked(selectedCount);
+                checkPrice(data);
+            } catch (e) {
+                console.log(e)
+            }
+        }
+        fetchItem();
+    }, [])
 
     return (
         <>
@@ -16,18 +51,16 @@ export default function Cart() {
             </Head>
 
             <section className={style.cartPage}>
-
                 <Field orientation={"horizontal"} className={style.cartSection}>
-
                     <FieldGroup className={style.cartContainer}>
                         <Field className={style.header}>
                             <h1>Shopping Cart</h1>
 
                             <Field orientation={"horizontal"}>
-                                {selectedCount === 0 ? (
+                                {isChecked === 0 ? (
                                     <p>No item selected.</p>
                                 ) : (
-                                    <p>{selectedCount} items selected.</p>
+                                    <p>{isChecked} items selected.</p>
                                 )}
 
                                 <Button variant={"ghost"} size={"sm"} className={style.selectAllBtn}>
@@ -39,39 +72,42 @@ export default function Cart() {
                         <FieldSeparator/>
 
                         <FieldGroup className={style.cartItemContainer}>
-                            {hasItems ? (
-                                <>
-                                    <CartShopProduct 
-                                        nsin="NB00000001"
-                                        stock={20}
-                                        product_name="Something something, dont forget to make this into a link after implement product on the backend btw." 
-                                        product_image="https://placehold.co/400" 
-                                        price={299}
-                                        variant={{color: "green", size: "L"}}
-                                        checked
-                                        availability={"in_stock"} 
-                                        freeShipping amount={1} 
-                                    /> 
-                                    <CartShopProduct
-                                        stock={3}
-                                        nsin="NB00000002"
-                                        product_name="Something something Version 2 but make it veryyyy very longggggggggggggggggggg... NOT ENOUGH???????!?!? MAKE IT LONGERRRRRRRRRRRRRRRRRRRR LIKE THAT ONE VIDEO ON INSTAGRAM REELLLLLLLLLLLLLLLLLLLLLLLLL" 
-                                        product_image="https://placehold.co/200" 
-                                        price={1200} variant={{size: "L"}} 
-                                        freeShipping availability={"low_stock"} 
-                                        amount={1} 
-                                    />
-                                </>
-                            ) : (
+
+                            {cartItems === undefined ? (
+                                <p>Loading item...</p>
+                            ) : cartItems.length === 0 ? (
                                 <div className={style.emptyCart}>
                                     <p>Your cart is empty.</p>
                                 </div>
+                            ) : (
+                                cartItems.map((item) => {
+                                    if (!item.product_variants_id) return null;
+                                
+                                    return (
+                                        <CartShopProduct
+                                            key={item.product_variants_id}
+                                            product_id={item.product_id}
+                                            product_variants_id={item.product_variants_id}
+                                            name={item.name}
+                                            price={item.price}
+                                            quantity={item.quantity}
+                                            on_sale={item.on_sale}
+                                            sale_price={item.sale_price ?? null}
+                                            free_shipping={item.free_shipping}
+                                            stock_quantity={item.stock_quantity ?? 0}
+                                            image_url={item.image_url ? `${item.image_url}` : null}
+                                            product_variants={item.product_variants ?? []}
+                                            is_enable={item.is_enabled}
+                                            is_selected={item.is_selected}
+                                        />
+                                    );
+                                })
                             )}
                         </FieldGroup>
                         <Separator />
                         <footer className={style.allTotal}>
-                            <span>Total (2 items)</span>
-                            <strong>$1,499</strong>
+                            <span>Total ({cartItems?.length})</span>
+                            <strong>${currentPrice}</strong>
                         </footer>
                     </FieldGroup>
                     <FieldSeparator />
@@ -81,7 +117,7 @@ export default function Cart() {
 
                             <Field orientation={"horizontal"} style={{justifyContent:"space-between"}}>
                                 <span>Items</span>
-                                <span>2</span>
+                                <span>{isChecked}</span>
                             </Field>
 
                             <Field orientation={"horizontal"} style={{justifyContent:"space-between"}}>
@@ -91,7 +127,7 @@ export default function Cart() {
 
                             <Field orientation={"horizontal"} style={{justifyContent:"space-between"}}>
                                 <span>Total</span>
-                                <strong>$1,499</strong>
+                                <strong>$ {Intl.NumberFormat().format(currentPrice ?? 0)}</strong>
                             </Field>
 
                             <Button size={"sm"}>
