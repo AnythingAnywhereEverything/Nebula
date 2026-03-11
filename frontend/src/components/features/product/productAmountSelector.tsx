@@ -5,9 +5,10 @@ import { Field, FieldDescription, Icon, InputGroup, InputGroupAddon, InputGroupB
 interface ProductAmountSelectorProps {
     stock: string;
     availability: "in_stock" | "low_stock" | "out_of_stock";
+    onAmountChange: (value: number) => void;
 }
 
-const ProductAmountSelector: React.FC<ProductAmountSelectorProps> = ({ stock, availability }) => {
+const ProductAmountSelector: React.FC<ProductAmountSelectorProps> = ({ stock, availability, onAmountChange }) => {
     const [value, setValue] = useState<string | number>(1);
 
     const availabilityConfig = {
@@ -53,6 +54,11 @@ const ProductAmountSelector: React.FC<ProductAmountSelectorProps> = ({ stock, av
         });
     }, [stock]);
 
+    const updateValue = (newValue: number) => {
+        const clamped = Math.max(1, Math.min(Number(stock), newValue));
+        setValue(clamped);
+        onAmountChange(clamped);
+    };
 
     return (
         <Field>
@@ -63,7 +69,7 @@ const ProductAmountSelector: React.FC<ProductAmountSelectorProps> = ({ stock, av
                     <InputGroupAddon align='inline-start'>
                         <InputGroupButton 
                             size={"icon-xs"}
-                            onClick={() => setValue((v) => Math.max(1, Number(v) - 1))}
+                            onClick={() => updateValue(Number(value) - 1)}
                         >
                             <Icon></Icon>
                         </InputGroupButton>
@@ -71,7 +77,7 @@ const ProductAmountSelector: React.FC<ProductAmountSelectorProps> = ({ stock, av
                     <InputGroupAddon align='inline-end'>
                         <InputGroupButton 
                             size={"icon-xs"}
-                            onClick={() => setValue((v) => Math.min(Number(stock), Number(v) + 1))}
+                            onClick={() => updateValue(Number(value) + 1)}
                         >
                             <Icon></Icon>
                         </InputGroupButton>
