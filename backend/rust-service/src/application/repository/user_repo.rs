@@ -3,6 +3,7 @@ use sqlx::Postgres;
 use sqlx::{QueryBuilder, Transaction, query_as};
 use uuid::Uuid;
 
+use crate::application::repository::errors::UserRepoError;
 use crate::{
     application::{repository::RepositoryResult, state::SharedState},
     domain::models::user::{NewUser, User, UserUpdate},
@@ -203,9 +204,39 @@ pub async fn set_new_password(
     .await
     .map_err(|_| sqlx::Error::InvalidSavePointStatement);
 
-    if result?.rows_affected() == 0 {
+    if result?.rows_affected() == 0 { 
         return Err(sqlx::Error::RowNotFound);
     }
 
+    Ok(())
+}
+// pub async fn get_wishlist(
+//     tx: &mut Transaction<'_, Postgres>,
+//     user_id: i64,
+// ) -> Result<(), UserRepoError>{
+//     let 
+// }
+
+pub async fn add_wishlist(
+    tx: &mut Transaction<'_, Postgres>,
+    product_id: i64,
+    user_id: i64,
+    created_time: sqlx::types::chrono::NaiveDateTime,
+) -> Result<(), UserRepoError> {
+    sqlx::query(
+        r#"
+        INSERT INTO wishlists 
+        (product_id,
+        user_id,
+        added_at)
+        VALUES ($1, $2, $3)
+        "#,
+    )
+    .bind(product_id)
+    .bind(user_id)
+    .bind(created_time)
+    .execute(tx.as_mut())
+    .await
+    .map_err(|_| UserRepoError::UserInternalServerError)?;
     Ok(())
 }
