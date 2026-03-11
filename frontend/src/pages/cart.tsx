@@ -25,7 +25,6 @@ export default function Cart() {
             }
         }
         setCurrentPrice(total);
-        console.log(currentPrice)
     }
 
     useEffect(() => {
@@ -38,7 +37,6 @@ export default function Cart() {
                 setIsChecked(selectedCount);
                 checkPrice(data);
             } catch (e) {
-                console.log(e)
             }
         }
         fetchItem();

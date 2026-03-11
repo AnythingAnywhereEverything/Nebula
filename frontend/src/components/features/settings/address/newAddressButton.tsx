@@ -203,7 +203,6 @@ const AddressForm: React.FC<AddressFormProps> = (props) => {
         };
 
         if (props.initialData) {
-            console.log("Editing address with payload:", payload);
             submitAction({
                 address_id: props.initialData.id,
                 payload

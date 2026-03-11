@@ -80,8 +80,6 @@ const SignIn: NextPageWithLayout = () => {
 
         if (!validate()) return;
 
-        console.log("Submitting", values);
-
         register(values).then(response => {
             router.push("/auth/signin");
         }).catch(error => {

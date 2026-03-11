@@ -30,8 +30,6 @@ export async function getUser(): Promise<UserResponse> {
   if (!res.ok) throw new Error("Failed to get user data");
   const data = await res.json();
 
-  console.log(data)
-
   return data;
 }
 
@@ -67,8 +65,6 @@ export const updateUsername = async (username: string) => {
 
   const data = await res.json();
 
-  console.log(data)
-
   if (!res.ok) {
     const errorMessage =
       data?.errors?.[0]?.message || "Failed to update Username";
@@ -86,9 +82,6 @@ export const updateProfilePicture = async (file: File) => {
   const formData = new FormData();
   formData.append("file", file); // key must match backend field name
 
-  for (const [key, value] of formData.entries()) {
-    console.log(key, value);
-  }
   const res = await fetchWithAuth(`/api/v2/users/${userId}/profile_image`, {
     method: "PATCH",
     body: formData,
@@ -100,8 +93,6 @@ export const updateProfilePicture = async (file: File) => {
       data?.errors?.[0]?.message || "Failed to update profile image";
     throw new Error(errorMessage);
   }
-
-  console.log(data)
 
   return data;
 };
@@ -124,8 +115,6 @@ export const requestMailVerification = async () => {
       data?.errors?.[0]?.message || "Failed to request";
     throw new Error(errorMessage);
   }
-
-  console.log(data)
 
   return data?.email_token
 }
@@ -175,9 +164,6 @@ export const updatePassword = async (data: PasswordData) => {
         },
         body: JSON.stringify(data)
     })
-
-    console.log(data)
     if (!res.ok) throw new Error("Change password failed")
-    if(res.ok){console.log("Hello worldddd")}
     return res.ok
 }

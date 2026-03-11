@@ -72,7 +72,6 @@ export default function Store() {
                 store_id,
             );
             setResult(data);
-            console.log(data);
         };
 
         load();
@@ -82,7 +81,6 @@ export default function Store() {
         if (typeof store_id !== "string") return;
         const load = async () => {
             const data = await getCurrentShopInfo(store_id);
-            console.log(data);
             setShop(data);
         };
 
@@ -128,7 +126,6 @@ function StoreHeader(store: Shop) {
     useEffect(() => {
         const load = async () => {
             const data = await getShopTotalProducts(store.id);
-            console.log(data);
             setTotalProd(data);
         };
 

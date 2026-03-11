@@ -120,7 +120,6 @@ export const updateShopProfile = async (shopId:string ,file: File) => {
     formData.append("file", file); // key must match backend field name
 
   for (const [key, value] of formData.entries()) {
-    console.log(key, value);
   }
   const res = await fetchWithAuth(`/api/v2/shops/${shopId}/profile`, {
     method: "PATCH",
@@ -136,7 +135,6 @@ export const updateShopBanner = async (shopId:string ,file: File) => {
     formData.append("file", file); // key must match backend field name
 
   for (const [key, value] of formData.entries()) {
-    console.log(key, value);
   }
   const res = await fetchWithAuth(`/api/v2/shops/${shopId}/banner`, {
     method: "PATCH",

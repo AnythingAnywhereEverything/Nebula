@@ -8,7 +8,6 @@ const Address: React.FC = () => {
 
     const { data } = useAddress();
 
-    console.log(data);
     return (
 
         <section className={style.addressContainer}>
