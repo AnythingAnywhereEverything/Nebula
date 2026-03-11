@@ -6,10 +6,7 @@ use sqlx::{Postgres, QueryBuilder, Transaction};
 use crate::{
     application::{repository::RepositoryResult, state::AppState},
     domain::models::product::{
-        CreateAttributesDto, CreateSpecificationDto, CreateVariantDto, EditAttributeOptionRow,
-        EditAttributeRow, EditProductRow, EditVariantRow, EditVariantValueRow, GetProductEdit,
-        GetShopProduct, GetVariantEdit, ProductImageRow, ProductImages, ProductInfo,
-        ReturnProductSpecification, UpdateProductInfoDto,
+        CreateAttributesDto, CreateSpecificationDto, CreateVariantDto, EditAttributeOptionRow, EditAttributeRow, EditProductRow, EditVariantRow, EditVariantValueRow, GetProductEdit, GetShopProduct, GetVariantEdit, ProductImageRow, ProductImages, ProductInfo, ReturnProductSpecification, UpdateProductInfoDto
     },
 };
 
