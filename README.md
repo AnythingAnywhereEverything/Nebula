@@ -26,7 +26,6 @@ On windows
 ```
 docker compose -f docker-compose-full.yml up --build
 
-// * If you already build
 docker compose -f docker-compose-full.yml up
 ```
 
@@ -35,7 +34,6 @@ On Linux
 ```
 docker-compose -f docker-compose-full.yml up --build
 
-// * If you already build
 docker-compose -f docker-compose-full.yml up
 ```
 
