@@ -1,15 +1,10 @@
 import React from "react"
 import s from "@styles/layouts/seller/sellerLayout.module.scss"
-import { Field, FieldDescription } from "@components/ui/NebulaUI"
+import { Field } from "@components/ui/NebulaUI"
 
 type Props = {
   children: React.ReactNode
 }
-
-type SellerTableHeadProps = {
-  columns: { title: string; width?: string }[]
-}
-
 
 export function SellerLayout({ children }: Props) {
   return (

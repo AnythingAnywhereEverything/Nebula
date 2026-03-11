@@ -1,10 +1,24 @@
 import { useEffect, useState } from "react";
-import style from '@styles/layouts/authLayout.module.scss';
+import style from "@styles/layouts/authLayout.module.scss";
 import { NextPageWithLayout } from "@/types/global";
 import AuthLayout from "@components/layouts/main-layouts/authLayout";
 import Head from "next/head";
 import Form from "next/form";
-import { FieldSet, FieldGroup, Field, FieldLabel, Input, InputGroup, InputGroupAddon, Button, Icon, InputGroupInput, FieldDescription, FieldError, FieldSeparator } from "@components/ui/NebulaUI";
+import {
+    FieldSet,
+    FieldGroup,
+    Field,
+    FieldLabel,
+    Input,
+    InputGroup,
+    InputGroupAddon,
+    Button,
+    Icon,
+    InputGroupInput,
+    FieldDescription,
+    FieldError,
+    FieldSeparator,
+} from "@components/ui/NebulaUI";
 import Link from "next/link";
 import GoogleAuthButton from "@components/ui/GoogleLoginBtn";
 import { cn } from "@lib/utils";
@@ -12,9 +26,7 @@ import { register } from "@/api/auth";
 import { useRouter } from "next/router";
 import { useUser } from "@/hooks/useUser";
 
-
 const SignIn: NextPageWithLayout = () => {
-
     const [revealPassword, setRevealPassword] = useState(false);
     const [revealConfirm, setRevealConfirm] = useState(false);
 
@@ -26,7 +38,7 @@ const SignIn: NextPageWithLayout = () => {
             router.replace("/");
         }
     }, [isLoading, data, router]);
-    
+
     type Errors = Partial<{
         username: string;
         email: string;
@@ -46,13 +58,13 @@ const SignIn: NextPageWithLayout = () => {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
 
-        setValues(prev => ({
+        setValues((prev) => ({
             ...prev,
             [name]: value,
         }));
 
         if (errors[name as keyof Errors]) {
-            setErrors(prev => ({ ...prev, [name]: undefined }));
+            setErrors((prev) => ({ ...prev, [name]: undefined }));
         }
     };
 
@@ -88,14 +100,16 @@ const SignIn: NextPageWithLayout = () => {
 
         if (!validate()) return;
 
-        register(values).then(response => {
-            router.push("/auth/signin");
-        }).catch(error => {
-            console.error("Registration error:", error);
-        });
+        register(values)
+            .then((response) => {
+                router.push("/auth/signin");
+            })
+            .catch((error) => {
+                console.error("Registration error:", error);
+            });
     };
 
-    return(
+    return (
         <>
             <Head>
                 <title>Nebula - Sign in</title>
@@ -105,17 +119,16 @@ const SignIn: NextPageWithLayout = () => {
                     <FieldSet>
                         <h2>Sign In</h2>
                         <Field>
-                            <GoogleAuthButton/>
+                            <GoogleAuthButton />
                         </Field>
                         <Form action={"#"} onSubmit={handleSubmit}>
                             <FieldGroup>
-
-                                <FieldSeparator>
-                                    or
-                                </FieldSeparator>
+                                <FieldSeparator>or</FieldSeparator>
 
                                 <Field data-invalid={!!errors.username}>
-                                    <FieldLabel htmlFor="username">Username</FieldLabel>
+                                    <FieldLabel htmlFor="username">
+                                        Username
+                                    </FieldLabel>
                                     <Input
                                         aria-invalid={!!errors.username}
                                         required
@@ -125,11 +138,17 @@ const SignIn: NextPageWithLayout = () => {
                                         value={values.username}
                                         onChange={handleChange}
                                     />
-                                    {errors.username && <FieldError>{errors.username}</FieldError>}
+                                    {errors.username && (
+                                        <FieldError>
+                                            {errors.username}
+                                        </FieldError>
+                                    )}
                                 </Field>
 
                                 <Field data-invalid={!!errors.email}>
-                                    <FieldLabel htmlFor="email">Email</FieldLabel>
+                                    <FieldLabel htmlFor="email">
+                                        Email
+                                    </FieldLabel>
                                     <Input
                                         aria-invalid={!!errors.email}
                                         required
@@ -140,25 +159,43 @@ const SignIn: NextPageWithLayout = () => {
                                         value={values.email}
                                         onChange={handleChange}
                                     />
-                                    {errors.email && <FieldError>{errors.email}</FieldError>}
+                                    {errors.email && (
+                                        <FieldError>{errors.email}</FieldError>
+                                    )}
                                 </Field>
 
                                 <Field data-invalid={!!errors.password}>
-                                    <FieldLabel htmlFor="password">Password</FieldLabel>
-                                    <InputGroup aria-invalid={!!errors.password}>
+                                    <FieldLabel htmlFor="password">
+                                        Password
+                                    </FieldLabel>
+                                    <InputGroup
+                                        aria-invalid={!!errors.password}
+                                    >
                                         <InputGroupAddon align="inline-end">
                                             <Button
                                                 type="button"
                                                 variant="ghost"
                                                 size="icon-xs"
-                                                onClick={() => setRevealPassword(v => !v)}
+                                                onClick={() =>
+                                                    setRevealPassword((v) => !v)
+                                                }
                                             >
-                                                <Icon value={revealPassword ? "" : ""} />
+                                                <Icon
+                                                    value={
+                                                        revealPassword
+                                                            ? ""
+                                                            : ""
+                                                    }
+                                                />
                                             </Button>
                                         </InputGroupAddon>
                                         <InputGroupInput
                                             required
-                                            type={revealPassword ? "text" : "password"}
+                                            type={
+                                                revealPassword
+                                                    ? "text"
+                                                    : "password"
+                                            }
                                             name="password"
                                             id="password"
                                             value={values.password}
@@ -166,25 +203,45 @@ const SignIn: NextPageWithLayout = () => {
                                             placeholder="• • • • • • • •"
                                         />
                                     </InputGroup>
-                                    {errors.password && <FieldError>{errors.password}</FieldError>}
+                                    {errors.password && (
+                                        <FieldError>
+                                            {errors.password}
+                                        </FieldError>
+                                    )}
                                 </Field>
 
                                 <Field data-invalid={!!errors.confirmPassword}>
-                                    <FieldLabel htmlFor="confirmPassword">Confirm Password</FieldLabel>
-                                    <InputGroup aria-invalid={!!errors.confirmPassword}>
+                                    <FieldLabel htmlFor="confirmPassword">
+                                        Confirm Password
+                                    </FieldLabel>
+                                    <InputGroup
+                                        aria-invalid={!!errors.confirmPassword}
+                                    >
                                         <InputGroupAddon align="inline-end">
                                             <Button
                                                 type="button"
                                                 variant="ghost"
                                                 size="icon-xs"
-                                                onClick={() => setRevealConfirm(v => !v)}
+                                                onClick={() =>
+                                                    setRevealConfirm((v) => !v)
+                                                }
                                             >
-                                                <Icon value={revealConfirm ? "" : ""} />
+                                                <Icon
+                                                    value={
+                                                        revealConfirm
+                                                            ? ""
+                                                            : ""
+                                                    }
+                                                />
                                             </Button>
                                         </InputGroupAddon>
                                         <InputGroupInput
                                             required
-                                            type={revealConfirm ? "text" : "password"}
+                                            type={
+                                                revealConfirm
+                                                    ? "text"
+                                                    : "password"
+                                            }
                                             name="confirmPassword"
                                             id="confirmPassword"
                                             value={values.confirmPassword}
@@ -193,7 +250,9 @@ const SignIn: NextPageWithLayout = () => {
                                         />
                                     </InputGroup>
                                     {errors.confirmPassword && (
-                                        <FieldError>{errors.confirmPassword}</FieldError>
+                                        <FieldError>
+                                            {errors.confirmPassword}
+                                        </FieldError>
                                     )}
                                 </Field>
 
@@ -202,7 +261,8 @@ const SignIn: NextPageWithLayout = () => {
                                 </Field>
 
                                 <FieldDescription>
-                                    Already have an account? <Link href={"/auth/signin"}>Sign In.</Link>
+                                    Already have an account?{" "}
+                                    <Link href={"/auth/signin"}>Sign In.</Link>
                                 </FieldDescription>
                             </FieldGroup>
                         </Form>
@@ -211,10 +271,8 @@ const SignIn: NextPageWithLayout = () => {
             </div>
         </>
     );
-}
+};
 
-SignIn.getLayout = (page) => (
-    <AuthLayout>{page}</AuthLayout>
-);
+SignIn.getLayout = (page) => <AuthLayout>{page}</AuthLayout>;
 
 export default SignIn;

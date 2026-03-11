@@ -15,7 +15,7 @@ import {
 } from "@components/ui/NebulaUI";
 import React, { useEffect, useState } from "react";
 import { Specification } from "./addProduct/specTable";
-import { AttributeOption, ProductAttribute, ProductImage, ProductVariant, VariantRow, VariantValue } from "@/types/product";
+import { AttributeOption, ProductAttribute, ProductImage, ProductVariant, VariantValue } from "@/types/product";
 import { useRouter as nextRouter } from "next/router";
 import { getProductInfo, updateProductSetting } from "@/api/product";
 

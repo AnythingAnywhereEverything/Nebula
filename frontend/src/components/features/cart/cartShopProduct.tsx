@@ -1,8 +1,26 @@
 import React, { useRef, useState } from "react";
-import s from '@styles/layouts/cart.module.scss';
-import { Button, ButtonGroup, Checkbox, Field, FieldGroup, FieldLabel, FieldLegend, FieldSeparator, Icon, InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@components/ui/NebulaUI";
+import s from "@styles/layouts/cart.module.scss";
+import {
+    Button,
+    ButtonGroup,
+    Checkbox,
+    Field,
+    FieldLabel,
+    FieldLegend,
+    FieldSeparator,
+    Icon,
+    InputGroup,
+    InputGroupAddon,
+    InputGroupButton,
+    InputGroupInput,
+} from "@components/ui/NebulaUI";
 import Link from "next/link";
-import { AddToCartRequest, deleteCartItems, selectedCartItems, updateCartQuantity } from "@/api/product";
+import {
+    AddToCartRequest,
+    deleteCartItems,
+    selectedCartItems,
+    updateCartQuantity,
+} from "@/api/product";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
@@ -17,8 +35,8 @@ interface ProductInCart {
     free_shipping: boolean;
     stock_quantity: number;
     is_enable: boolean;
-    is_selected:boolean;
-    is_active:boolean;
+    is_selected: boolean;
+    is_active: boolean;
     image_url: string | null;
     product_variants: { name: string; value: string }[];
 }
@@ -27,7 +45,7 @@ type CartShopProductProps = ProductInCart & {
     onRefetch: () => void;
 };
 
-const CartShopProduct: React.FC<CartShopProductProps> = (prod)=>{
+const CartShopProduct: React.FC<CartShopProductProps> = (prod) => {
     const {
         product_id,
         product_variants_id,
@@ -41,7 +59,7 @@ const CartShopProduct: React.FC<CartShopProductProps> = (prod)=>{
         is_active,
         price,
         free_shipping,
-        onRefetch
+        onRefetch,
     } = prod;
     type AvailabilityKey = keyof typeof availabilityConfig;
     const router = useRouter();
@@ -53,7 +71,7 @@ const CartShopProduct: React.FC<CartShopProductProps> = (prod)=>{
 
     const availabilityConfig = {
         in_stock: {
-            text: (stock: number) =>  `${stock} left in stock`,
+            text: (stock: number) => `${stock} left in stock`,
             className: s.inStock,
         },
         low_stock: {
@@ -74,108 +92,118 @@ const CartShopProduct: React.FC<CartShopProductProps> = (prod)=>{
     async function onCheckedChange(
         product_id: string,
         product_variants_id: string,
-        checked: boolean
+        checked: boolean,
     ) {
         const finalPayload = {
             product_id,
             product_variants_id,
-            is_selected: checked
+            is_selected: checked,
         };
-    
-        await selectedCartItems(finalPayload);
-        onRefetch()
-    }
 
+        await selectedCartItems(finalPayload);
+        onRefetch();
+    }
 
     async function onQuantityChange(value: number, fromInput = false) {
-    const next = Math.min(stock_quantity, value);
-    if (!fromInput) {
-        const finalValue = Math.max(1, next);
-        setNewQuantity(finalValue);
-        await sendUpdateCartRequest(finalValue);
-        return;
-    }
-    setNewQuantity(next);
-    if (cooldownRef.current) clearTimeout(cooldownRef.current);
-      cooldownRef.current = setTimeout(async () => {
-          const finalValue = next === 0 ? 1 : next;
-          setNewQuantity(finalValue);
-          await sendUpdateCartRequest(finalValue);
-      }, 1000);
+        const next = Math.min(stock_quantity, value);
+        if (!fromInput) {
+            const finalValue = Math.max(1, next);
+            setNewQuantity(finalValue);
+            await sendUpdateCartRequest(finalValue);
+            return;
+        }
+        setNewQuantity(next);
+        if (cooldownRef.current) clearTimeout(cooldownRef.current);
+        cooldownRef.current = setTimeout(async () => {
+            const finalValue = next === 0 ? 1 : next;
+            setNewQuantity(finalValue);
+            await sendUpdateCartRequest(finalValue);
+        }, 1000);
     }
 
-    async function sendUpdateCartRequest (number: number) {
-
-        if (product_variants_id === null) return; 
+    async function sendUpdateCartRequest(number: number) {
+        if (product_variants_id === null) return;
         const finalPayload: AddToCartRequest = {
             product_id: product_id,
             product_variants_id: product_variants_id,
-            quantity: number
-        }
+            quantity: number,
+        };
         updateCartQuantity(finalPayload);
-        onRefetch()
+        onRefetch();
     }
 
-    async function sendDeleteCartRequest () {
-
-        if (product_variants_id === null) return; 
+    async function sendDeleteCartRequest() {
+        if (product_variants_id === null) return;
         const finalPayload: AddToCartRequest = {
             product_id: product_id,
             product_variants_id: product_variants_id,
-            quantity: quantity
-        }
+            quantity: quantity,
+        };
         deleteCartItems(finalPayload);
-        onRefetch()
+        onRefetch();
     }
-    
 
-    return(
+    return (
         <FieldLabel>
-            <Field orientation="horizontal" 
-            className={s.itemSection} 
-            key={product_id}
-            style={{ opacity: is_active ? 1 : 0.4 }}
+            <Field
+                orientation="horizontal"
+                className={s.itemSection}
+                key={product_id}
+                style={{ opacity: is_active ? 1 : 0.4 }}
             >
-                <Field orientation={"horizontal"} style={{padding: "0"}}>
+                <Field orientation={"horizontal"} style={{ padding: "0" }}>
                     <Checkbox
                         disabled={!is_active}
                         defaultChecked={is_selected}
                         onCheckedChange={(checked: boolean) => {
                             if (!is_active) return;
                             if (!product_id || !product_variants_id) return;
-                            onCheckedChange(product_id, product_variants_id, checked);
+                            onCheckedChange(
+                                product_id,
+                                product_variants_id,
+                                checked,
+                            );
                         }}
                     />
                     <div className={s.imageSection}>
                         <Image
                             alt={name}
                             fill
-                            src={image_url ? `/cdn/${image_url}` : `/default/placeholder.png`}
+                            src={
+                                image_url
+                                    ? `/cdn/${image_url}`
+                                    : `/default/placeholder.png`
+                            }
                         />
                     </div>
-                    <FieldSeparator/>
-                    <Field className={s.productDetails} style={{padding: "0"}}>
-                        <Field orientation={"horizontal"} style={{padding: "0"}}>
+                    <FieldSeparator />
+                    <Field
+                        className={s.productDetails}
+                        style={{ padding: "0" }}
+                    >
+                        <Field
+                            orientation={"horizontal"}
+                            style={{ padding: "0" }}
+                        >
                             <Field>
                                 <FieldLegend className={s.productName}>
-                                    <Link href={`/product/${product_variants_id}/a`}>{name}</Link>
+                                    <Link
+                                        href={`/product/${product_variants_id}/a`}
+                                    >
+                                        {name}
+                                    </Link>
                                 </FieldLegend>
                             </Field>
                             <div className={s.priceContainer}>
-                                <p>
-                                    $ {price}
-                                </p>
+                                <p>$ {price}</p>
                             </div>
                         </Field>
                         <span className={config.className}>
                             {typeof config.text === "function"
-                            ? config.text(stock_quantity)
-                            : config.text}
+                                ? config.text(stock_quantity)
+                                : config.text}
                         </span>
-                        {
-                            free_shipping && 
-                            <p>Free Shipping</p>
-                        }
+                        {free_shipping && <p>Free Shipping</p>}
                         <table className={s.variants}>
                             <thead>
                                 <tr>
@@ -185,24 +213,35 @@ const CartShopProduct: React.FC<CartShopProductProps> = (prod)=>{
                             </thead>
                             <tbody>
                                 {product_variants.map((variant) => (
-                                    <tr className={s.variant} key={variant.name}>
-                                        <td className={s.key}>{variant.name}</td>
+                                    <tr
+                                        className={s.variant}
+                                        key={variant.name}
+                                    >
+                                        <td className={s.key}>
+                                            {variant.name}
+                                        </td>
                                         <td>{variant.value}</td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
-                        
+
                         <ButtonGroup>
                             <ButtonGroup>
-                                <InputGroup style={{width:"calc(var(--spacing) * 32)"}}>
+                                <InputGroup
+                                    style={{
+                                        width: "calc(var(--spacing) * 32)",
+                                    }}
+                                >
                                     <InputGroupAddon align="inline-start">
                                         <InputGroupButton
                                             size={"icon-xs"}
                                             disabled={!is_active}
                                             onClick={() => {
                                                 if (!is_active) return;
-                                                onQuantityChange(newQuantity - 1);
+                                                onQuantityChange(
+                                                    newQuantity - 1,
+                                                );
                                             }}
                                         >
                                             <Icon></Icon>
@@ -214,7 +253,9 @@ const CartShopProduct: React.FC<CartShopProductProps> = (prod)=>{
                                             disabled={!is_active}
                                             onClick={() => {
                                                 if (!is_active) return;
-                                                onQuantityChange(newQuantity + 1);
+                                                onQuantityChange(
+                                                    newQuantity + 1,
+                                                );
                                             }}
                                         >
                                             <Icon></Icon>
@@ -228,11 +269,13 @@ const CartShopProduct: React.FC<CartShopProductProps> = (prod)=>{
                                         value={newQuantity}
                                         onChange={(e) => {
                                             if (!is_active) return;
-                                            onQuantityChange(Number(e.target.value), true);
+                                            onQuantityChange(
+                                                Number(e.target.value),
+                                                true,
+                                            );
                                         }}
                                     />
                                 </InputGroup>
-                                
                             </ButtonGroup>
                             <ButtonGroup>
                                 <Button variant={"outline"} size={"sm"}>
@@ -245,8 +288,10 @@ const CartShopProduct: React.FC<CartShopProductProps> = (prod)=>{
                                 </Button>
                             </ButtonGroup>
                             <ButtonGroup>
-                                <Button variant={"destructive"} size={"sm"}
-                                onClick={() => sendDeleteCartRequest()}
+                                <Button
+                                    variant={"destructive"}
+                                    size={"sm"}
+                                    onClick={() => sendDeleteCartRequest()}
                                 >
                                     Delete
                                 </Button>
@@ -254,10 +299,9 @@ const CartShopProduct: React.FC<CartShopProductProps> = (prod)=>{
                         </ButtonGroup>
                     </Field>
                 </Field>
-                
             </Field>
         </FieldLabel>
-    )
-}
+    );
+};
 
-export default CartShopProduct
+export default CartShopProduct;

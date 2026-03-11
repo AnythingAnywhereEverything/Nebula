@@ -1,13 +1,23 @@
-import { NextPageWithLayout } from "@/types/global"
-import PortalLayout from "@components/layouts/main-layouts/portalLayout"
-import { SellerSideBar } from "../[shop_id]/[[...slug]]"
-import { Button, ButtonGroup, Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, Field, FieldLabel, Input, Textarea } from "@components/ui/NebulaUI";
-import { CSSProperties, ReactNode, useEffect, useState } from "react";
-import { requestCreateShop } from "@/api/shop";
+import { NextPageWithLayout } from "@/types/global";
+import PortalLayout from "@components/layouts/main-layouts/portalLayout";
+import {
+    Button,
+    ButtonGroup,
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+    Field,
+    FieldLabel,
+    Input,
+    Textarea,
+} from "@components/ui/NebulaUI";
+import { CSSProperties, ReactNode, useState } from "react";
 import { useShopService } from "@/hooks/useShopService";
-import { redirect } from "next/navigation";
 import router from "next/router";
-
 
 const NewShop: NextPageWithLayout = () => {
     // yeah, im lazy
@@ -15,15 +25,15 @@ const NewShop: NextPageWithLayout = () => {
         width: "100%",
         justifyContent: "center",
         textAlign: "center",
-        marginTop: "calc(var(--spacing) * 12 )"
+        marginTop: "calc(var(--spacing) * 12 )",
     } as CSSProperties;
 
     const buttonStyle = {
         width: "calc(var(--spacing) * 48 )",
-        height: "calc(var(--spacing) * 48 )"
+        height: "calc(var(--spacing) * 48 )",
     } as CSSProperties;
 
-    return(
+    return (
         <Field style={style}>
             <h2>Doesn't have any shop?</h2>
             <ButtonGroup style={style}>
@@ -41,71 +51,77 @@ const NewShop: NextPageWithLayout = () => {
                 </CreateNewShopButton>
             </ButtonGroup>
         </Field>
-    )
-}
+    );
+};
 
 interface newShopBtnProps {
-    children: ReactNode
+    children: ReactNode;
 }
 
-function CreateNewShopButton({
-    children
-}: newShopBtnProps) {
+function CreateNewShopButton({ children }: newShopBtnProps) {
     //implement payload handler
     const [shopName, setShopName] = useState("");
     const [shopDescription, setShopDescription] = useState("");
 
-    const {createShop} = useShopService()
+    const { createShop } = useShopService();
 
     const handleSubmit = () => {
         const payload = {
             name: shopName,
-            description: shopDescription
-        }
+            description: shopDescription,
+        };
 
-        createShop(payload)
+        createShop(payload);
 
-        router.push("/portal/seller/loading")
-    }
+        router.push("/portal/seller/loading");
+    };
 
     return (
         <Dialog>
-            <DialogTrigger asChild>
-                {children}
-            </DialogTrigger>
+            <DialogTrigger asChild>{children}</DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>
-                        Create new shop
-                    </DialogTitle>
+                    <DialogTitle>Create new shop</DialogTitle>
                     <DialogDescription>
                         Create your own nebula shop.
                     </DialogDescription>
                 </DialogHeader>
                 <Field>
-                    <FieldLabel htmlFor="shop-name">
-                        Shop Name
-                    </FieldLabel>
-                    <Input id="shop-name" placeholder="Your shop Name" value={shopName} onChange={(e) => setShopName(e.target.value)} />
+                    <FieldLabel htmlFor="shop-name">Shop Name</FieldLabel>
+                    <Input
+                        id="shop-name"
+                        placeholder="Your shop Name"
+                        value={shopName}
+                        onChange={(e) => setShopName(e.target.value)}
+                    />
                 </Field>
                 <Field>
                     <FieldLabel htmlFor="shop-description">
                         Shop Description (Optional)
                     </FieldLabel>
-                    <Textarea id="shop-description" placeholder="Simple summary of your shop" value={shopDescription} onChange={(e) => setShopDescription(e.target.value)} />
+                    <Textarea
+                        id="shop-description"
+                        placeholder="Simple summary of your shop"
+                        value={shopDescription}
+                        onChange={(e) => setShopDescription(e.target.value)}
+                    />
                 </Field>
                 <DialogFooter>
-                    <Button variant={"secondary"} size={"sm"} onClick={handleSubmit}>
+                    <Button
+                        variant={"secondary"}
+                        size={"sm"}
+                        onClick={handleSubmit}
+                    >
                         Create New Shop
                     </Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
-    )
+    );
 }
 
 NewShop.getLayout = (page) => {
-    return <PortalLayout>{page}</PortalLayout>
-}
+    return <PortalLayout>{page}</PortalLayout>;
+};
 
 export default NewShop;

@@ -1,12 +1,8 @@
 import { SellerContent } from "@components/layouts/sellerPageLayout";
-import { Button } from "@components/ui/Nebula/button";
-import { ButtonGroup } from "@components/ui/Nebula/button-group";
-import { Checkbox } from "@components/ui/Nebula/checkbox";
-import { Field, FieldGroup, FieldLabel, FieldLegend, FieldSeparator } from "@components/ui/Nebula/field";
-import { Icon } from "@components/ui/Nebula/icon";
+import { Field, FieldGroup, FieldLegend, FieldSeparator } from "@components/ui/Nebula/field";
 import { Input } from "@components/ui/Nebula/input";
-import { InputGroup, InputGroupAddon, InputGroupInput } from "@components/ui/Nebula/input-group";
-import { useEffect, useState } from "react";
+import { InputGroup, InputGroupAddon } from "@components/ui/Nebula/input-group";
+import { useState } from "react";
 import s from "@styles/layouts/seller/addProduct.module.scss";
 import React from "react";
 import { AttributeOption, ProductAttribute } from "@/types/product";
@@ -22,12 +18,10 @@ type EditProductVariantProps = {
     onChange: (value: ProductVariantResponse) => void;
 };
 
-const EditProductVariantPanel = ({ data, onChange }: EditProductVariantProps) => {
+const EditProductVariantPanel = ({ data }: EditProductVariantProps) => {
 
-
-
-    const [attributes, setAttributes] = useState<ProductAttribute[]>(data.attributes);
-    const [attributeOptions, setAttributeOptions] = useState<AttributeOption[]>(data.attribute_options);
+    const [attributes] = useState<ProductAttribute[]>(data.attributes);
+    const [attributeOptions] = useState<AttributeOption[]>(data.attribute_options);
 
 
     return (

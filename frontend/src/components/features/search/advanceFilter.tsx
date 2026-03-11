@@ -1,6 +1,6 @@
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import style from '@styles/features/advancefilter.module.scss';
-import { Field, FieldLabel, FieldSeparator, FieldLegend, FieldGroup, Icon, Checkbox, Button, Input, Separator } from '@components/ui/NebulaUI';
+import { Field, FieldLabel, FieldSeparator, FieldLegend, FieldGroup, Icon, Button, Input, Separator } from '@components/ui/NebulaUI';
 import { RadioGroup, RadioGroupItem } from '@components/ui/Nebula/radio';
 import { useState } from 'react';
 import Form from 'next/form';

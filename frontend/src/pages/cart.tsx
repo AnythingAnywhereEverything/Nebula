@@ -2,7 +2,7 @@ import style from '@styles/layouts/cart.module.scss';
 import Head from "next/head";
 import CartShopProduct from "@components/features/cart/cartShopProduct";
 import { RecommendPanel } from '@components/features/recommendation';
-import { Button, Field, FieldGroup, FieldLegend, FieldSeparator, FieldSet, Separator } from '@components/ui/NebulaUI';
+import { Button, Field, FieldGroup, FieldLegend, FieldSeparator, Separator } from '@components/ui/NebulaUI';
 import { cn } from '@lib/utils';
 import { useEffect, useState } from 'react';
 import { GetCartItemsUsers, getCartItems } from '@/api/product';

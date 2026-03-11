@@ -1,10 +1,15 @@
-import { ProductItemExamples } from "@/mocks/productItem.mock";
 import { useState, useEffect } from "react";
-import * as ProductItemProps from "@/types/productItem";
 
 import { useGridColumnCount } from "@lib/utils";
-import { Badge } from "./badge";
-import { ProductItem, ProductImage, ProductContent, ProductHeader, ProductFooter, ProductPrice, ProductStars, ProductLocation, Button, ButtonGroup } from "../NebulaUI";
+import {
+    ProductItem,
+    ProductImage,
+    ProductContent,
+    ProductHeader,
+    ProductFooter,
+    ProductPrice,
+    ProductStars,
+} from "../NebulaUI";
 
 import Link from "next/link";
 
@@ -12,52 +17,53 @@ import s from "@styles/ui/Nebula/productfield.module.scss";
 import { cn } from "@/lib/utils";
 import { ProductDatas } from "@/api/search";
 
-
 type NebulaProductFieldProps = {
     max_rows?: number;
     item_display: ProductDatas[];
-}
+};
 
 function ProductContainer({
     className,
     ...props
-}:  React.ComponentProps<"section">) {
-    return <section className={cn(s.productContainer, className)} {...props} />
+}: React.ComponentProps<"section">) {
+    return <section className={cn(s.productContainer, className)} {...props} />;
 }
 
-function ProductContainerHeader ({
+function ProductContainerHeader({
     className,
     ...props
-}:  React.ComponentProps<"header">) {
-    return <header className={cn(s.containerHeader, className)} {...props} />
+}: React.ComponentProps<"header">) {
+    return <header className={cn(s.containerHeader, className)} {...props} />;
 }
 
-function ProductContainerHeaderGroup ({
-    className,
-    ...props
-}:  React.ComponentProps<"div">) {
-    return <header className={cn(s.containerHeaderGroup, className)} {...props} />
-}
-
-function ProductContainerHeaderAddon ({
+function ProductContainerHeaderGroup({
     className,
     ...props
 }: React.ComponentProps<"div">) {
-    return <div className={cn(s.containerHeaderAddon, className)} {...props} />
+    return (
+        <header className={cn(s.containerHeaderGroup, className)} {...props} />
+    );
 }
 
-function ProductContainerTitle ({
+function ProductContainerHeaderAddon({
     className,
     ...props
-}:  React.ComponentProps<"h1">) {
-    return <h1 className={cn(s.containerTitle, className)} {...props} />
+}: React.ComponentProps<"div">) {
+    return <div className={cn(s.containerHeaderAddon, className)} {...props} />;
 }
 
-function ProductContainerDescription ({
+function ProductContainerTitle({
     className,
     ...props
-}:  React.ComponentProps<"p">) {
-    return <p className={cn(s.containerDescription, className)} {...props} />
+}: React.ComponentProps<"h1">) {
+    return <h1 className={cn(s.containerTitle, className)} {...props} />;
+}
+
+function ProductContainerDescription({
+    className,
+    ...props
+}: React.ComponentProps<"p">) {
+    return <p className={cn(s.containerDescription, className)} {...props} />;
 }
 
 function ProductField({
@@ -65,9 +71,7 @@ function ProductField({
     max_rows = 2,
     item_display,
     ...props
-} :React.ComponentProps<"ul"> &
-    NebulaProductFieldProps) {
-
+}: React.ComponentProps<"ul"> & NebulaProductFieldProps) {
     const { containerRef, columnCount } = useGridColumnCount();
     const [products, setProducts] = useState<ProductDatas[]>([]);
 
@@ -77,15 +81,10 @@ function ProductField({
         const visibleCount = columnCount * max_rows;
 
         if (max_rows < 1) {
-            setProducts(
-                Array.from(item_display)
-            );
-        }else {
-            setProducts(
-                Array.from(item_display ? item_display : ProductItemExamples ).slice(0, visibleCount)
-            );
+            setProducts(Array.from(item_display));
+        } else {
+            setProducts(Array.from(item_display).slice(0, visibleCount));
         }
-
     }, [columnCount, max_rows, item_display]);
 
     return (
@@ -93,16 +92,25 @@ function ProductField({
             {products.map((item) => (
                 <li key={item.id}>
                     <ProductItem>
-                        <ProductImage src={item.product_image}/>
+                        <ProductImage src={item.product_image} />
                         <ProductContent>
                             <ProductHeader asChild>
-                                <Link href={`/product/${item.id}/${encodeURIComponent(item.name)}`}>
+                                <Link
+                                    href={`/product/${item.id}/${encodeURIComponent(item.name)}`}
+                                >
                                     {item.name}
                                 </Link>
                             </ProductHeader>
                             <ProductFooter>
-                                <ProductPrice discount={item.on_sale ? Number(item.sale_price) : undefined} base={Number(item.price)}/>
-                                <ProductStars stars={Number(item.rating)}/>
+                                <ProductPrice
+                                    discount={
+                                        item.on_sale
+                                            ? Number(item.sale_price)
+                                            : undefined
+                                    }
+                                    base={Number(item.price)}
+                                />
+                                <ProductStars stars={Number(item.rating)} />
                             </ProductFooter>
                         </ProductContent>
                     </ProductItem>
@@ -110,7 +118,7 @@ function ProductField({
             ))}
         </ul>
     );
-};
+}
 
 export {
     ProductField,
@@ -119,5 +127,5 @@ export {
     ProductContainerHeader,
     ProductContainerHeaderAddon,
     ProductContainerTitle,
-    ProductContainerHeaderGroup
+    ProductContainerHeaderGroup,
 };

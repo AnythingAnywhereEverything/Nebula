@@ -26,7 +26,7 @@ import { AddProductHeader } from "./addProduct/addProductHeader";
 const AddProduct: React.FC = () => {
 
     const router = useRouter();
-    const { shop_id, slug } = router.query;
+    const { shop_id } = router.query;
 
     const [productInfo, setProductInfo] = useState({
         name: "",

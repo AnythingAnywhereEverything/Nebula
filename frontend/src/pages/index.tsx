@@ -1,31 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import { ping } from '../api/ping';
-import style from '@styles/home.module.scss';
-import { NextPageWithLayout } from '../types/global.d';
-import Head from 'next/head';
-import PromotionPanel from '@components/features/home/promotionPanel';
-import CategoryPanel from '@components/features/home/categoryPanel';
-import AboutThisWeb from '@components/features/home/aboutThisWeb';
-import { ProductContainer, ProductContainerDescription, ProductContainerHeader, ProductContainerHeaderAddon, ProductContainerHeaderGroup, ProductContainerTitle, ProductField } from '@components/ui/Nebula/product-field';
-import { Button, Separator } from '@components/ui/NebulaUI';
-import Link from 'next/link';
-import { ProductDatas, searchProductDatas } from '@/api/search';
+import React, { useEffect, useState } from "react";
+import { ping } from "../api/ping";
+import style from "@styles/home.module.scss";
+import { NextPageWithLayout } from "../types/global.d";
+import PromotionPanel from "@components/features/home/promotionPanel";
+import AboutThisWeb from "@components/features/home/aboutThisWeb";
+import {
+    ProductContainer,
+    ProductContainerDescription,
+    ProductContainerHeader,
+    ProductContainerHeaderAddon,
+    ProductContainerHeaderGroup,
+    ProductContainerTitle,
+    ProductField,
+} from "@components/ui/Nebula/product-field";
+import { Button, Separator } from "@components/ui/NebulaUI";
+import Link from "next/link";
+import { ProductDatas, searchProductDatas } from "@/api/search";
 
 const Home: NextPageWithLayout = () => {
-  const [message, setMessage] = React.useState('Pinging...');
-
-  React.useEffect(() => {
-    async function fetchPing() {
-      try {
-        const res = await ping();
-        setMessage(res);
-      } catch (err) {
-        console.error(err);
-        setMessage('API failed');
-      }
-    }
-    fetchPing();
-  }, []);
 
     const [gifts, setGifts] = useState<ProductDatas[]>([]);
     const [holiday, setHoliday] = useState<ProductDatas[]>([]);
@@ -51,82 +43,79 @@ const Home: NextPageWithLayout = () => {
         load();
     }, []);
 
-  return (
-    <div className={style.homeContainer}>
-        <PromotionPanel/>
-        <div className={style.giftsContainer}>
-            <ProductContainer>
-                <ProductContainerHeader>
-                    <ProductContainerHeaderGroup> 
-                        <ProductContainerTitle>
-                            Shop gifts for someone
-                        </ProductContainerTitle>
-                        <ProductContainerDescription>
-                            Search the gifts for someone you like.
-                        </ProductContainerDescription>
-                    </ProductContainerHeaderGroup>
-                    <ProductContainerHeaderAddon>
-                        <Button variant={"ghost"}>Show more</Button>
-                    </ProductContainerHeaderAddon>
-                </ProductContainerHeader>
-                <ProductField item_display={gifts} max_rows={1}/>
-            </ProductContainer>
-            
-            <ProductContainer>
-                <ProductContainerHeader>
-                    <ProductContainerHeaderGroup> 
-                        <ProductContainerTitle>
-                            Shop holiday products
-                        </ProductContainerTitle>
-                        <ProductContainerDescription>
-                            Search the holiday product for someone you like.
-                        </ProductContainerDescription>
-                    </ProductContainerHeaderGroup>
-                    <ProductContainerHeaderAddon>
-                        <Button variant={"ghost"}>Show more</Button>
-                    </ProductContainerHeaderAddon>
-                </ProductContainerHeader>
-                <ProductField item_display={holiday} max_rows={1}/>
-            </ProductContainer>
-        </div>
+    return (
+        <div className={style.homeContainer}>
+            <PromotionPanel />
+            <div className={style.giftsContainer}>
+                <ProductContainer>
+                    <ProductContainerHeader>
+                        <ProductContainerHeaderGroup>
+                            <ProductContainerTitle>
+                                Shop gifts for someone
+                            </ProductContainerTitle>
+                            <ProductContainerDescription>
+                                Search the gifts for someone you like.
+                            </ProductContainerDescription>
+                        </ProductContainerHeaderGroup>
+                        <ProductContainerHeaderAddon>
+                            <Button variant={"ghost"}>Show more</Button>
+                        </ProductContainerHeaderAddon>
+                    </ProductContainerHeader>
+                    <ProductField item_display={gifts} max_rows={1} />
+                </ProductContainer>
 
-        <ProductContainer>
-            <ProductContainerHeader>
-                <ProductContainerHeaderGroup> 
-                    <ProductContainerTitle>
-                        Seasonal products
-                    </ProductContainerTitle>
-                    <ProductContainerDescription>
-                        Search the seasonal items for your holiday!
-                    </ProductContainerDescription>
-                </ProductContainerHeaderGroup>
+                <ProductContainer>
+                    <ProductContainerHeader>
+                        <ProductContainerHeaderGroup>
+                            <ProductContainerTitle>
+                                Shop holiday products
+                            </ProductContainerTitle>
+                            <ProductContainerDescription>
+                                Search the holiday product for someone you like.
+                            </ProductContainerDescription>
+                        </ProductContainerHeaderGroup>
+                        <ProductContainerHeaderAddon>
+                            <Button variant={"ghost"}>Show more</Button>
+                        </ProductContainerHeaderAddon>
+                    </ProductContainerHeader>
+                    <ProductField item_display={holiday} max_rows={1} />
+                </ProductContainer>
+            </div>
+
+            <ProductContainer>
+                <ProductContainerHeader>
+                    <ProductContainerHeaderGroup>
+                        <ProductContainerTitle>
+                            Seasonal products
+                        </ProductContainerTitle>
+                        <ProductContainerDescription>
+                            Search the seasonal items for your holiday!
+                        </ProductContainerDescription>
+                    </ProductContainerHeaderGroup>
+                    <ProductContainerHeaderAddon>
+                        <Button variant={"ghost"}>Show more</Button>
+                    </ProductContainerHeaderAddon>
+                </ProductContainerHeader>
+                <ProductField item_display={seasonal} max_rows={1} />
+            </ProductContainer>
+
+            <ProductContainer>
+                <ProductContainerHeader className={style.discoveryHeader}>
+                    <ProductContainerTitle>Discovery</ProductContainerTitle>
+                </ProductContainerHeader>
+                <ProductField item_display={discovery} max_rows={5} />
                 <ProductContainerHeaderAddon>
-                    <Button variant={"ghost"}>Show more</Button>
+                    <Button size={"lg"} asChild>
+                        <Link href={"/discovery"}>Show more</Link>
+                    </Button>
                 </ProductContainerHeaderAddon>
-            </ProductContainerHeader>
-            <ProductField item_display={seasonal} max_rows={1}/>
-        </ProductContainer>
+            </ProductContainer>
 
+            <Separator />
 
-        <ProductContainer>
-            <ProductContainerHeader className={style.discoveryHeader}>
-                <ProductContainerTitle>
-                    Discovery
-                </ProductContainerTitle>
-            </ProductContainerHeader>
-            <ProductField item_display={discovery} max_rows={5}/>
-            <ProductContainerHeaderAddon>
-                <Button size={"lg"} asChild>
-                    <Link href={"/discovery"}>Show more</Link>
-                </Button>
-            </ProductContainerHeaderAddon>
-        </ProductContainer>
-
-        <Separator />
-
-        <AboutThisWeb/>
-    </div>
-  );
+            <AboutThisWeb />
+        </div>
+    );
 };
 
 export default Home;

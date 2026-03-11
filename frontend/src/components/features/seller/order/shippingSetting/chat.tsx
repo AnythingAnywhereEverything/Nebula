@@ -1,7 +1,7 @@
 import { SellerContent, SellerLayout } from "@components/layouts/sellerPageLayout";
 import React, { useState } from "react";
 import SellerSettingHeader from "./sellerHeader";
-import { Button, Field, FieldDescription, FieldLabel, FieldSeparator, Switch } from "@components/ui/NebulaUI";
+import { Field, FieldDescription, FieldLabel, FieldSeparator, Switch } from "@components/ui/NebulaUI";
 
 const SellerSettingMessage: React.FC =() => {
 

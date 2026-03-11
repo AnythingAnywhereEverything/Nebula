@@ -1,7 +1,7 @@
-import { SellerContent, SellerHeader, SellerLayout, SellerToolbarRow } from "@components/layouts/sellerPageLayout";
-import { Button, Field, FieldDescription, FieldLabel, FieldSeparator, Switch } from "@components/ui/NebulaUI";
+import { SellerContent, SellerLayout } from "@components/layouts/sellerPageLayout";
+import { Field, FieldDescription, FieldLabel, Switch } from "@components/ui/NebulaUI";
 import Form from "next/form";
-import React, { useState } from "react";
+import React from "react";
 import SellerSettingHeader from "./sellerHeader";
 
 const SellerSettingProduct:React.FC = () => {

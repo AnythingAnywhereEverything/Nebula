@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import FilterBar from "@components/features/search/filterBar";
 import AdvanceFilter from "@components/features/search/advanceFilter";
 import { ProductField } from "@components/ui/Nebula/product-field";
-import { ProductDatas, ProductSearchResponse, searchProductDatas } from "@/api/search";
+import { ProductSearchResponse, searchProductDatas } from "@/api/search";
 
 export default function searchResult(){
     const searchParams = useSearchParams();

@@ -1,7 +1,7 @@
 import { SellerContent, SellerHeader, SellerLayout } from "@components/layouts/sellerPageLayout";
 import React, { useEffect, useState } from "react";
 import ShopSettingsCompo from "./settings";
-import { Button, Field, FieldDescription, FieldLabel, FieldSeparator, Icon, Input, Switch, Textarea } from "@components/ui/NebulaUI";
+import { Button, Field, FieldDescription, FieldLabel, FieldSeparator, Icon, Input, Switch } from "@components/ui/NebulaUI";
 import Form from "next/form";
 import { createNewRole, deleteRole, getShopRole, RequestNewRole, updateRole, UpdateShopRole } from "@/api/shop";
 import { useParams, useRouter } from "next/navigation";

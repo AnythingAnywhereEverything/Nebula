@@ -1,8 +1,7 @@
-import { SellerContent, SellerHeader, SellerLayout, SellerToolbarRow } from "@components/layouts/sellerPageLayout";
-import { Button, ButtonGroup, Field, FieldDescription, FieldLabel, FieldSeparator, Separator, Switch } from "@components/ui/NebulaUI";
+import { SellerContent, SellerLayout } from "@components/layouts/sellerPageLayout";
+import { Button, Field, FieldDescription, FieldLabel, FieldSeparator, Switch } from "@components/ui/NebulaUI";
 import Form from "next/form";
 import React, { useState } from "react";
-import SellerSettingOption from "./renderSellerSetting";
 import SellerSettingHeader from "./sellerHeader";
 
 const SellerNotificationSetting:React.FC = () => {

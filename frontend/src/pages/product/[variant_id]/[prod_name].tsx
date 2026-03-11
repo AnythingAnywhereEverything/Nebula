@@ -1,14 +1,13 @@
 // frontend/src/pages/product/[prod_name]/q/[prod_id].tsx
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import style from '@styles/layouts/productlayout.module.scss';
-import Head from 'next/head';
 import { useRouter } from 'next/router';
 import ProductPageLayout from '@components/layouts/productPageLayout';
 
 export default function ProductPage() {
     const router = useRouter();
 
-    const { variant_id, prod_name } = router.query;
+    const { variant_id } = router.query;
 
     useEffect(() => {
         if (!router.isReady) return;

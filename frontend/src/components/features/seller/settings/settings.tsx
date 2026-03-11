@@ -1,7 +1,6 @@
-import { SellerPanel } from "@components/layouts/sellerPageLayout";
 import { Button, ButtonGroup, Field } from "@components/ui/NebulaUI";
 import Link from "next/link";
-import { useParams, usePathname } from "next/navigation";
+import { useParams } from "next/navigation";
 import React from "react";
 
 const ShopSettingsCompo:React.FC = () => {

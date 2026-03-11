@@ -1,5 +1,5 @@
 
-import React, { FC, JSX } from 'react';
+import React, { JSX } from 'react';
 import style from '@styles/features/searchresult.module.scss';
 
 const SearchResultLoading: React.FC = () => {

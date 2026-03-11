@@ -2,15 +2,30 @@ import { useAuthService } from "@/hooks/useAuthService";
 import { useShop } from "@/hooks/useShop";
 import { useUser } from "@/hooks/useUser";
 import Avatar from "@components/ui/Nebula/avatar";
-import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, Field, FieldDescription, FieldLabel, Icon, Label } from "@components/ui/NebulaUI";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuPortal,
+    DropdownMenuRadioGroup,
+    DropdownMenuRadioItem,
+    DropdownMenuSeparator,
+    DropdownMenuSub,
+    DropdownMenuSubContent,
+    DropdownMenuSubTrigger,
+    DropdownMenuTrigger,
+    FieldDescription,
+    FieldLabel,
+    Icon,
+} from "@components/ui/NebulaUI";
 
-import s from "@styles/features/profilebadge.module.scss"
+import s from "@styles/features/profilebadge.module.scss";
 import { useTheme } from "next-themes";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { use, useEffect, useState } from "react";
-
+import { useEffect, useState } from "react";
 
 export function ProfileBadge() {
     const { theme, setTheme, resolvedTheme } = useTheme();
@@ -37,22 +52,33 @@ export function ProfileBadge() {
     if (isLoading) return null;
 
     if (!data) return null;
-        
+
     const displayName = data.display_name;
     const username = "@" + data.username;
-    
+
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <div className={s.container}>
-                    <Avatar src={data?.profile_picture_url} fill className={s.avatar}/>
+                    <Avatar
+                        src={data?.profile_picture_url}
+                        fill
+                        className={s.avatar}
+                    />
                     <div>
-                        <FieldLabel>{isLoading ? "Loading..." : displayName}</FieldLabel>
-                        <FieldDescription>{isLoading ? "..." : username}</FieldDescription>
+                        <FieldLabel>
+                            {isLoading ? "Loading..." : displayName}
+                        </FieldLabel>
+                        <FieldDescription>
+                            {isLoading ? "..." : username}
+                        </FieldDescription>
                     </div>
                 </div>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="center" style={{width: "calc(var(--spacing) * 48)"}}>
+            <DropdownMenuContent
+                align="center"
+                style={{ width: "calc(var(--spacing) * 48)" }}
+            >
                 <DropdownMenuGroup>
                     <DropdownMenuLabel>My Account</DropdownMenuLabel>
                     <DropdownMenuItem asChild>
@@ -64,36 +90,60 @@ export function ProfileBadge() {
                     <DropdownMenuItem asChild>
                         <Link href={"/user/purchaes"}>My Purchases</Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild></DropdownMenuItem>
                     <DropdownMenuSub>
-                        <DropdownMenuSubTrigger>Notification</DropdownMenuSubTrigger>
+                        <DropdownMenuSubTrigger>
+                            Notification
+                        </DropdownMenuSubTrigger>
                         <DropdownMenuPortal>
                             <DropdownMenuSubContent>
                                 <DropdownMenuItem asChild>
-                                    <Link href={"/user/notification/order"}>My Orders</Link>
+                                    <Link href={"/user/notification/order"}>
+                                        My Orders
+                                    </Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem asChild>
-                                    <Link href={"/user/notification/promotion"}>Promotion</Link>
+                                    <Link href={"/user/notification/promotion"}>
+                                        Promotion
+                                    </Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem asChild>
-                                    <Link href={"/user/notification/finance"}>Finance Updates</Link>
+                                    <Link href={"/user/notification/finance"}>
+                                        Finance Updates
+                                    </Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem asChild>
-                                    <Link href={"/user/notification/nebula"}>Nebula Updates</Link>
+                                    <Link href={"/user/notification/nebula"}>
+                                        Nebula Updates
+                                    </Link>
                                 </DropdownMenuItem>
                             </DropdownMenuSubContent>
                         </DropdownMenuPortal>
                     </DropdownMenuSub>
                     <DropdownMenuSub>
-                        <DropdownMenuSubTrigger>Theme: {theme && theme.charAt(0).toUpperCase()+theme.slice(1)}</DropdownMenuSubTrigger>
+                        <DropdownMenuSubTrigger>
+                            Theme:{" "}
+                            {theme &&
+                                theme.charAt(0).toUpperCase() + theme.slice(1)}
+                        </DropdownMenuSubTrigger>
                         <DropdownMenuPortal>
                             <DropdownMenuSubContent>
-                                <DropdownMenuRadioGroup value={theme} onValueChange={setTheme}>
-                                    <DropdownMenuRadioItem value="system">Device Theme</DropdownMenuRadioItem>
-                                    <DropdownMenuRadioItem value="light">Light Theme</DropdownMenuRadioItem>
-                                    <DropdownMenuRadioItem value="dark">Dark Theme</DropdownMenuRadioItem>
-                                    <DropdownMenuRadioItem value="midnight">Midnight Theme</DropdownMenuRadioItem>
+                                <DropdownMenuRadioGroup
+                                    value={theme}
+                                    onValueChange={setTheme}
+                                >
+                                    <DropdownMenuRadioItem value="system">
+                                        Device Theme
+                                    </DropdownMenuRadioItem>
+                                    <DropdownMenuRadioItem value="light">
+                                        Light Theme
+                                    </DropdownMenuRadioItem>
+                                    <DropdownMenuRadioItem value="dark">
+                                        Dark Theme
+                                    </DropdownMenuRadioItem>
+                                    <DropdownMenuRadioItem value="midnight">
+                                        Midnight Theme
+                                    </DropdownMenuRadioItem>
                                 </DropdownMenuRadioGroup>
                             </DropdownMenuSubContent>
                         </DropdownMenuPortal>
@@ -102,23 +152,33 @@ export function ProfileBadge() {
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                     <DropdownMenuSub>
-                        <DropdownMenuSubTrigger>My Nebula Shops</DropdownMenuSubTrigger>
+                        <DropdownMenuSubTrigger>
+                            My Nebula Shops
+                        </DropdownMenuSubTrigger>
 
                         <DropdownMenuSubContent>
-
                             <DropdownMenuGroup>
-                                <DropdownMenuLabel>Owned shops</DropdownMenuLabel>
+                                <DropdownMenuLabel>
+                                    Owned shops
+                                </DropdownMenuLabel>
 
                                 {shopData?.owned?.length ? (
-                                shopData.owned.map((shop) => (
-                                    <DropdownMenuItem key={`owned-${shop.id}`} asChild>
-                                    <Link href={`/portal/seller/${shop.id}/dashboard`}>
-                                        {shop.name}
-                                    </Link>
-                                    </DropdownMenuItem>
-                                ))
+                                    shopData.owned.map((shop) => (
+                                        <DropdownMenuItem
+                                            key={`owned-${shop.id}`}
+                                            asChild
+                                        >
+                                            <Link
+                                                href={`/portal/seller/${shop.id}/dashboard`}
+                                            >
+                                                {shop.name}
+                                            </Link>
+                                        </DropdownMenuItem>
+                                    ))
                                 ) : (
-                                <DropdownMenuItem disabled>No owned shops</DropdownMenuItem>
+                                    <DropdownMenuItem disabled>
+                                        No owned shops
+                                    </DropdownMenuItem>
                                 )}
                             </DropdownMenuGroup>
 
@@ -126,18 +186,27 @@ export function ProfileBadge() {
 
                             {/* Associate shops */}
                             <DropdownMenuGroup>
-                                <DropdownMenuLabel>Associate shops</DropdownMenuLabel>
+                                <DropdownMenuLabel>
+                                    Associate shops
+                                </DropdownMenuLabel>
 
                                 {shopData?.associate?.length ? (
-                                shopData.associate.map((shop) => (
-                                    <DropdownMenuItem key={`associate-${shop.id}`} asChild>
-                                    <Link href={`/portal/seller/${shop.id}/dashboard`}>
-                                        {shop.name}
-                                    </Link>
-                                    </DropdownMenuItem>
-                                ))
+                                    shopData.associate.map((shop) => (
+                                        <DropdownMenuItem
+                                            key={`associate-${shop.id}`}
+                                            asChild
+                                        >
+                                            <Link
+                                                href={`/portal/seller/${shop.id}/dashboard`}
+                                            >
+                                                {shop.name}
+                                            </Link>
+                                        </DropdownMenuItem>
+                                    ))
                                 ) : (
-                                <DropdownMenuItem disabled>No associate shops</DropdownMenuItem>
+                                    <DropdownMenuItem disabled>
+                                        No associate shops
+                                    </DropdownMenuItem>
                                 )}
                             </DropdownMenuGroup>
 
@@ -149,19 +218,19 @@ export function ProfileBadge() {
                                     Create new shop
                                 </Link>
                             </DropdownMenuItem>
-
                         </DropdownMenuSubContent>
-
                     </DropdownMenuSub>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                    <DropdownMenuItem variant="destructive" onClick={() => logout(router)}>
+                    <DropdownMenuItem
+                        variant="destructive"
+                        onClick={() => logout(router)}
+                    >
                         Log out
                     </DropdownMenuItem>
                 </DropdownMenuGroup>
             </DropdownMenuContent>
         </DropdownMenu>
-    )
+    );
 }
-

@@ -8,7 +8,6 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
     Field,
     FieldDescription,
     FieldGroup,
@@ -26,10 +25,9 @@ import {
 import { cn } from "@lib/utils";
 
 import s from "@styles/layouts/seller/addProduct.module.scss";
-import { generateVariantMatrix } from "@lib/productVariant";
 import React, { useEffect, useState } from "react";
-import { AttributeOption, MatrixVariant, ProductAttribute, ProductImage, ProductVariant, VariantRow, VariantValue } from "@/types/product";
-import { createNewProductVariant, getProductVariant, GetVariantResponse, updateProductVariant } from "@/api/product";
+import { AttributeOption, MatrixVariant, ProductAttribute, ProductImage, ProductVariant, VariantValue } from "@/types/product";
+import { createNewProductVariant, getProductVariant, updateProductVariant } from "@/api/product";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 type EditProductDataProps = {

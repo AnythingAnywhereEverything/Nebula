@@ -7,7 +7,6 @@ import ProductImageViewer from '@components/features/product/productImageViewer'
 import ProductVariantSelector from '@components/features/product/productVariantSelector';
 import ProductAmountSelector from '@components/features/product/productAmountSelector';
 import ProductFullDetail from '@components/features/product/productFullDetail';
-import { Badge } from '@components/ui/Nebula/badge';
 import Link from 'next/link';
 import { Button, Field, FieldDescription, FieldSeparator, FieldSet, Icon, Separator } from '@components/ui/NebulaUI';
 import { formatLargeNumber, ratingStars } from '@lib/utils';
