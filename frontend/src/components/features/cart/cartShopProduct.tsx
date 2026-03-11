@@ -17,6 +17,7 @@ interface ProductInCart {
     stock_quantity: number;
     is_enable: boolean;
     is_selected:boolean;
+    is_active:boolean;
     image_url: string | null;
     product_variants: { name: string; value: string }[];
 }
@@ -32,6 +33,7 @@ const CartShopProduct: React.FC<ProductInCart> = (prod)=>{
         quantity,
         is_selected,
         is_enable,
+        is_active,
         price,
         free_shipping,
     } = prod;
@@ -128,14 +130,14 @@ const CartShopProduct: React.FC<ProductInCart> = (prod)=>{
             <Field orientation="horizontal" 
             className={s.itemSection} 
             key={product_id}
-            style={{ opacity: is_enable ? 1 : 0.6 }}
+            style={{ opacity: is_active ? 1 : 0.4 }}
             >
                 <Field orientation={"horizontal"} style={{padding: "0"}}>
                     <Checkbox
-                        disabled={!is_enable}
+                        disabled={!is_active}
                         defaultChecked={is_selected}
                         onCheckedChange={(checked: boolean) => {
-                            if (!is_enable) return;
+                            if (!is_active) return;
                             if (!product_id || !product_variants_id) return;
                             onCheckedChange(product_id, product_variants_id, checked);
                         }}
@@ -191,9 +193,9 @@ const CartShopProduct: React.FC<ProductInCart> = (prod)=>{
                                     <InputGroupAddon align="inline-start">
                                         <InputGroupButton
                                             size={"icon-xs"}
-                                            disabled={!is_enable}
+                                            disabled={!is_active}
                                             onClick={() => {
-                                                if (!is_enable) return;
+                                                if (!is_active) return;
                                                 onQuantityChange(newQuantity - 1);
                                             }}
                                         >
@@ -203,9 +205,9 @@ const CartShopProduct: React.FC<ProductInCart> = (prod)=>{
                                     <InputGroupAddon align="inline-end">
                                         <InputGroupButton
                                             size={"icon-xs"}
-                                            disabled={!is_enable}
+                                            disabled={!is_active}
                                             onClick={() => {
-                                                if (!is_enable) return;
+                                                if (!is_active) return;
                                                 onQuantityChange(newQuantity + 1);
                                             }}
                                         >
@@ -216,10 +218,10 @@ const CartShopProduct: React.FC<ProductInCart> = (prod)=>{
                                         style={{ textAlign: "center" }}
                                         type="number"
                                         min={1}
-                                        disabled={!is_enable}
+                                        disabled={!is_active}
                                         value={newQuantity}
                                         onChange={(e) => {
-                                            if (!is_enable) return;
+                                            if (!is_active) return;
                                             onQuantityChange(Number(e.target.value), true);
                                         }}
                                     />
