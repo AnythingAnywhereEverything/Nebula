@@ -26,19 +26,17 @@ export default function Cart() {
         }
         setCurrentPrice(total);
     }
+    const fetchItem = async () => {
+        const data = await getCartItems();
+        setCartItems(data);
+
+        const selectedCount = data.filter((item: any) => item?.is_selected === true).length;
+        setIsChecked(selectedCount);
+        checkPrice(data);
+    }
+
 
     useEffect(() => {
-        const fetchItem = async () => {
-            try{
-                const data = await getCartItems();
-                setCartItems(data);
-
-                const selectedCount = data.filter((item: any) => item?.is_selected === true).length;
-                setIsChecked(selectedCount);
-                checkPrice(data);
-            } catch (e) {
-            }
-        }
         fetchItem();
     }, [])
 
@@ -98,6 +96,7 @@ export default function Cart() {
                                             is_active={item.is_active}
                                             is_enable={item.is_enabled}
                                             is_selected={item.is_selected}
+                                            onRefetch={fetchItem}
                                         />
                                     );
                                 })

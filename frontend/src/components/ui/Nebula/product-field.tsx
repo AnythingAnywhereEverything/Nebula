@@ -101,7 +101,7 @@ function ProductField({
                                 </Link>
                             </ProductHeader>
                             <ProductFooter>
-                                <ProductPrice base={Number(item.price)}/>
+                                <ProductPrice discount={item.on_sale ? Number(item.sale_price) : undefined} base={Number(item.price)}/>
                                 <ProductStars stars={Number(item.rating)}/>
                             </ProductFooter>
                         </ProductContent>

@@ -4,6 +4,7 @@ import { Button, ButtonGroup, Checkbox, Field, FieldGroup, FieldLabel, FieldLege
 import Link from "next/link";
 import { AddToCartRequest, deleteCartItems, selectedCartItems, updateCartQuantity } from "@/api/product";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 interface ProductInCart {
     product_id: string;
@@ -22,7 +23,11 @@ interface ProductInCart {
     product_variants: { name: string; value: string }[];
 }
 
-const CartShopProduct: React.FC<ProductInCart> = (prod)=>{
+type CartShopProductProps = ProductInCart & {
+    onRefetch: () => void;
+};
+
+const CartShopProduct: React.FC<CartShopProductProps> = (prod)=>{
     const {
         product_id,
         product_variants_id,
@@ -36,6 +41,7 @@ const CartShopProduct: React.FC<ProductInCart> = (prod)=>{
         is_active,
         price,
         free_shipping,
+        onRefetch
     } = prod;
     type AvailabilityKey = keyof typeof availabilityConfig;
     const router = useRouter();
@@ -77,7 +83,7 @@ const CartShopProduct: React.FC<ProductInCart> = (prod)=>{
         };
     
         await selectedCartItems(finalPayload);
-        router.refresh();
+        onRefetch()
     }
 
 
@@ -91,12 +97,12 @@ const CartShopProduct: React.FC<ProductInCart> = (prod)=>{
     }
     setNewQuantity(next);
     if (cooldownRef.current) clearTimeout(cooldownRef.current);
-    cooldownRef.current = setTimeout(async () => {
-        const finalValue = next === 0 ? 1 : next;
-        setNewQuantity(finalValue);
-        await sendUpdateCartRequest(finalValue);
-    }, 1000);
-}
+      cooldownRef.current = setTimeout(async () => {
+          const finalValue = next === 0 ? 1 : next;
+          setNewQuantity(finalValue);
+          await sendUpdateCartRequest(finalValue);
+      }, 1000);
+    }
 
     async function sendUpdateCartRequest (number: number) {
 
@@ -107,8 +113,7 @@ const CartShopProduct: React.FC<ProductInCart> = (prod)=>{
             quantity: number
         }
         updateCartQuantity(finalPayload);
-        router.refresh();
-        return ;
+        onRefetch()
     }
 
     async function sendDeleteCartRequest () {
@@ -120,8 +125,7 @@ const CartShopProduct: React.FC<ProductInCart> = (prod)=>{
             quantity: quantity
         }
         deleteCartItems(finalPayload);
-        router.refresh();
-        return ;
+        onRefetch()
     }
     
 
@@ -143,8 +147,10 @@ const CartShopProduct: React.FC<ProductInCart> = (prod)=>{
                         }}
                     />
                     <div className={s.imageSection}>
-                        <img
-                            src={image_url ? `/cdn/${image_url}` : undefined}
+                        <Image
+                            alt={name}
+                            fill
+                            src={image_url ? `/cdn/${image_url}` : `/default/placeholder.png`}
                         />
                     </div>
                     <FieldSeparator/>

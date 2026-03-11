@@ -1007,13 +1007,14 @@ const SingleProductField = ({
 
                         <Field orientation={"horizontal"}>
                             <Checkbox
+                                id="on-sale"
                                 checked={draft.onSale}
                                 onCheckedChange={(v) => {
                                     if (typeof v !== "boolean") return;
                                     setDraft(p => ({ ...p, onSale: v }));
                                 }}
                             />
-                            <FieldLabel>Set product on sale</FieldLabel>
+                            <FieldLabel htmlFor="on-sale">Set product on sale</FieldLabel>
                         </Field>
                     </FieldSet>
                 </Field>
