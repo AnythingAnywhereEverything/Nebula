@@ -8,22 +8,64 @@ pub async fn create_product_review(
     id: i64, //* new id
     product_id: i64,
     content: String,
-    rating: i32
-) -> RepositoryResult<()> {
-    let _ = sqlx::query(
+    rating: i32,
+) -> RepositoryResult<ProductReviewRow> {
+    let row = sqlx::query_as::<_, ProductReviewRow>(
         r#"
-        INSERT INTO product_reviews
-        (
-            id,
-            product_id,
-            user_id,
-            rating,
-            content
+        WITH inserted AS (
+            INSERT INTO product_reviews
+            (
+                id,
+                product_id,
+                user_id,
+                rating,
+                content
+            )
+            VALUES
+            (
+                $1,$2,$3,$4,$5
+            )
+            RETURNING *
         )
-        VALUES
-        (
-            $1,$2,$3,$4,$5
-        )
+        SELECT
+            pr.id::text as id,
+            pr.user_id::text as user_id,
+
+            u.display_name,
+            u.profile_picture_url,
+
+            pr.rating,
+            pr.content,
+            pr.likes,
+            pr.dislikes,
+
+            NULL::text AS user_reaction,
+
+            COUNT(r.id) AS replies_count,
+
+            pr.created_at,
+            pr.updated_at
+
+        FROM inserted pr
+
+        LEFT JOIN users u
+            ON u.id = pr.user_id
+
+        LEFT JOIN product_reviews r
+            ON r.parent_id = pr.id
+            AND r.deleted_at IS NULL
+
+        GROUP BY
+            pr.id,
+            pr.user_id,
+            pr.rating,
+            pr.content,
+            pr.likes,
+            pr.dislikes,
+            pr.created_at,
+            pr.updated_at,
+            u.display_name,
+            u.profile_picture_url
         "#
     )
     .bind(id)
@@ -31,10 +73,10 @@ pub async fn create_product_review(
     .bind(user_id)
     .bind(rating)
     .bind(content)
-    .execute(tx.as_mut())
+    .fetch_one(tx.as_mut())
     .await?;
 
-    Ok(())
+    Ok(row)
 }
 
 pub async fn update_product_review(
@@ -71,17 +113,33 @@ pub async fn create_review_reply(
     user_id: i64,
     product_id: i64,
     content: String
-) -> RepositoryResult<()> {
-    sqlx::query(
+) -> RepositoryResult<ProductReplyRow> {
+    let row = sqlx::query_as::<_, ProductReplyRow>(
         r#"
-        INSERT INTO product_reviews (
-            id,
-            product_id,
-            parent_id,
-            user_id,
-            content
+        WITH inserted AS (
+            INSERT INTO product_reviews (
+                id,
+                product_id,
+                parent_id,
+                user_id,
+                content
+            )
+            VALUES ($1, $2, $3, $4, $5)
+            RETURNING *
         )
-        VALUES ($1, $2, $3, $4, $5)
+        SELECT
+            i.id::text as id,
+            i.user_id::text as user_id,
+            u.profile_picture_url,
+            u.display_name,
+            i.likes,
+            i.dislikes,
+            i.content,
+            i.created_at,
+            i.updated_at,
+            NULL::text as user_reaction
+        FROM inserted i
+        JOIN users u ON u.id = i.user_id
         "#
     )
     .bind(id)
@@ -89,10 +147,10 @@ pub async fn create_review_reply(
     .bind(parent_id)
     .bind(user_id)
     .bind(content)
-    .execute(tx.as_mut())
+    .fetch_one(tx.as_mut())
     .await?;
 
-    Ok(())
+    Ok(row)
 }
 
 pub async fn query_product_reviews(

@@ -24,7 +24,7 @@ export type QueryReplies = {
 export const uploadReview = async ( 
     product_id:string,
     payload : NewReview
-) => {
+): Promise<CommentProps> => {
     const token = getToken();
     if(!token) throw new Error("No token found");
 
@@ -36,14 +36,18 @@ export const uploadReview = async (
         body: JSON.stringify(payload)
     })
 
-    return;
+    const data = await res.json()
+
+    if (!res.ok) throw new Error("Failed to upload review")
+
+    return data;
 }
 
 export const uploadReply = async (
     product_id:string,
     review_id: string,
     payload: NewReply
-) => {
+): Promise<ReplyProps> => {
     const token = getToken();
     if(!token) throw new Error("No token found");
 
@@ -55,7 +59,11 @@ export const uploadReply = async (
         body: JSON.stringify(payload)
     })
 
-    return;
+    const data = await res.json()
+
+    if (!res.ok) throw new Error("Failed to upload reply")
+
+    return data;
 }
 
 export const reactReview = async (

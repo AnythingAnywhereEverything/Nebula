@@ -162,9 +162,7 @@ const Comment: React.FC<CommentProps & {product_id: string}> = ({
 
     const [showReply, setShowReply] = useState(false)
     const [replyText, setReplyText] = useState("")
-
-    const { data, isLoading } = useUser();
-
+    const [totalReplies, setTotalReplies] = useState(replies_count)
 
     const [replies, setReplies] = useState<ReplyProps[]>([])
     const [replyPage, setReplyPage] = useState(0)
@@ -176,21 +174,10 @@ const Comment: React.FC<CommentProps & {product_id: string}> = ({
         const payload = {
             content: replyText
         }
-        await uploadReply(product_id, id, payload)
+        const data = await uploadReply(product_id, id, payload)
 
-        const optimisticReply = {
-            id: "temp-" + Date.now(),
-            content: replyText,
-            display_name: data?.display_name,
-            profile_picture_url: data?.profile_picture_url,
-            likes: "0",
-            dislikes: "0",
-            created_at: new Date().toISOString(),
-            updated_at: "",
-            user_reaction: undefined
-        }
-
-        setReplies(prev => [optimisticReply, ...prev])
+        setReplies(prev => [data, ...prev])
+        setTotalReplies((Number(totalReplies) + 1).toString())
     }
 
     const fetchReplies = async (pageNumber: number) => {
@@ -255,7 +242,7 @@ const Comment: React.FC<CommentProps & {product_id: string}> = ({
                     <div className={s.userProfile}>
                         <Avatar src={profile_picture_url} size={50} />
                     </div>
-                    {Number(replies_count) > 0 && (
+                    {Number(totalReplies) > 0 && (
                         <div className={s.replyBar} />
                     )}
                 </div>
@@ -358,7 +345,7 @@ const Comment: React.FC<CommentProps & {product_id: string}> = ({
                 </div>
             </div>
             {
-                Number(replies_count) > 0
+                Number(totalReplies) > 0
                 &&
                 <div className={s.replyButtonGroup}>
                     <div className={s.replyCorner}>
@@ -376,7 +363,7 @@ const Comment: React.FC<CommentProps & {product_id: string}> = ({
                             setShowReplies(v => !v)
                         }}
                     >
-                        {showReplies ? "Hide replies" : `${replies_count} Replies`}
+                        {showReplies ? "Hide replies" : `${totalReplies} Replies`}
                         <Icon>{showReplies ? "" : ""}</Icon>
                     </Button>
                 </div>
@@ -434,24 +421,11 @@ const ProductComment: React.FC<ProductCommentProp> = ({product_id}) => {
             rating: rating
         }
 
-        await uploadReview(product_id, payload);
+        const returned = await uploadReview(product_id, payload);
+
         setOpen(false)
 
-        const optimisticComment = {
-            id: "temp-" + Date.now(),
-            rating: rating.toString(),
-            content: comment,
-            replies_count: "0",
-            display_name: data?.display_name,
-            profile_picture_url: data?.profile_picture_url,
-            likes: "0",
-            dislikes: "0",
-            created_at: new Date().toISOString(),
-            updated_at: "",
-            user_reaction: undefined
-        }
-
-        setReviews(prev => [optimisticComment,...prev])
+        setReviews(prev => [returned,...prev])
     }
 
     return (

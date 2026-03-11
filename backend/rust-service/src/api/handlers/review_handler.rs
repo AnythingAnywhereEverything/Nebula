@@ -6,7 +6,7 @@ use crate::{api::{APIError, APIVersion, middleware::user_mw::AuthUser, version},
 
 
 pub async fn create_review_handler(
-    Extension(_auth): Extension<AuthUser>,
+    Extension(auth): Extension<AuthUser>,
     State(state): State<SharedState>,
     Path((version, product_id)): Path<(String, i64)>,
     Json(payload): Json<CreateNewReview>
@@ -18,9 +18,9 @@ pub async fn create_review_handler(
 
     let id = state.snowflake_generator.generate_id()?;
 
-    review_repo::create_product_review(
+    let result = review_repo::create_product_review(
         &mut tx, 
-        _auth.user_id, 
+        auth.user_id, 
         id, 
         product_id, 
         payload.content, 
@@ -31,7 +31,7 @@ pub async fn create_review_handler(
 
     tx.commit().await?;
 
-    Ok(())
+    Ok(Json(result))
 }
 
 pub async fn get_product_reviews_handler(
@@ -146,7 +146,7 @@ pub async fn create_review_reply_handler(
 
     let id = state.snowflake_generator.generate_id()?;
 
-    review_repo::create_review_reply(
+    let result = review_repo::create_review_reply(
         &mut tx,
         id,
         review_id,
@@ -157,7 +157,7 @@ pub async fn create_review_reply_handler(
 
     tx.commit().await?;
 
-    Ok(())
+    Ok(Json(result))
 }
 
 pub async fn query_review_replies_handler(
