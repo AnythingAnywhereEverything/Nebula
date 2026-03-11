@@ -1,6 +1,7 @@
 
 //* this file is for separate the hell and the heaven */
 
+use rust_decimal::Decimal;
 use sqlx::{Postgres, Transaction};
 
 use crate::{application::repository::RepositoryResult, domain::models::{product::ReturnProductSpecification, search::{ProductOption, ProductPageVariant, ProductRow, QueryProductData, TypingQueryProduct}}};
@@ -33,9 +34,13 @@ pub async fn query_product_names(
 
 pub async fn query_product_datas(
     tx: &mut Transaction<'_, Postgres>,
-    query: String,
+    query: Option<String>,
     offset: i64,
-    limit: i64
+    limit: i64,
+    rating: Option<Decimal>,
+    min_price: Option<i64>,
+    max_price: Option<i64>,
+    shop_id: Option<i64>
 ) -> RepositoryResult<Vec<QueryProductData>> {
     let result = sqlx::query_as::<_, QueryProductData>(
         r#"
@@ -67,6 +72,7 @@ pub async fn query_product_datas(
                 product_id = p.id
                 AND deleted_at IS NULL
                 AND is_enabled = TRUE
+                AND ($6 IS NULL OR shop_id = $6)
             ORDER BY price ASC
             LIMIT 1
         ) v ON TRUE
@@ -74,7 +80,12 @@ pub async fn query_product_datas(
         WHERE
             p.deleted_at IS NULL
             AND p.is_active = TRUE
-            AND p.name ILIKE '%' || $1 || '%'
+            AND ($1 IS NULL OR p.name ILIKE '%' || $1 || '%')
+
+            AND ($4 IS NULL OR p.rating >= $4)
+
+            AND ($5 IS NULL OR v.price >= $5)
+            AND ($6 IS NULL OR v.price <= $6)
 
         ORDER BY
             (
@@ -92,6 +103,10 @@ pub async fn query_product_datas(
     .bind(query)
     .bind(limit)
     .bind(offset)
+    .bind(rating)
+    .bind(min_price)
+    .bind(max_price)
+    .bind(shop_id)
     .fetch_all(tx.as_mut())
     .await?;
 
@@ -100,19 +115,39 @@ pub async fn query_product_datas(
 
 pub async fn count_search_products(
     tx: &mut Transaction<'_, Postgres>,
-    query: String,
+    query: Option<String>,
+    rating: Option<Decimal>,
+    min_price: Option<i64>,
+    max_price: Option<i64>,
+    shop_id: Option<i64>,
 ) -> RepositoryResult<i64> {
     let count: (i64,) = sqlx::query_as(
         r#"
-        SELECT COUNT(*)
-        FROM products
+        SELECT COUNT(DISTINCT p.id)
+        FROM products p
+
+        LEFT JOIN product_variants v
+            ON v.product_id = p.id
+            AND v.deleted_at IS NULL
+            AND v.is_enabled = TRUE
+            AND ($5 IS NULL OR v.shop_id = $5)
+
         WHERE
-            deleted_at IS NULL
-            AND is_active = TRUE
-            AND name ILIKE '%' || $1 || '%'
+            p.deleted_at IS NULL
+            AND p.is_active = TRUE
+            AND ($1 IS NULL OR p.name ILIKE '%' || $1 || '%')
+            
+            AND ($2 IS NULL OR p.rating >= $2)
+
+            AND ($3 IS NULL OR v.price >= $3)
+            AND ($4 IS NULL OR v.price <= $4)
         "#
     )
-    .bind(query)
+    .bind(query)      // $1
+    .bind(rating)     // $2
+    .bind(min_price)  // $3
+    .bind(max_price)  // $4
+    .bind(shop_id)    // $5
     .fetch_one(tx.as_mut())
     .await?;
 

@@ -44,7 +44,11 @@ export const searchOnType = async(q: string): Promise<QueryProductValues[]> => {
 export const searchProductDatas = async(
     q: string,
     page?: string | null,
-    limit?: string | null
+    limit?: string | null,
+    rating?: string | null,
+    min_price?: string | null,
+    max_price?: string | null,
+    shop_id?: string | null,
 ): Promise<ProductSearchResponse> => {
 
     const params = new URLSearchParams();
@@ -52,6 +56,10 @@ export const searchProductDatas = async(
     if (q.trim()) params.append("q", q);
     if (page) params.append("page", page);
     if (limit) params.append("limit", limit);
+    if (rating) params.append("rating", rating);
+    if (min_price) params.append("min_price", min_price);
+    if (max_price) params.append("max_price", max_price);
+    if (shop_id) params.append("shop_id", shop_id);
 
     const res = await fetch(
         `/api/v2/search/product_data?${params.toString()}`, {

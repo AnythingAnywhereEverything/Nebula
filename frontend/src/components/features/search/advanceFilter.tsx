@@ -9,46 +9,45 @@ import { ratingStars } from '@lib/utils';
 const AdvanceFilter: React.FC = () => {
     const [minPrice, setMinPrice] = useState('');
     const [maxPrice, setMaxPrice] = useState('');
+    const [rating, setRating] = useState<string | null>(null);
 
     const router = useRouter();
     const pathName = usePathname();
     const searchParams = useSearchParams();
     const currentParams = new URLSearchParams(searchParams.toString());
 
+    const resetFilters = () => {
+        const params = new URLSearchParams(currentParams.toString());
+
+        params.delete('rating');
+        params.delete('min_price');
+        params.delete('max_price');
+
+        setMinPrice('');
+        setMaxPrice('');
+        setRating(null);
+
+        router.replace(`${pathName}?${params.toString()}`, { scroll: false });
+    };
+
     return (
         <div className={style.advanceFilter}>
             <h3><Icon>󰈲</Icon> Advance Filter</h3>
 
             <Field>
-                <FieldLegend>Based of Category</FieldLegend>
-                <FieldGroup style={{gap: "calc(var(--spacing) * 2)"}}>
-                    <Field orientation={"horizontal"}>
-                        <Checkbox name='book' id='book' />
-                        <FieldLabel htmlFor='book'>Books</FieldLabel>
-                    </Field>
-                    <Field orientation={"horizontal"}>
-                        <Checkbox name='book' id='electronics' />
-                        <FieldLabel htmlFor='electronics'>Electronics</FieldLabel>
-                    </Field>
-                    <Field orientation={"horizontal"}>
-                        <Checkbox name='book' id='clothing' />
-                        <FieldLabel htmlFor='clothing'>Clothing</FieldLabel>
-                    </Field>
-                    <Field orientation={"horizontal"}>
-                        <Checkbox name='book' id='furniture' />
-                        <FieldLabel htmlFor='furniture'>Furniture</FieldLabel>
-                    </Field>
-                </FieldGroup>
-
-                <FieldSeparator/>
-
-                <FieldLegend>Store Rating</FieldLegend>
+                <FieldLegend>Product Rating</FieldLegend>
                 <FieldGroup>
-                    <RadioGroup onValueChange={(val) => {
-                        const params = new URLSearchParams(currentParams.toString());
-                        params.set('rating', val);
-                        router.push(`${pathName}?${params.toString()}`, {scroll: false});
-                    }}>
+                    <RadioGroup
+                        value={rating}
+                        onValueChange={(val) => {
+                            const params = new URLSearchParams(currentParams.toString());
+
+                            setRating(val);
+                            params.set('rating', val);
+
+                            router.push(`${pathName}?${params.toString()}`, { scroll: false });
+                        }}
+                    >
                         <Field orientation={"horizontal"}>
                             <RadioGroupItem value='4.75' id='rating_5' className={style.srOnly} />
                             <FieldLabel htmlFor='rating_5'>
@@ -86,6 +85,7 @@ const AdvanceFilter: React.FC = () => {
                     </RadioGroup>
                 </FieldGroup>
 
+
                 <FieldSeparator/>
             
                 <FieldLegend>Price Range</FieldLegend>
@@ -93,35 +93,56 @@ const AdvanceFilter: React.FC = () => {
                 <Form action={"/search"} onSubmit={(e) => {
                     e.preventDefault();
                     const params = new URLSearchParams(currentParams.toString());
+
                     if (minPrice) params.set('min_price', minPrice);
                     else params.delete('min_price');
+
                     if (maxPrice) params.set('max_price', maxPrice);
                     else params.delete('max_price');
-                    router.replace(
-                        `${pathName}?${params.toString()}`,
-                        { scroll: false }
-                    );
+
+                    router.replace(`${pathName}?${params.toString()}`, { scroll: false });
                 }}>
                     <FieldGroup>
                         <Field orientation="horizontal">
-                            <Input type="number" name='min_price' placeholder="MIN" min={0} value={minPrice}
-                                onChange={(e) => setMinPrice(e.target.value)} />
+                            <Input
+                                type="number"
+                                name="min_price"
+                                placeholder="MIN"
+                                min={0}
+                                value={minPrice}
+                                onChange={(e) => setMinPrice(e.target.value)}
+                            />
 
                             <Separator style={{ width: "15%" }} />
 
-                            <Input type="number" name='max_price' placeholder="MAX" min={0} value={maxPrice}
-                                onChange={(e) => setMaxPrice(e.target.value)} />
+                            <Input
+                                type="number"
+                                name="max_price"
+                                placeholder="MAX"
+                                min={0}
+                                value={maxPrice}
+                                onChange={(e) => setMaxPrice(e.target.value)}
+                            />
                         </Field>
 
-                        <Button variant="oppose" size="sm" type="submit">
-                            Apply
-                        </Button>
+                        <Field>
+                            <Button variant="oppose" size="sm" type="submit">
+                                Apply
+                            </Button>
+                            <Button
+                                type="button"
+                                size="sm"
+                                variant="outline"
+                                onClick={resetFilters}
+                            >
+                                Reset
+                            </Button>
+                        </Field>
                     </FieldGroup>
                 </Form>
-
             </Field>
         </div>
-    )
-}
+    );
+};
 
 export default AdvanceFilter;
