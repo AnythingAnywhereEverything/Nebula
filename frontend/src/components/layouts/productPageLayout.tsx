@@ -14,16 +14,15 @@ import { formatLargeNumber, ratingStars } from '@lib/utils';
 import ProductComment from '@components/features/product/productComment';
 import { getProductViaVariantId } from '@/api/search';
 import { Product } from '@/types/product';
+import { addToCart, AddToCartRequest } from '@/api/product';
 
 interface ProductPageLayoutProps {
     variant_id?: string;
 }
 
-
-
 const ProductPageLayout: React.FC<ProductPageLayoutProps> = ({variant_id}) => {
     const [product, setProduct] = useState<Product>()
-
+    const [quantity, setQuantity] = useState<number>(1)
     useEffect(() => {
         if (!variant_id) return;
 
@@ -40,6 +39,18 @@ const ProductPageLayout: React.FC<ProductPageLayoutProps> = ({variant_id}) => {
     if (!variant_id || typeof variant_id !== 'string') return;
     const variant = product.variants.find(v => v.id === variant_id);
 
+    async function addToCartRequest() {
+        if (!product || product === undefined) return;
+        if (!variant) return;
+
+        const finalPayload: AddToCartRequest=  {
+            product_id : product.id,
+            product_variants_id: variant.id,
+            quantity: quantity
+        };
+        await addToCart(finalPayload);
+        return;
+    }
     return (
         <>
             <Head>
@@ -122,10 +133,13 @@ const ProductPageLayout: React.FC<ProductPageLayoutProps> = ({variant_id}) => {
                                 "low_stock":
                                 "in_stock"
                             }
-                            />
+                            onAmountChange={setQuantity}
+                        />
                         
                         <Field orientation={"horizontal"} className={style.productAction}>
-                            <Button className={style.addToCart}>
+                            <Button className={style.addToCart}
+                            onClick={()=>addToCartRequest()}
+                            >
                                 <Icon></Icon> Add to cart
                             </Button>
 
