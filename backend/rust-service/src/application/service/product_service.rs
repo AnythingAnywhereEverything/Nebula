@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use axum::extract::Multipart;
 
-use crate::{application::{repository::product_repo, service::{errors::{MediaServiceError, ProductServiceError}, media_service::{AllowedMediaType, ImageTransform, MediaOptions}}, state::AppState}, domain::models::product::{CreateAttributesDto, CreateProductDto, CreateVariantDto, ProductInfo}};
+use crate::{application::{repository::{product_repo}, service::{errors::{MediaServiceError, ProductServiceError}, media_service::{AllowedMediaType, ImageTransform, MediaOptions}}, state::AppState}, domain::models::product::{CreateAttributesDto, CreateProductDto, CreateVariantDto, ProductInfo}};
 
 pub struct ProductService;
 
@@ -115,6 +115,8 @@ impl ProductService {
         // TODO: MAKE product domain for types checking
 
         let mut tx = state.db_pool.begin().await?;
+
+        
 
         let product_id = state.snowflake_generator.generate_id()?;
 

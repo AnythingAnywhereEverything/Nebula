@@ -20,6 +20,8 @@ pub enum ShopRepoError {
     ShopNotFound,
     #[error("Member already in current shop")]
     MemberIsExist,
+    #[error("Not owner of the shop")]
+    NotShopOwner,
 }
 
 impl From<sqlx::Error> for ShopRepoError {

@@ -2,7 +2,7 @@ use std::{collections::{HashMap, HashSet}};
 
 use crate::{
     api::{APIError, APIVersion, middleware::user_mw::AuthUser, version},
-    application::{repository::{cart_repo, product_repo}, service::{errors::{MediaServiceError, ProductServiceError}, media_service::{AllowedMediaType, ImageTransform, MediaOptions, MediaService}, product_service::ProductService}, state::SharedState}, domain::models::{cart::CheckMarkToCart, product::{AddToCartProduct, CreateNewVariantDto, ProductImages, UpdateProductInfoDto, UpdateProductSettings, UpdateVariantDto}},
+    application::{repository::{cart_repo, errors::ShopRepoError, product_repo, shop_repo}, service::{errors::{MediaServiceError, ProductServiceError}, media_service::{AllowedMediaType, ImageTransform, MediaOptions, MediaService}, product_service::ProductService}, state::SharedState}, domain::models::{cart::CheckMarkToCart, product::{AddToCartProduct, CreateNewVariantDto, ProductImages, UpdateProductInfoDto, UpdateProductSettings, UpdateVariantDto}},
 };
 use axum::{
     Extension, Json, extract::{Multipart, Path, State}, response::IntoResponse
@@ -16,6 +16,13 @@ pub async fn create_product_handler(
 ) -> Result<impl IntoResponse, APIError> {
     let api_version: APIVersion = version::parse_version(&version)?;
     tracing::trace!("api version: {}", api_version);
+    let user_id = _auth.user_id;
+    let mut tx = state.db_pool.begin().await?;
+
+    let is_owner = shop_repo::is_owner_shop(&mut tx, shop_id, user_id).await?;
+    if !is_owner {
+        return Err(ShopRepoError::NotShopOwner.into());
+    }
 
     ProductService::create_product(&state, shop_id, multipart).await?;
 
@@ -32,7 +39,12 @@ pub async fn update_product_settings_handler(
     tracing::trace!("api version: {}", api_version);
     
     let mut tx = state.db_pool.begin().await?;
-
+    let user_id = _auth.user_id;
+    let is_owner = shop_repo::is_owner_shop(&mut tx, shop_id, user_id).await?;
+    if !is_owner {
+        return Err(ShopRepoError::NotShopOwner.into());
+    }
+    
     product_repo::update_product_settings(
         &mut tx, 
         product_id, 
@@ -54,8 +66,13 @@ pub async fn delete_product_handler(
 ) -> Result<impl IntoResponse, APIError> {
     let api_version: APIVersion = version::parse_version(&version)?;
     tracing::trace!("api version: {}", api_version);
-    
     let mut tx = state.db_pool.begin().await?;
+
+    let user_id = _auth.user_id;
+    let is_owner = shop_repo::is_owner_shop(&mut tx, shop_id, user_id).await?;
+    if !is_owner {
+        return Err(ShopRepoError::NotShopOwner.into());
+    }
 
     product_repo::delete_product(&mut tx, product_id, shop_id).await?;
     
@@ -82,7 +99,13 @@ pub async fn update_variant(
     let payload = data.payload;
 
     let mut tx = state.db_pool.begin().await?;
-
+    let user_id = _auth.user_id;
+    
+    let is_owner = shop_repo::is_owner_shop(&mut tx, shop_id, user_id).await?;
+    if !is_owner {
+        return Err(ShopRepoError::NotShopOwner.into());
+    }
+    
     let old_images: Vec<ProductImages> = product_repo::get_variant_images(&mut tx, variant_id).await?;
 
     let old_map: HashMap<i64, &ProductImages> =
@@ -196,7 +219,7 @@ pub async fn create_new_variant(
     tracing::trace!("api version: {}", api_version);
     
     const MAX_IMAGE_SIZE: usize = 8 * 1024 * 1024;
-    
+    let user_id = _auth.user_id;
     let data = 
         MediaService::extract_payload_with_type::<CreateNewVariantDto>
         (multipart, MAX_IMAGE_SIZE).await?;
@@ -205,6 +228,10 @@ pub async fn create_new_variant(
 
     let mut tx = state.db_pool.begin().await?;
 
+    let is_owner = shop_repo::is_owner_shop(&mut tx, shop_id, user_id).await?;
+    if !is_owner {
+        return Err(ShopRepoError::NotShopOwner.into()); 
+    }
     // validate options
     let count = product_repo::validate_attribute_options_belong_to_product(&mut tx, product_id, &payload.attribute_options).await?;
     if count != payload.attribute_options.len() as i64 {
@@ -282,7 +309,8 @@ pub async fn update_product_info(
 ) -> Result<impl IntoResponse, APIError> {
     let api_version: APIVersion = version::parse_version(&version)?;
     tracing::trace!("api version: {}", api_version);
-    
+    let user_id = _auth.user_id;
+
     const MAX_IMAGE_SIZE: usize = 8 * 1024 * 1024;
 
     let data = 
@@ -292,6 +320,11 @@ pub async fn update_product_info(
 
     let mut tx = state.db_pool.begin().await?;
 
+    let is_owner = shop_repo::is_owner_shop(&mut tx, shop_id, user_id).await?;
+    if !is_owner {
+        return Err(ShopRepoError::NotShopOwner.into());
+    }
+    
     let old_images: Vec<ProductImages> = product_repo::get_product_images(&mut tx, product_id).await?;
 
     let old_map: HashMap<i64, &ProductImages> =
@@ -415,6 +448,7 @@ pub async fn get_product_variant_info (
     Ok(Json(result))
 }
 
+// * USER can use
 pub async fn get_cart_handler(
     Extension(_auth): Extension<AuthUser>,
     State(state): State<SharedState>,

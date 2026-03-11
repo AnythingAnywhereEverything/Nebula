@@ -29,12 +29,12 @@ pub struct Shop {
     pub shop_profile_url: Option<String>,
     pub shop_banner_url: Option<String>,
 }
-
+#[derive(Debug, FromRow, Serialize, Deserialize, PartialEq, Eq, Clone,Default)]
 pub struct ShopMember {
     pub id: i64,
     pub shop_id: i64,
     pub user_id: i64,
-    pub role: String,
+    pub role_id: i64,
 }
 
 #[derive(Debug, FromRow, Serialize, Deserialize, PartialEq, Eq, Clone,Default)]
@@ -62,6 +62,13 @@ pub struct ShopUpdateProfile{
 #[derive(Debug, FromRow, Serialize, Deserialize, PartialEq, Eq, Clone,Default)]
 pub struct ShopUpdateBanner{
     pub shop_banner_url: Option<String>,
+}
+#[derive(Debug, FromRow, Serialize, Deserialize, PartialEq, Eq, Clone,Default)]
+pub struct MemberResponse {
+    pub id: String,
+    pub shop_id: String,
+    pub role: String,
+    pub profile_picture_url: Option<String>,
 }
 
 impl From<Shop> for ShopResponse {
