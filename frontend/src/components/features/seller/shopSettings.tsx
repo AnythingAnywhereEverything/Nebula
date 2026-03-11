@@ -180,7 +180,9 @@ export default function ShopSettings() {
         updateShopInfo(payload);
         router.refresh() // * cope
     }
-
+    const banner = currentShop?.shop_banner_url
+        ? `/cdn/${currentShop?.shop_banner_url}`
+        : "/default/placeholder.png";
     const pendingProfileChange = !!selectedProfileFile;
     const pendingBannerChange = !!selectedBannerFile;
 
@@ -233,7 +235,7 @@ export default function ShopSettings() {
                                     <Field orientation={'horizontal'} style={{gap: "calc(var(--spacing)* 4)"}}>
                                         <FieldGroup className={s.storeBannerContainer}>
                                             <FieldLabel htmlFor="banner">
-                                                <img src={previewBanner ??  `/cdn/${currentShop?.shop_banner_url}`} alt="" />
+                                                <img src={previewBanner ??  banner} alt="" />
                                             </FieldLabel>
                                             
                                                 {errors.banner && (

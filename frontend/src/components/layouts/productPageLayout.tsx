@@ -50,6 +50,17 @@ const ProductPageLayout: React.FC<ProductPageLayoutProps> = ({variant_id}) => {
         await addToCart(finalPayload);
         return;
     }
+
+    const price = Number(variant?.price);
+    const salePrice = Number(variant?.sale_price);
+    
+    const rawPercent = Math.round((1 - salePrice / price) * 100);
+    
+    const percent =
+    Number.isFinite(rawPercent) && rawPercent !== 0
+        ? rawPercent
+        : null;
+
     return (
         <>
             <Head>
@@ -91,11 +102,18 @@ const ProductPageLayout: React.FC<ProductPageLayoutProps> = ({variant_id}) => {
                         <div className={`${style.productPrice} ${variant?.price ? style.discounted : ""}`}>
                             {variant?.on_sale ? (
                                 <>
-                                    <p><span className={style.percent}>–{Math.round((1 - Number(variant?.sale_price) / Number(variant?.price)) * 100)}%</span> ${variant.sale_price}</p>
-                                    <s>${variant.price}</s>
+                                    <p>
+                                        {percent && (
+                                            <span className={style.percent}>
+                                                {percent > 0 ? `-${percent}%` : `+${Math.abs(percent)}%`}
+                                            </span>
+                                        )}
+                                        ${salePrice}
+                                    </p>
+                                    <s>${price}</s>
                                 </>
                             ) : (
-                                <p className={style.priceFocus}>${variant?.price}</p>
+                                <p className={style.priceFocus}>${price}</p>
                             )}
                         </div>
                             
@@ -104,18 +122,16 @@ const ProductPageLayout: React.FC<ProductPageLayoutProps> = ({variant_id}) => {
 
                     <FieldSet>
                         
-                        <div className={style.essentialContainer}>
-                            <p className={style.essentialName}>Delivery</p>
-                            <div className={style.detail}>
-                                {
-                                    product.free_shipping &&
-                                    <>
-                                    <Icon className={style.shipIcon}> </Icon>
-                                    <p>Free shipping</p>
-                                    </>
-                                }
-                            </div>
-                        </div>
+                            {
+                            product.free_shipping &&
+                                <div className={style.essentialContainer}>
+                                    <p className={style.essentialName}>Delivery</p>
+                                    <div className={style.detail}>
+                                            <Icon className={style.shipIcon}> </Icon>
+                                            <p>Free shipping</p>
+                                    </div>
+                                </div>
+                            }
                         
                         <ProductVariantSelector
                             variants={product.variants}
