@@ -42,7 +42,7 @@ export const searchOnType = async(q: string): Promise<QueryProductValues[]> => {
 }
 
 export const searchProductDatas = async(
-    q: string,
+    q?: string | null,
     page?: string | null,
     limit?: string | null,
     rating?: string | null,
@@ -53,7 +53,9 @@ export const searchProductDatas = async(
 
     const params = new URLSearchParams();
 
-    if (q.trim()) params.append("q", q);
+    const query = q ? q.trim() : undefined;
+
+    if (query) params.append("q", query);
     if (page) params.append("page", page);
     if (limit) params.append("limit", limit);
     if (rating) params.append("rating", rating);

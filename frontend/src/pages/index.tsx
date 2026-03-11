@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ping } from '../api/ping';
 import style from '@styles/home.module.scss';
 import { NextPageWithLayout } from '../types/global.d';
@@ -9,6 +9,7 @@ import AboutThisWeb from '@components/features/home/aboutThisWeb';
 import { ProductContainer, ProductContainerDescription, ProductContainerHeader, ProductContainerHeaderAddon, ProductContainerHeaderGroup, ProductContainerTitle, ProductField } from '@components/ui/Nebula/product-field';
 import { Button, Separator } from '@components/ui/NebulaUI';
 import Link from 'next/link';
+import { ProductDatas, searchProductDatas } from '@/api/search';
 
 const Home: NextPageWithLayout = () => {
   const [message, setMessage] = React.useState('Pinging...');
@@ -26,10 +27,33 @@ const Home: NextPageWithLayout = () => {
     fetchPing();
   }, []);
 
+    const [gifts, setGifts] = useState<ProductDatas[]>([]);
+    const [holiday, setHoliday] = useState<ProductDatas[]>([]);
+    const [seasonal, setSeasonal] = useState<ProductDatas[]>([]);
+
+    const [discovery, setDiscovery] = useState<ProductDatas[]>([]);
+
+    useEffect(() => {
+        async function load() {
+            const gifts = await searchProductDatas("gift", "0", "10");
+            setGifts(gifts.data);
+
+            const holiday = await searchProductDatas("holiday", "0", "10");
+            setHoliday(holiday.data);
+
+            const seasonal = await searchProductDatas("seasonal", "0", "10");
+            setSeasonal(seasonal.data);
+
+            const discovery = await searchProductDatas(undefined, "0", "25");
+            setDiscovery(discovery.data);
+        }
+
+        load();
+    }, []);
+
   return (
     <div className={style.homeContainer}>
         <PromotionPanel/>
-        <CategoryPanel/>
         <div className={style.giftsContainer}>
             <ProductContainer>
                 <ProductContainerHeader>
@@ -45,24 +69,24 @@ const Home: NextPageWithLayout = () => {
                         <Button variant={"ghost"}>Show more</Button>
                     </ProductContainerHeaderAddon>
                 </ProductContainerHeader>
-                <ProductField max_rows={1}/>
+                <ProductField item_display={gifts} max_rows={1}/>
             </ProductContainer>
             
             <ProductContainer>
                 <ProductContainerHeader>
                     <ProductContainerHeaderGroup> 
                         <ProductContainerTitle>
-                            Shop gifts by price
+                            Shop holiday products
                         </ProductContainerTitle>
                         <ProductContainerDescription>
-                            Search the gifts for cheap price.
+                            Search the holiday product for someone you like.
                         </ProductContainerDescription>
                     </ProductContainerHeaderGroup>
                     <ProductContainerHeaderAddon>
                         <Button variant={"ghost"}>Show more</Button>
                     </ProductContainerHeaderAddon>
                 </ProductContainerHeader>
-                <ProductField max_rows={1}/>
+                <ProductField item_display={holiday} max_rows={1}/>
             </ProductContainer>
         </div>
 
@@ -80,7 +104,7 @@ const Home: NextPageWithLayout = () => {
                     <Button variant={"ghost"}>Show more</Button>
                 </ProductContainerHeaderAddon>
             </ProductContainerHeader>
-            <ProductField max_rows={1}/>
+            <ProductField item_display={seasonal} max_rows={1}/>
         </ProductContainer>
 
 
@@ -90,30 +114,12 @@ const Home: NextPageWithLayout = () => {
                     Discovery
                 </ProductContainerTitle>
             </ProductContainerHeader>
-            <ProductField max_rows={5}/>
+            <ProductField item_display={discovery} max_rows={5}/>
             <ProductContainerHeaderAddon>
                 <Button size={"lg"} asChild>
                     <Link href={"/discovery"}>Show more</Link>
                 </Button>
             </ProductContainerHeaderAddon>
-        </ProductContainer>
-
-        <Separator />
-
-        <ProductContainer>
-            <ProductContainerHeader>
-                <ProductContainerTitle>
-                    Your Broswing History
-                </ProductContainerTitle>
-                <ProductContainerHeaderAddon>
-                    <Button variant={"ghost"} asChild>
-                        <Link href={"/browsingHistory"}>
-                            View or edit browsing history
-                        </Link>
-                    </Button>
-                </ProductContainerHeaderAddon>
-            </ProductContainerHeader>
-            <ProductField max_rows={1}/>
         </ProductContainer>
 
         <Separator />

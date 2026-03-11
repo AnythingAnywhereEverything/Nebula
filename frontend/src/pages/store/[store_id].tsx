@@ -1,65 +1,67 @@
 
+import { ProductSearchResponse, searchProductDatas } from "@/api/search";
 import AdvanceFilter from "@components/features/search/advanceFilter";
 import FilterBar from "@components/features/search/filterBar";
 import { Button, ButtonGroup, Field, FieldDescription, FieldGroup, Icon, ProductContainer, ProductContainerDescription, ProductContainerHeader, ProductContainerHeaderAddon, ProductContainerHeaderGroup, ProductContainerTitle, ProductField, ProductHeader, Separator } from "@components/ui/NebulaUI";
 import s from "@styles/store.module.scss"
-import ReactMarkdown from "react-markdown";
-import Markdown from "react-markdown";
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 export default function Store() {
+    const router = useRouter()
+
+    const { store_id } = router.query;
+
+    const searchParams = useSearchParams();
+
+    const query = searchParams.get('q');
+    const page = searchParams.get('page');
+    const limit = searchParams.get('limit');
+    const rating = searchParams.get('rating');
+    const min_price = searchParams.get('min_price');
+    const max_price = searchParams.get('max_price');
+
+    const [result, setResult] = useState<ProductSearchResponse>();
+
+    useEffect(() => {
+        if (typeof store_id !== "string") return
+
+        const load = async () => {
+            const data = await searchProductDatas(
+                query,
+                page,
+                limit,
+                rating,
+                min_price,
+                max_price,
+                store_id
+            )
+            setResult(data)
+            console.log(data)
+        }
+
+        load()
+    }, [query, page, limit, rating, min_price, max_price, store_id])
+
+    if (typeof store_id !== "string") return null
+    
     return (
         <div className={s.pageContainer}>
             <FieldGroup>
                 <StoreHeader />
                 <Separator />
-                <Field className={s.page}>
-                    <ImageContainer />
-                    <DisplayShopCategory />
-                    <ImageContainer />
-                    <DisplayShopCategory />
-                    <MarkdownContainer />
-                </Field>
-                <Separator />
                 <Field className={s.allItems} orientation={"horizontal"}>
                 
                     <AdvanceFilter/>
                     <Field>
-                        <FilterBar/>
-                        <ProductField max_rows={10}/>
+                        <FilterBar page={result?.page || 0} totalPages={result?.total_pages || 1}/>
+                        <ProductField item_display={result?.data || []} max_rows={10}/>
                     </Field>
                 </Field>
             </FieldGroup>
         </div>
     );
-}
-
-function DisplayShopCategory(): React.ReactNode {
-    return <ProductContainer>
-        <ProductContainerHeader>
-            <ProductContainerHeaderGroup>
-                <ProductContainerTitle>ProductCategory</ProductContainerTitle>
-            </ProductContainerHeaderGroup>
-            <ProductContainerHeaderAddon>
-                <Button variant={"outline"} size={"sm"}>Show more</Button>
-            </ProductContainerHeaderAddon>
-        </ProductContainerHeader>
-        <ProductField max_rows={1}/>
-    </ProductContainer>
-}
-
-function ImageContainer(): React.ReactNode {
-    return (
-        <Field>
-            <img src="https://placehold.co/2700x1000" alt="" />
-        </Field>
-    )
-}
-function MarkdownContainer(): React.ReactNode {
-    return (
-        <Field>
-            <ReactMarkdown>{"# Hello Markdown!\nYikes"}</ReactMarkdown>
-        </Field>
-    )
 }
 
 function StoreHeader(): React.ReactNode {

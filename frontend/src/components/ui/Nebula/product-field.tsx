@@ -15,7 +15,7 @@ import { ProductDatas } from "@/api/search";
 
 type NebulaProductFieldProps = {
     max_rows?: number;
-    item_display?: ProductDatas[];
+    item_display: ProductDatas[];
 }
 
 function ProductContainer({
@@ -63,7 +63,7 @@ function ProductContainerDescription ({
 function ProductField({
     className,
     max_rows = 2,
-    item_display = ProductItemExamples,
+    item_display,
     ...props
 } :React.ComponentProps<"ul"> &
     NebulaProductFieldProps) {
@@ -91,7 +91,7 @@ function ProductField({
     return (
         <ul className={s.productField} ref={containerRef}>
             {products.map((item) => (
-                <li>
+                <li key={item.id}>
                     <ProductItem>
                         <ProductImage src={item.product_image}/>
                         <ProductContent>

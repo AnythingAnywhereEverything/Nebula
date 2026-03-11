@@ -65,14 +65,14 @@ pub async fn query_product_datas(
             LIMIT 1
         ) img ON TRUE
 
-        LEFT JOIN LATERAL (
+        JOIN LATERAL (
             SELECT price, on_sale, sale_price, id
             FROM product_variants
             WHERE
                 product_id = p.id
                 AND deleted_at IS NULL
                 AND is_enabled = TRUE
-                AND ($6 IS NULL OR shop_id = $6)
+                AND ($7 IS NULL OR shop_id = $7)
             ORDER BY price ASC
             LIMIT 1
         ) v ON TRUE
@@ -106,7 +106,7 @@ pub async fn query_product_datas(
     .bind(rating)
     .bind(min_price)
     .bind(max_price)
-    .bind(shop_id)
+    .bind(shop_id)    
     .fetch_all(tx.as_mut())
     .await?;
 
