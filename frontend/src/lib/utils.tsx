@@ -4,6 +4,34 @@ export function cn(...classes: (string | undefined | false)[]): string {
     return classes.filter(Boolean).join(" ")
 }
 
+export function timeAgo(date: string | Date): string {
+    let parsed: Date
+    if (typeof date === "string") {
+        parsed = new Date(date.endsWith("Z") ? date : date + "Z")
+    } else {
+        parsed = date
+    }
+
+    if (isNaN(parsed.getTime())) return ""
+
+    const diff = Math.floor((Date.now() - parsed.getTime()) / 1000)
+
+    const minute = 60
+    const hour = 60 * minute
+    const day = 24 * hour
+    const month = 30 * day
+    const year = 365 * day
+
+    if (diff < 10) return "just now"
+    if (diff < minute) return `${diff}s ago`
+    if (diff < hour) return `${Math.floor(diff / minute)}m ago`
+    if (diff < day) return `${Math.floor(diff / hour)}h ago`
+    if (diff < month) return `${Math.floor(diff / day)}d ago`
+    if (diff < year) return `${Math.floor(diff / month)}mo ago`
+
+    return `${Math.floor(diff / year)}y ago`
+}
+
 export const useGridColumnCount = () => {
     const containerRef = useRef<HTMLUListElement | null>(null);
     const [columnCount, setColumnCount] = useState(0);

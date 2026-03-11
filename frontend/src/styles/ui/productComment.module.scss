@@ -10,85 +10,117 @@
         padding: calc(var(--spacing) * 4);
         background: color-mix(in oklab, var(--input) 30%, transparent);
     }
-    .commentFilter{
-        margin-top: calc(var(--spacing) * 4);
-        background: color-mix(in oklab, var(--input) 30%, transparent);
-        padding: calc(var(--spacing) * 4);
-        border-radius: var(--radius);
-        
-        .rating{
-            padding: 0 calc(var(--spacing) * 2);
-            margin-right: calc(var(--spacing) * 4);
-            height: 100%;
+}
 
-        }
-        .sortRate{
-            padding: calc(var(--spacing)) calc(var(--spacing) * 4);
-        }
-    }
+.star{
+    color: var(--accent-star);
+}
 
-    .container{
-        padding: 0 calc(var(--spacing) * 4);
-        
-        .commentParent{
-            border-radius: var(--radius);
-            padding: calc(var(--spacing) * 4);
-            background: color-mix(in oklab, var(--input) 30%, transparent);
-        }
+.userCommenting {
+    padding-inline: calc(var(--spacing) * 2 );
+    padding-block: calc(var(--spacing) * 6 );
+    align-items: flex-start !important;
+}
+
+.replyUserProfile {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: var(--radius-small);
+    overflow: hidden;
+    flex-shrink: 0;
+    img {
+        display: block;
     }
 }
 
-.comment, .commentParent{
-            margin-top: calc(var(--spacing));
-            padding: calc(var(--spacing) * 2) 0;
-            gap: calc(var(--spacing) * 6);
-            
-            .profileContainer,.commentImage{
-                max-width: 50px;
-                overflow: hidden;
-                aspect-ratio: 1 / 1;
-                border-radius: 8px;
-                position: relative;
-                display: grid;
-                margin-bottom: auto;
-                img {
-                    width: 100%;
-                    height: 100%;
-                    object-fit: cover;
-                    transition: transform 0.3s ease;
-                    grid-column: 1 / -1;
-                }
-            }
-            .userCommentContainer{
-                margin-top: calc(var(--spacing) * 2);
-                .userComment{
-                    display: -webkit-box;
-                    line-clamp: 5;
-                    -webkit-box-orient: vertical;
-                    -webkit-line-clamp: 5;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    word-break: break-all;
-                    margin-bottom: calc(var(--spacing) * 2);
-                    font-size: var(--text-small);
-                }
-            }
-        .commentImage{
-            max-width: 75px;
-        }
-        .commentDate{
-            display: flex;
-            gap: calc(var(--spacing) * 2);
-        }
-        .settingComment{
-            .commenter{
-                display: flex;
-                gap: calc(var(--spacing) * 2);
-            }
-        }
+.userProfile {
+    width: 50px !important;
+    border-radius: var(--radius-medium);
+    overflow: hidden;
+    flex-shrink: 0;
+    img {
+        display: block;
     }
-.reviewBtn{
-    gap: calc(var(--spacing));
+}
+.commentProfile{
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing) * 2 );
+    align-items: flex-end;
+    .replyBar {
+        width: 25px;
+        align-items: stretch;
+        height: 100%;
+        border-left: 2px solid var(--border);
+    }
+}
+
+.parentContainer{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: calc(var(--spacing) * 4 );
+}
+
+.commentReplyContainer {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding-block: calc(var(--spacing) * 2 );
+}
+
+.replyButtonGroup {
+    width: 100%;
+    display: flex;
+    padding-inline: calc(var(--spacing) * 2 );
+
     align-items: center;
+    
+    gap: calc(var(--spacing) * 2 );
+
+    button {
+        height: fit-content !important;
+    }
 }
 
+.replyCorner {
+
+    display: flex;
+    justify-content: flex-end;
+
+    .cornerContainer {
+        display: flex;
+        justify-content: flex-end;
+        width: 50px;
+        height: 50px;
+
+        .replyBlob {
+            width: 25px;
+            height: 25px;
+            border-bottom-left-radius: calc(var(--spacing) * 5 );
+            border-bottom: 2px solid var(--border);
+            border-left: 2px solid var(--border);
+        }
+    }
+}
+
+.replyGroup {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing) * 4 );
+}
+
+.commentContainer {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-content: flex-start;
+    padding-inline: calc(var(--spacing) * 2 );
+    gap: calc(var(--spacing) * 2 );
+    
+    .commentContent {
+        flex-direction: column;
+        display: flex;
+        gap: calc(var(--spacing) * 1 );
+    }
+}

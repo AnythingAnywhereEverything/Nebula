@@ -1,6 +1,7 @@
 
 use axum::{Json, extract::{Path, Query, State}, response::IntoResponse};
 use redis::AsyncCommands;
+use rust_decimal::Decimal;
 use serde::Deserialize;
 
 use crate::{api::{APIError, APIVersion, version}, application::{repository::{product_repo, search_repo}, state::SharedState}, domain::models::search::{ProductDto, SearchProductResponse, TypingQueryProduct}};
@@ -16,15 +17,27 @@ pub struct SearchQuery {
 
 #[derive(Deserialize, Debug)]
 pub struct SearchPageQuery {
-    pub q: String,
+    #[serde(default)]
+    pub q: Option<String>,
 
     #[serde(default)]
     pub page: Option<i64>,
 
     #[serde(default)]
     pub limit: Option<i64>,
-}
 
+    #[serde(default)]
+    pub rating: Option<Decimal>,
+
+    #[serde(default)]
+    pub max_price: Option<i64>,
+
+    #[serde(default)]
+    pub min_price: Option<i64>,
+
+    #[serde(default)]
+    pub shop_id: Option<i64>,
+}
 
 pub async fn type_search_handler(
     State(state): State<SharedState>,
@@ -73,18 +86,43 @@ pub async fn search_product_handler(
 
     let mut conn = state.redis.get().await?;
 
-    let cache_key = format!("search:{}:{}:{}", params.q.to_lowercase(), page, limit);
+    let cache_key = format!(
+        "search:{}:{}:{}:{:?}:{:?}:{:?}:{:?}",
+        params.q.clone().unwrap_or_default().to_lowercase(),
+        page,
+        limit,
+        params.rating,
+        params.min_price,
+        params.max_price,
+        params.shop_id
+    );
 
     if let Some(cached) = conn.get::<_, Option<String>>(&cache_key).await? {
         let data: SearchProductResponse = serde_json::from_str(&cached)?;
         return Ok(Json(data));
     }
 
-    let total_items = search_repo::count_search_products(&mut tx, params.q.clone()).await?;
+    let total_items = search_repo::count_search_products(
+        &mut tx,
+        params.q.clone(),
+        params.rating,
+        params.min_price,
+        params.max_price,
+        params.shop_id
+    ).await?;
 
     let total_pages = (total_items as f64 / limit as f64).ceil() as i64;
 
-    let result = search_repo::query_product_datas(&mut tx, params.q.clone(), offset, limit).await?;
+    let result = search_repo::query_product_datas(
+        &mut tx,
+        params.q,
+        offset,
+        limit,
+        params.rating,
+        params.min_price,
+        params.max_price,
+        params.shop_id
+    ).await?;
 
     let response = SearchProductResponse {
         data: result,

@@ -13,6 +13,9 @@ export default function searchResult(){
     const query = searchParams.get('q');
     const page = searchParams.get('page');
     const limit = searchParams.get('limit');
+    const rating = searchParams.get('rating');
+    const min_price = searchParams.get('min_price');
+    const max_price = searchParams.get('max_price');
 
     const [result, setResult] = useState<ProductSearchResponse>();
 
@@ -20,12 +23,19 @@ export default function searchResult(){
         if (!query) return;
 
         const load = async () => {
-            const data = await searchProductDatas(query,page,limit)
+            const data = await searchProductDatas(
+                query,
+                page,
+                limit,
+                rating,
+                min_price,
+                max_price
+            )
             setResult(data)
             console.log(data)
         }
         load()
-    }, [query, page, limit])
+    }, [query, page, limit, rating, min_price, max_price])
 
     return (
         <div className={style.searchPageContainer}>
