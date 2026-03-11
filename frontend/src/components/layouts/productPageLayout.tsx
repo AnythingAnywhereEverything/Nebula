@@ -67,7 +67,7 @@ const ProductPageLayout: React.FC<ProductPageLayoutProps> = ({variant_id}) => {
                 <title>{product.name}</title>
             </Head>
 
-            <Field orientation={"horizontal"} className={style.container}>
+            <Field orientation={"horizontal"} className={style.container}  style={{alignItems: "start"}}>
                 <ProductImageViewer mediaLists={variant?.images || []}/>
                 <FieldSeparator/>
                 <FieldSet>
