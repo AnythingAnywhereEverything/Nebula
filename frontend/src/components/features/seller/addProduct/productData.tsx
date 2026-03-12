@@ -374,7 +374,7 @@ const MultiProductField = ({
                                 onCheckedChange={(v) => {
                                     if (typeof v !== "boolean") return;
 
-                                    onChange({ onSale: v });
+                                    setDraft(p => ({ ...p, onSale: v }))
                                 }}
                             />
                             <FieldLabel htmlFor="on-sale">Set product on sale</FieldLabel>
