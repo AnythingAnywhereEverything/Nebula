@@ -94,7 +94,7 @@ const ProductVariantSelector: React.FC<ProductVariantSelectorProps> = ({
                     {selected[option.name] && ` : ${selected[option.name]}`}
                 </FieldDescription>
 
-                <Field orientation={"horizontal"} style={{marginLeft: "var(--spacing)"}}>
+                <Field orientation={"horizontal"} style={{marginLeft: "var(--spacing)", flexWrap: "wrap"}}>
                 {option.values.map((value) => {
                     const state = getValueState(option.name, value);
 

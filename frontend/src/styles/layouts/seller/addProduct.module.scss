@@ -1,4 +1,6 @@
 .variantChip {
+    height: 25px;
+    margin: auto;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -8,6 +10,24 @@
     padding-inline: calc(var(--spacing) * 1.5);
     padding-right: calc(var(--spacing) * 0.5 );
     border-radius: var(--radius-small);
+    flex-shrink: 0;
+}
+
+.variantChipContainer {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+
+    max-height: 72px;
+    overflow-y: auto;
+}
+
+.variantInput {
+    flex: 1;
+    min-width: 120px;
+    border: none;
+    outline: none;
 }
 
 .visuallyHidden {

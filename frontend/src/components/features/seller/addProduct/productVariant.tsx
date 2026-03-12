@@ -141,38 +141,36 @@ const ProductVariantPanel = ({ onChange }: AddProductVariantProps) => {
                     }}
                 />
 
-                <InputGroup style={{ width: "100%" }}>
-                    <InputGroupAddon align="inline-start">
+                <InputGroup style={{ width: "100%", alignItems: "flex-start", height: "fit-content" }}>
+                    <div className={s.variantChipContainer}>
+                        {variant.options.map((opt, i) => (
+                            <div key={i} className={s.variantChip}>
+                                <p>{opt}</p>
 
-                    {variant.options.map((opt, i) => (
-                        <div key={i} className={s.variantChip}>
-                        <p>{opt}</p>
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon-xs"
+                                    onClick={() => removeOption(variant.id, i)}
+                                >
+                                    <Icon style={{fontSize: "var(--text-extra-small)", lineHeight: "var(--text-xs--line-height)"}} value="" />
+                                </Button>
+                            </div>
+                        ))}
+                        <InputGroupInput
+                        className={s.variantInput}
+                        placeholder="Type option and press Enter"
+                        onKeyDown={(e) => {
+                            if (e.key !== "Enter") return;
 
-                        <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon-xs"
-                            onClick={() => removeOption(variant.id, i)}
-                        >
-                            <Icon style={{fontSize: "var(--text-extra-small)", lineHeight: "var(--text-xs--line-height)"}} value="" />
-                        </Button>
-                        </div>
-                    ))}
+                            e.preventDefault();
 
-                    </InputGroupAddon>
-
-                    <InputGroupInput
-                    placeholder="Type option and press Enter"
-                    onKeyDown={(e) => {
-                        if (e.key !== "Enter") return;
-
-                        e.preventDefault();
-
-                        const value = e.currentTarget.value;
-                        addOption(variant.id, value);
-                        e.currentTarget.value = "";
-                    }}
-                    />
+                            const value = e.currentTarget.value;
+                            addOption(variant.id, value);
+                            e.currentTarget.value = "";
+                        }}
+                        />
+                    </div>
                 </InputGroup>
 
                 <Button

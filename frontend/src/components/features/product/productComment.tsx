@@ -419,10 +419,10 @@ const ProductComment: React.FC<ProductCommentProp> = ({product_id}) => {
             rating: rating
         }
 
-        const returned = await uploadReview(product_id, payload);
-
         setOpen(false)
-
+        const returned = await uploadReview(product_id, payload);
+        
+        setComment("")
         setReviews(prev => [returned,...prev])
     }
 

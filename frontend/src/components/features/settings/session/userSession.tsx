@@ -5,57 +5,67 @@ import { UAParser } from "ua-parser-js";
 import { deleteSelectSession, getSessions, SessionResponse } from "@/api/user";
 import { formatDateTime } from "@lib/utils";
 
-interface session {
-    id: string,
-    created_at: string,
-    agent: string
-}
-const UserSession:React.FC = () => {
+const UserSession: React.FC = () => {
 
-    function GetUserSession() {
-        const [data, setData] = useState<SessionResponse[]>([]);
-        
-        useEffect(() => {
-            const fetchData = async () => {
-                const sessions = await getSessions();
-                setData(sessions);
-            };
+    const [data, setData] = useState<SessionResponse[]>([]);
 
-            fetchData();
-        }, []);
-        const informationLoader = (parser:string, date: string)=> {
-            const converted = UAParser(parser);
-            return (
+    useEffect(() => {
+        const fetchData = async () => {
+            const sessions = await getSessions();
+            setData(sessions);
+        };
+
+        fetchData();
+    }, []);
+
+    const deleteSessionLocal = async (id: string) => {
+        await deleteSelectSession(id);
+
+        setData(prev => prev.filter(session => session.id !== id));
+        // * remove the deleted session locally without refetch
+    };
+
+    const informationLoader = (parser: string, date: string) => {
+        const converted = UAParser(parser);
+
+        return (
             <>
                 <FieldLabel>{`${converted.os}`}</FieldLabel>
-                <FieldDescription>{`${converted.browser.name}`} | {`${formatDateTime(date)}`}</FieldDescription>
+                <FieldDescription>
+                    {`${converted.browser.name}`} | {`${formatDateTime(date)}`}
+                </FieldDescription>
             </>
-            )
-        }
-        
-        return(
-            <>
+        );
+    };
+
+    return (
+        <FieldGroup>
             {data.map((session) => (
                 <Field key={session.id} className={s.sessionContainer} orientation={'horizontal'}>
                     <Field orientation={'horizontal'}>
-                        <Icon style=
-                        {{fontSize:"32px",
-                        padding: "0 calc(var(--spacing)*2)"
-                        }}>󰍹</Icon>
+                        <Icon
+                            style={{
+                                fontSize: "32px",
+                                padding: "0 calc(var(--spacing)*2)"
+                            }}
+                        >
+                            󰍹
+                        </Icon>
+
                         <Field>
                             {informationLoader(session.agent, session.created_at)}
                         </Field>
                     </Field>
-                    <Button onClick={() => deleteSelectSession(session.id)} size={'sm'} variant={'destructive'}>Delete</Button>
+
+                    <Button
+                        onClick={() => deleteSessionLocal(session.id)}
+                        size={'sm'}
+                        variant={'destructive'}
+                    >
+                        Delete
+                    </Button>
                 </Field>
             ))}
-            </>
-        )
-    }
-    
-    return(
-        <GetUserSession/>
-    )
-}
-
-export default UserSession
+        </FieldGroup>
+    );
+};export default UserSession
