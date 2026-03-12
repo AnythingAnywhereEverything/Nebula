@@ -4,12 +4,25 @@ import style from '@styles/layouts/usersetting.module.scss';
 import UserSettingsOptions from "@components/features/settings/userSettingsOptions";
 import UserSettingContainer from "@components/features/settings/userSettingContainer";
 import { userSettingsAllowList } from "@/constants/userSettingsRoutes";
+import { useUser } from "@/hooks/useUser";
 
 export default function UserPage() {
   const router = useRouter();
   const { slug } = router.query;
 
   const currentPath = Array.isArray(slug) ? "/" + slug.join("/") : "/account/profile";
+
+  const { data, isLoading, isError } = useUser();
+
+  useEffect(() => {
+      if (isError) {
+          router.push("/auth/signin");
+      }
+  }, [isError, router]);
+
+  if (isLoading) return null;
+
+  if (!data) return null;
 
   const pageMeta = userSettingsAllowList[currentPath];
 
